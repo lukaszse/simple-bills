@@ -7,6 +7,8 @@ import org.springframework.http.RequestEntity
 import pl.com.seremak.simplebills.commons.dto.http.TransactionDto
 import pl.com.seremak.simplebills.commons.model.Transaction
 
+import java.time.LocalDate
+
 import static pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.utils.EndpointSpecData.*
 
 class TransactionEndpointIntSpec extends EndpointIntSpec {
@@ -46,6 +48,7 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
                         category: category,
                         type: type,
                         description: description,
+                        date: LocalDate.parse(date),
                         amount: amount
                 )
 
@@ -78,15 +81,16 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
             assert fetchResponse.getBody().getCategory() == category
             assert fetchResponse.getBody().getType().toString() == type
             assert fetchResponse.getBody().getDescription() == description
+            assert fetchResponse.getBody().getDate().toString().startsWith(date)
             assert fetchResponse.getBody().getAmount() == amountResponse
         }
 
         where:
-        category | type    | description           | amount | amountResponse
-        FOOD     | EXPENSE | "Grocery shopping"    | 232.34 | 0 - amount
-        TRAVEL   | EXPENSE | "Holiday in Spain"    | 5323   | 0 - amount
-        CAR      | EXPENSE | "Tire service"        | 130    | 0 - amount
-        FOOD     | EXPENSE | "Fruits & vegetables" | 75.99  | 0 - amount
-        SALARY   | INCOME  | "December salary"     | 5000   | amount
+        category | type    | description           | amount | date         | amountResponse
+        FOOD     | EXPENSE | "Grocery shopping"    | 232.34 | "2022-10-10" | 0 - amount
+        TRAVEL   | EXPENSE | "Holiday in Spain"    | 5323   | "2022-11-10" | 0 - amount
+        CAR      | EXPENSE | "Tire service"        | 130    | "2022-12-10" | 0 - amount
+        FOOD     | EXPENSE | "Fruits & vegetables" | 75.99  | "2022-12-11" | 0 - amount
+        SALARY   | INCOME  | "December salary"     | 5000   | "2022-10-10" | amount
     }
 }
