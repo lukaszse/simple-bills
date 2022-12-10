@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
+import org.springframework.web.client.HttpClientErrorException
 import pl.com.seremak.simplebills.commons.dto.http.TransactionDto
 import pl.com.seremak.simplebills.commons.model.Transaction
 
@@ -38,6 +39,24 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
         2                 | TRAVEL   | -1000
         3                 | CAR      | -300
         4                 | FOOD     | -200
+    }
+
+    def 'should return HTTP status 404 when requested when given transaction not found'() {
+
+        given: 'prepare request to get transaction'
+        def request =
+                RequestEntity.get(TRANSACTION_URL_PATTERN.formatted(port, "/%d".formatted(99)))
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, BASIC_TOKEN)
+                        .build()
+
+        when: 'should fetch bill'
+        client.exchange(request, Transaction.class)
+
+        then:
+        def exception = thrown(HttpClientErrorException)
+        exception.getStatusCode() == HttpStatus.NOT_FOUND
+        exception.getMessage().startsWith("404 Not Found")
     }
 
     def 'should create transaction for user and then fetch created transaction'() {
@@ -92,5 +111,44 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
         CAR      | EXPENSE | "Tire service"        | 130    | "2022-12-10" | 0 - amount
         FOOD     | EXPENSE | "Fruits & vegetables" | 75.99  | "2022-12-11" | 0 - amount
         SALARY   | INCOME  | "December salary"     | 5000   | "2022-10-10" | amount
+    }
+
+    def 'should return HTTP status 400 when transaction creation body is not valid'() {
+
+        given: 'prepare new transaction to create with wrong payload'
+        def transactionToCreate = new TransactionDto
+                (
+                        category: category,
+                        type: type,
+                        description: description,
+                        date: LocalDate.parse(date),
+                        amount: amount
+                )
+
+        and: 'prepare request for transaction creation'
+        def creationRequest =
+                RequestEntity.post(TRANSACTION_URL_PATTERN.formatted(port, StringUtils.EMPTY))
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, BASIC_TOKEN)
+                        .body(transactionToCreate)
+
+
+        when: 'make request to crate transaction'
+        client.exchange(creationRequest, Transaction.class)
+
+
+        then: 'should return correct HTTP status 400'
+        def exception = thrown(HttpClientErrorException)
+        exception.getStatusCode() == HttpStatus.BAD_REQUEST
+        exception.getMessage().startsWith("400 Bad Request")
+
+        where:
+        category | type    | description           | amount | date
+        FOOD     | EXPENSE | "Grocery shopping"    | null   | "2022-10-10"
+        TRAVEL   | EXPENSE | null                  | 5323   | "2022-11-10"
+        CAR      | null    | "Tire service"        | 130    | "2022-12-10"
+        null     | EXPENSE | "Fruits & vegetables" | 75.99  | "2022-12-11"
+        FOOD     | EXPENSE | "Fruits & vegetables" | -75.99 | "2022-12-11"
+        SALARY   | INCOME  | ""                    | 5000   | "2022-10-10"
     }
 }
