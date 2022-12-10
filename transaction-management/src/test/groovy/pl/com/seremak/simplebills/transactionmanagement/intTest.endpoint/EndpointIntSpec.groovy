@@ -5,14 +5,12 @@ import groovy.util.logging.Slf4j
 import org.spockframework.spring.SpringBean
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.web.server.LocalServerPort
-import org.springframework.security.config.web.server.ServerHttpSecurity
+import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.web.client.RestTemplate
 import pl.com.seremak.simplebills.commons.dto.http.TransactionDto
-import pl.com.seremak.simplebills.commons.model.Transaction
-import pl.com.seremak.simplebills.transactionmanagement.TransactionTestConfig
-import pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.utils.JsonImporter
+import pl.com.seremak.simplebills.transactionmanagement.TransactionSpecConfig
+import pl.com.seremak.simplebills.transactionmanagement.testUtils.JsonImporter
 import pl.com.seremak.simplebills.transactionmanagement.messageQueue.MessageListener
 import pl.com.seremak.simplebills.transactionmanagement.messageQueue.MessagePublisher
 import pl.com.seremak.simplebills.transactionmanagement.repository.TransactionCrudRepository
@@ -24,20 +22,17 @@ import spock.util.concurrent.PollingConditions
 
 import java.util.stream.Collectors
 
-import static pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.utils.EndpointSpecData.TEST_USER
+import static pl.com.seremak.simplebills.transactionmanagement.testUtils.EndpointSpecData.TEST_USER
 
 @Slf4j
 @SpringBootTest(
-        classes = TransactionTestConfig.class,
+        classes = TransactionSpecConfig.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class EndpointIntSpec extends Specification {
 
     @LocalServerPort
-    protected int port
-
-    @Autowired
-    ServerHttpSecurity http
+    int port
 
     @Autowired
     TransactionService transactionService
@@ -75,8 +70,8 @@ class EndpointIntSpec extends Specification {
     }
 
     def cleanup() {
-//        transactionCrudRepository.deleteAll().block()
-//        cleanSequentialIdRepository()
+        transactionCrudRepository.deleteAll().block()
+        cleanSequentialIdRepository()
     }
 
     def cleanSequentialIdRepository() {

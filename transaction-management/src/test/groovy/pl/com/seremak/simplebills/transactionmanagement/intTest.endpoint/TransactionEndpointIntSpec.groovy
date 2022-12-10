@@ -1,12 +1,12 @@
 package pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint
 
-
+import org.apache.commons.lang3.StringUtils
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import pl.com.seremak.simplebills.commons.model.Transaction
 
-import static pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.utils.EndpointSpecData.*
+import static pl.com.seremak.simplebills.transactionmanagement.testUtils.EndpointSpecData.*
 
 class TransactionEndpointIntSpec extends EndpointIntSpec {
 
@@ -36,33 +36,33 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
         4                 | FOOD     | -200
     }
 
-    //    def 'should create bill for user and then fetch created bill'() {
-//
-//        given: 'prepare request for bill creation'
-//        def creationRequest =
-//                RequestEntity.post(SERVICE_URL_BILL_CRUD_PATTERN.formatted(port, StringUtils.EMPTY))
-//                        .accept(MediaType.APPLICATION_JSON)
-//                        .header(AUTHORIZATION_HEADER_NAME, BASIC_TOKEN_TEST_USER_2)
-//                        .body(prepareBillForEndpointTest(100, FOOD, Instant.now()))
-//
-//
-//        when: 'make request to crate bill'
-//        def transactionNumber = client.exchange(creationRequest, String.class)
-//
-//
-//        then: 'should return correct creation response and retrieve created bill'
-//        conditions.eventually {
-//
-//            def fetchResponse = client.exchange(
-//                    RequestEntity.get(SERVICE_URL_BILL_CRUD_PATTERN.formatted(port, "/%s".formatted(transactionNumber.getBody())))
-//                            .accept(MediaType.APPLICATION_JSON)
-//                            .header(AUTHORIZATION_HEADER_NAME, BASIC_TOKEN)
-//                            .build(),
-//                    Transaction.class)
-//
-//            assert fetchResponse != null
-//            assert fetchResponse.getStatusCode() == HttpStatus.OK
-//            assert fetchResponse.getBody().getCategory() == FOOD
-//        }
-//    }
+    def 'should create bill for user and then fetch created bill'() {
+
+        given: 'prepare request for bill creation'
+        def creationRequest =
+                RequestEntity.post(TRANSACTION_URL_PATTERN.formatted(port, StringUtils.EMPTY))
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, BASIC_TOKEN)
+                        .body(prepareBillForEndpointTest(100, FOOD, Instant.now()))
+
+
+        when: 'make request to crate bill'
+        def transactionNumber = client.exchange(creationRequest, String.class)
+
+
+        then: 'should return correct creation response and retrieve created bill'
+        conditions.eventually {
+
+            def fetchResponse = client.exchange(
+                    RequestEntity.get(SERVICE_URL_BILL_CRUD_PATTERN.formatted(port, "/%s".formatted(transactionNumber.getBody())))
+                            .accept(MediaType.APPLICATION_JSON)
+                            .header(AUTHORIZATION_HEADER_NAME, BASIC_TOKEN)
+                            .build(),
+                    Transaction.class)
+
+            assert fetchResponse != null
+            assert fetchResponse.getStatusCode() == HttpStatus.OK
+            assert fetchResponse.getBody().getCategory() == FOOD
+        }
+    }
 }

@@ -14,7 +14,7 @@ import org.springframework.security.web.server.SecurityWebFilterChain
 @ComponentScan(
         basePackages = 'pl.com.seremak.simplebills.transactionmanagement'
 )
-class TransactionTestConfig {
+class TransactionSpecConfig {
 
         @Bean
         SecurityWebFilterChain securityWebFilterChain(

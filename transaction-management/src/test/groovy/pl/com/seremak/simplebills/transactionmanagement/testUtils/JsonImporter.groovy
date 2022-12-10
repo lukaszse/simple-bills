@@ -1,4 +1,4 @@
-package pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.utils
+package pl.com.seremak.simplebills.transactionmanagement.testUtils
 
 import com.fasterxml.jackson.core.type.TypeReference
 
