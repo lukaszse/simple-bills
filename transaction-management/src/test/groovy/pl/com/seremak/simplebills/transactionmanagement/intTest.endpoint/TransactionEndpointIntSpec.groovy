@@ -10,12 +10,13 @@ import static pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.
 
 class TransactionEndpointIntSpec extends EndpointIntSpec {
 
-    def 'should fetch bill'() {
+    def 'should fetch transaction'() {
 
-        given: 'prepare request to get bill'
+        given: 'prepare request to get transaction'
         def request =
                 RequestEntity.get(TRANSACTION_URL_PATTERN.formatted(port, "/%d".formatted(transactionNumber)))
                         .accept(MediaType.APPLICATION_JSON)
+                        .header(AUTHORIZATION_HEADER, BASIC_TOKEN)
                         .build()
 
         when: 'should fetch bill'
@@ -30,9 +31,9 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
         where:
         transactionNumber | category | amount
         1                 | SALARY   | 5000
-        2                 | FOOD     | 1000
-        3                 | CAR      | 300
-        4                 | FOOD     | 200
+        2                 | TRAVEL   | -1000
+        3                 | CAR      | -300
+        4                 | FOOD     | -200
     }
 
     //    def 'should create bill for user and then fetch created bill'() {

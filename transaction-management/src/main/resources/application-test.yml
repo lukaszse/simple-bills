@@ -10,5 +10,7 @@ spring:
   mongodb:
     embedded:
       version: 4.0.21
+  main:
+    allow-bean-definition-overriding: true
 
 allowed-origin: "http://localhost:8080"
