@@ -22,7 +22,7 @@ import spock.util.concurrent.PollingConditions
 
 import java.util.stream.Collectors
 
-import static pl.com.seremak.simplebills.transactionmanagement.testUtils.EndpointSpecData.TEST_USER
+import static pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.utils.EndpointSpecData.TEST_USER
 
 @Slf4j
 @SpringBootTest(
