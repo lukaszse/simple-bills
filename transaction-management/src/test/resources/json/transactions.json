@@ -1,0 +1,58 @@
+[
+  {
+    "user": "testUser",
+    "transactionNumber": 1,
+    "type": "INCOME",
+    "date": "2022-12-01",
+    "description": "Salary",
+    "category": "salary",
+    "amount": 5000,
+    "metadata": {
+      "version": 1,
+      "createdAt": "2022-12-02",
+      "modifiedAt": "2022-12-02"
+    }
+  },
+  {
+    "user": "testUser",
+    "transactionNumber": 2,
+    "type": "EXPENSE",
+    "date": "2022-12-01",
+    "description": "Weekend in Zakopane",
+    "category": "travel",
+    "amount": 1000,
+    "metadata": {
+      "version": 1,
+      "createdAt": "2022-12-02",
+      "modifiedAt": "2022-12-02"
+    }
+  },
+  {
+    "user": "testUser",
+    "transactionNumber": 3,
+    "type": "EXPENSE",
+    "date": "2022-12-01",
+    "description": "New accumulator",
+    "category": "car",
+    "amount": 300,
+    "metadata": {
+      "version": 1,
+      "createdAt": "2022-12-02",
+      "modifiedAt": "2022-12-02"
+    }
+  },
+  {
+    "user": "testUser",
+    "transactionNumber": 4,
+    "type": "EXPENSE",
+    "date": "2022-12-01",
+    "description": "Fruits",
+    "category": "food",
+    "amount": 200,
+    "metadata": {
+      "version": 1,
+      "createdAt": "2022-12-02",
+      "modifiedAt": "2022-12-02"
+    }
+  }
+]

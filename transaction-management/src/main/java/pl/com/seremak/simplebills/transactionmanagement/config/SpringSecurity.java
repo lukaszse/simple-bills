@@ -33,8 +33,7 @@ public class SpringSecurity {
     private final Environment environment;
 
     @Bean
-    public SecurityWebFilterChain securityWebFilterChain(
-            final ServerHttpSecurity http) {
+    public SecurityWebFilterChain securityWebFilterChain(final ServerHttpSecurity http) {
         final ServerHttpSecurity serverHttpSecurity = http
                 .authorizeExchange()
                 .anyExchange().authenticated()

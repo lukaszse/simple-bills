@@ -3,15 +3,18 @@ package pl.com.seremak.simplebills.transactionmanagement.endpoint;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import pl.com.seremak.simplebills.commons.dto.http.TokenUser;
-import pl.com.seremak.simplebills.commons.utils.JwtExtractionHelper;
+import pl.com.seremak.simplebills.commons.utils.TokenExtractionHelper;
 import pl.com.seremak.simplebills.transactionmanagement.service.UserActivityService;
 import reactor.core.publisher.Mono;
+
+import java.security.Principal;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -29,9 +32,8 @@ public class UseActivityEndpoint {
     private final UserActivityService userActivityService;
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<TokenUser>> findInfoAboutLoggedUser(final JwtAuthenticationToken principal) {
-        log.info(USER_INFO_REQUEST_RECEIVED_MESSAGE, principal.getToken());
-        final TokenUser tokenUser = JwtExtractionHelper.extractUser(principal);
+    Mono<ResponseEntity<TokenUser>> findInfoAboutLoggedUser(@AuthenticationPrincipal final Principal principal) {
+        final TokenUser tokenUser = TokenExtractionHelper.extractTokenUser(principal);
         log.info(USER_INFO_FETCHED_MESSAGE, tokenUser.getPreferredUsername());
         return userActivityService.addUserLogging(tokenUser.getPreferredUsername())
                 .doOnSuccess(userActivity -> log.info(USER_ACTIVITY_ADDED_MESSAGE, userActivity.getActivity(), userActivity.getUsername()))

@@ -1,0 +1,14 @@
+spring:
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mongo.MongoReactiveAutoConfiguration
+      - org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration
+  data:
+    mongodb:
+      database: test-simple-bills
+      uri: mongodb://localhost:27017
+
+  main:
+    allow-bean-definition-overriding: true
+
+allowed-origin: "http://localhost:8080"

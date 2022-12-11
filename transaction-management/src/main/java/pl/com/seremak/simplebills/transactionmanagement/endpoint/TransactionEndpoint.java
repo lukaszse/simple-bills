@@ -5,17 +5,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 import pl.com.seremak.simplebills.commons.dto.http.TransactionDto;
 import pl.com.seremak.simplebills.commons.dto.http.TransactionQueryParams;
 import pl.com.seremak.simplebills.commons.model.Transaction;
-import pl.com.seremak.simplebills.commons.utils.JwtExtractionHelper;
+import pl.com.seremak.simplebills.commons.utils.TokenExtractionHelper;
 import pl.com.seremak.simplebills.transactionmanagement.service.TransactionService;
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,9 +36,9 @@ public class TransactionEndpoint {
 
 
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<Transaction>> createTransaction(@AuthenticationPrincipal final JwtAuthenticationToken principal,
+    public Mono<ResponseEntity<Transaction>> createTransaction(@AuthenticationPrincipal final Principal principal,
                                                                @Valid @RequestBody final TransactionDto transactionDto) {
-        final String username = JwtExtractionHelper.extractUsername(principal);
+        final String username = TokenExtractionHelper.extractUsername(principal);
         log.info("Received transaction creation request from user={}", username);
         return transactionService.createTransaction(username, transactionDto)
                 .doOnSuccess(createTransaction -> log.info("Transaction for user={} with number={} successfully created",
@@ -47,9 +47,9 @@ public class TransactionEndpoint {
     }
 
     @GetMapping(value = "/{transactionNumber}", produces = APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<Transaction>> findTransactionByTransactionNumber(final JwtAuthenticationToken principal,
+    public Mono<ResponseEntity<Transaction>> findTransactionByTransactionNumber(@AuthenticationPrincipal final Principal principal,
                                                                                 @PathVariable final Integer transactionNumber) {
-        final String username = JwtExtractionHelper.extractUsername(principal);
+        final String username = TokenExtractionHelper.extractUsername(principal);
         log.info("Find transaction with number={} for user={}", transactionNumber, username);
         return transactionService.findTransactionByTransactionNumber(username, transactionNumber)
                 .doOnSuccess(transaction -> log.info("Transaction with number={} for user={} successfully found.", transaction.getTransactionNumber(), transaction.getUser()))
@@ -57,9 +57,9 @@ public class TransactionEndpoint {
     }
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<Transaction>>> findAllTransactionsByCategory(final JwtAuthenticationToken principal,
+    public Mono<ResponseEntity<List<Transaction>>> findAllTransactionsByCategory(@AuthenticationPrincipal final Principal principal,
                                                                                  final TransactionQueryParams params) {
-        final String username = JwtExtractionHelper.extractUsername(principal);
+        final String username = TokenExtractionHelper.extractUsername(principal);
         log.info("Find transactions with category={} for user={}", Optional.ofNullable(params.getCategory()).orElse("All categories"), username);
         return transactionService.findTransactionsByCategory(username, params)
                 .doOnSuccess(__ -> log.info("List of transactions successfully fetched."))
@@ -67,8 +67,9 @@ public class TransactionEndpoint {
     }
 
     @DeleteMapping(value = "/{transactionNumber}")
-    public Mono<ResponseEntity<Void>> deleteTransaction(final JwtAuthenticationToken principal, @PathVariable final Integer transactionNumber) {
-        final String username = JwtExtractionHelper.extractUsername(principal);
+    public Mono<ResponseEntity<Void>> deleteTransaction(@AuthenticationPrincipal final Principal principal,
+                                                        @PathVariable final Integer transactionNumber) {
+        final String username = TokenExtractionHelper.extractUsername(principal);
         log.info("Transaction delete request for user={} transactionNumber={}", username, transactionNumber);
         return transactionService.deleteTransactionByTransactionNumber(username, transactionNumber)
                 .doOnSuccess(__ -> log.info("Transaction for user={} with transactionNumber={} successfully deleted.", username, transactionNumber))
@@ -76,10 +77,10 @@ public class TransactionEndpoint {
     }
 
     @PatchMapping(value = "/{transactionNumber}", produces = APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<Transaction>> updateTransaction(final JwtAuthenticationToken principal,
+    public Mono<ResponseEntity<Transaction>> updateTransaction(@AuthenticationPrincipal final Principal principal,
                                                                @Valid @RequestBody final TransactionDto transactionDto,
                                                                @NotNull @PathVariable final Integer transactionNumber) {
-        final String username = JwtExtractionHelper.extractUsername(principal);
+        final String username = TokenExtractionHelper.extractUsername(principal);
         log.info("Transaction update request for user={} and transactionNumber={}", username, transactionNumber);
         return transactionService.updateTransaction(username, transactionNumber, transactionDto)
                 .doOnSuccess(updatedTransaction -> log.info("Transaction with user={} and transactionNumber={} successfully update.",
