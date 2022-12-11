@@ -1,6 +1,6 @@
 package pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig
 
-class EndpointSpecData {
+class TestConstants {
 
     static def TEST_USER = "testUser"
     static def SALARY = "salary"

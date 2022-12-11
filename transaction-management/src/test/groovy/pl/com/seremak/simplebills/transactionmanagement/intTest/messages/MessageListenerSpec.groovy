@@ -1,8 +1,6 @@
 package pl.com.seremak.simplebills.transactionmanagement.intTest.messages
 
 import groovy.util.logging.Slf4j
-import org.spockframework.spring.SpringBean
-import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
@@ -12,12 +10,14 @@ import org.testcontainers.containers.MongoDBContainer
 import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
+import pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.IntSpecConfig
 import pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.TestRabbitPublisher
 import spock.lang.Specification
+import spock.util.concurrent.PollingConditions
 
 @Slf4j
 @Testcontainers
-@SpringBootTest
+@SpringBootTest(classes = IntSpecConfig.class)
 @ActiveProfiles("test")
 class MessageListenerSpec extends Specification {
 
@@ -39,10 +39,9 @@ class MessageListenerSpec extends Specification {
     }
 
     @Autowired
-    RabbitTemplate rabbitTemplate
+    TestRabbitPublisher testRabbitPublisher
 
-    @SpringBean
-    TestRabbitPublisher testRabbitPublisher =  new TestRabbitPublisher(rabbitTemplate)
+    def conditions = new PollingConditions(timeout: 5, initialDelay: 1)
 
 
     def cleanupSpec() {

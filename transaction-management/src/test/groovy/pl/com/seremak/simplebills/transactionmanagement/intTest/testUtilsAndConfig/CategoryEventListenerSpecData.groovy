@@ -6,13 +6,16 @@ import pl.com.seremak.simplebills.commons.model.Category
 
 class CategoryEventListenerSpecData {
 
+
+    static def WAGES = "wages"
+
     static def prepareCategoryEventDto() {
         new CategoryEventDto(
                 username: "testUser",
                 categoryName: "salary",
                 actionType: ActionType.DELETION,
                 transactionType: Category.TransactionType.INCOME,
-                replacementCategoryName: "wages"
+                replacementCategoryName: WAGES
         )
     }
 }
