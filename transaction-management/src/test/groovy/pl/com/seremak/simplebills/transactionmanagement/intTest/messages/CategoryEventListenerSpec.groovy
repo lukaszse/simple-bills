@@ -12,7 +12,8 @@ import java.util.stream.Collectors
 
 import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.CategoryEventListenerSpecData.WAGES
 import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.CategoryEventListenerSpecData.prepareCategoryEventDto
-import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.TestConstants.TEST_USER
+import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.IntTestCommonUtils.TEST_USER
+import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.IntTestCommonUtils.populateDatabase
 
 @Slf4j
 class CategoryEventListenerSpec extends MessageListenerSpec {
@@ -23,7 +24,7 @@ class CategoryEventListenerSpec extends MessageListenerSpec {
     def "should receive and handle Category message"() {
 
         given: "populate database"
-        populateDatabase()
+        populateDatabase(transactionService)
 
         and: "prepare test data"
         def categoryEvent = prepareCategoryEventDto()
@@ -38,19 +39,12 @@ class CategoryEventListenerSpec extends MessageListenerSpec {
                     .map { it.t1 }
                     .block()
             assert transactions.size() == 1
+
+            def transaction = transactions.get(0)
+            assert transaction.getAmount() == 5000
+            assert transaction.getCategory() == WAGES
+            assert transaction.getDescription() == "Salary"
         }
 
-    }
-
-    def populateDatabase() {
-        log.info("Populating database before test")
-        def transactions =
-                JsonImporter.getDataFromFile("json/transactions.json", new TypeReference<List<TransactionDto>>() {})
-        log.info("Number of transaction to populate {}", transactions.size())
-        def addedTransactions = transactions.stream()
-                .map(transactionToSave -> transactionService.createTransaction(TEST_USER, transactionToSave))
-                .map(transactionMono -> transactionMono.block())
-                .collect(Collectors.toList())
-        log.info("Transaction added to database: {}", addedTransactions.toString())
     }
 }

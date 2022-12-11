@@ -17,7 +17,7 @@ import java.util.stream.Collectors
 
 import static pl.com.seremak.simplebills.commons.constants.MessageQueue.TRANSACTION_EVENT_ASSETS_MANAGEMENT_QUEUE
 import static pl.com.seremak.simplebills.commons.constants.MessageQueue.TRANSACTION_EVENT_PLANING_QUEUE
-import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.TestConstants.*
+import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.IntTestCommonUtils.*
 
 @Slf4j
 @Stepwise
@@ -27,7 +27,7 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
     def 'should fetch transaction'() {
 
         given: 'populate database with test data'
-        populateDatabase()
+        populateDatabase(transactionService)
 
         and: 'prepare request to get transaction'
         def request =
@@ -181,17 +181,5 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
         null     | EXPENSE | "Fruits & vegetables" | 75.99  | "2022-12-11"
         FOOD     | EXPENSE | "Fruits & vegetables" | -75.99 | "2022-12-11"
         SALARY   | INCOME  | ""                    | 5000   | "2022-10-10"
-    }
-
-    def populateDatabase() {
-        log.info("Populating database before test")
-        def transactions =
-                JsonImporter.getDataFromFile("json/transactions.json", new TypeReference<List<TransactionDto>>() {})
-        log.info("Number of transaction to populate {}", transactions.size())
-        def addedTransactions = transactions.stream()
-                .map(transactionToSave -> transactionService.createTransaction(TEST_USER, transactionToSave))
-                .map(transactionMono -> transactionMono.block())
-                .collect(Collectors.toList())
-        log.info("Transaction added to database: {}", addedTransactions.toString())
     }
 }
