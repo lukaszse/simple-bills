@@ -1,4 +1,4 @@
-package pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.testUtilsAndConfig
+package pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig
 
 import groovy.util.logging.Slf4j
 import org.springframework.amqp.rabbit.annotation.RabbitListener

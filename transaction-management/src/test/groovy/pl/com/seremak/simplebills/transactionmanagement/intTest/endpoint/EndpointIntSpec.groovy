@@ -13,8 +13,8 @@ import org.testcontainers.containers.MongoDBContainer
 import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.testUtilsAndConfig.EndoointSpecConfig
-import pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.testUtilsAndConfig.TestRabbitListener
+import pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.IntSpecConfig
+import pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.TestRabbitListener
 import pl.com.seremak.simplebills.transactionmanagement.repository.TransactionCrudRepository
 import pl.com.seremak.simplebills.transactionmanagement.service.SequentialIdService
 import pl.com.seremak.simplebills.transactionmanagement.service.TransactionService
@@ -25,7 +25,7 @@ import spock.util.concurrent.PollingConditions
 @Slf4j
 @Testcontainers
 @SpringBootTest(
-        classes = EndoointSpecConfig.class,
+        classes = IntSpecConfig.class,
         webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 class EndpointIntSpec extends Specification {

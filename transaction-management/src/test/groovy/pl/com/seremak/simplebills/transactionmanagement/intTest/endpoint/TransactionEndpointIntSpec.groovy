@@ -17,7 +17,7 @@ import java.util.stream.Collectors
 
 import static pl.com.seremak.simplebills.commons.constants.MessageQueue.TRANSACTION_EVENT_ASSETS_MANAGEMENT_QUEUE
 import static pl.com.seremak.simplebills.commons.constants.MessageQueue.TRANSACTION_EVENT_PLANING_QUEUE
-import static pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.testUtilsAndConfig.EndpointSpecData.*
+import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.EndpointSpecData.*
 
 @Slf4j
 @Stepwise

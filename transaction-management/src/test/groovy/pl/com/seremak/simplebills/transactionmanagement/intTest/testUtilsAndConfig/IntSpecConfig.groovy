@@ -1,5 +1,7 @@
-package pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.testUtilsAndConfig
+package pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig
 
+import org.springframework.amqp.rabbit.core.RabbitTemplate
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
@@ -9,12 +11,13 @@ import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.server.SecurityWebFilterChain
+import pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.TestRabbitListener
 
 @TestConfiguration
 @ComponentScan(
         basePackages = 'pl.com.seremak.simplebills.transactionmanagement'
 )
-class EndoointSpecConfig {
+class IntSpecConfig {
 
     @Bean
     SecurityWebFilterChain securityWebFilterChain(
@@ -44,4 +47,10 @@ class EndoointSpecConfig {
     TestRabbitListener testRabbitListener() {
         return new TestRabbitListener()
     }
+
+    @Bean
+    TestRabbitPublisher testRabbitPublisher(@Autowired RabbitTemplate rabbitTemplate) {
+        return new TestRabbitPublisher(rabbitTemplate)
+    }
+
 }

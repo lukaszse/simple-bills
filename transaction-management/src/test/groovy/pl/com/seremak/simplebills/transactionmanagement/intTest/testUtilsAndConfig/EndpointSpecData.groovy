@@ -1,4 +1,4 @@
-package pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.testUtilsAndConfig
+package pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig
 
 class EndpointSpecData {
 
