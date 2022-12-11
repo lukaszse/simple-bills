@@ -8,6 +8,7 @@ class EndpointSpecData {
     static def FOOD = "food"
     static def TRAVEL = "travel"
     static def CAR = "car"
+    static def ASSET = "asset"
     static def EXPENSE = "EXPENSE"
     static def INCOME = "INCOME"
     static def TRANSACTION_URL_PATTERN = "http://localhost:%d/transactions%s"

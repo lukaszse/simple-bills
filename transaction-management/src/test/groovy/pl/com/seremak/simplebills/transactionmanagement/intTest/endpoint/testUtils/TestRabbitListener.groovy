@@ -11,26 +11,32 @@ import static pl.com.seremak.simplebills.commons.constants.MessageQueue.TRANSACT
 @Slf4j
 class TestRabbitListener {
 
-    def transactionEventPlanningReceivedMessages = new ArrayList<TransactionEventDto>()
-    def transactionEventAssetManagementMessages = new ArrayList<TransactionEventDto>()
-
+    Map<String, List<TransactionEventDto>> transactionEventReceivedMessages = createEmptyMessageBox()
 
     @RabbitListener(queues = TRANSACTION_EVENT_PLANING_QUEUE)
     void receiveTransactionEventMessageToPlanning(final Message<TransactionEventDto> transactionMessage) {
-        final TransactionEventDto transaction = transactionMessage.getPayload()
-        transactionEventPlanningReceivedMessages.add(transaction)
-        log.info("Message received: {}", transaction)
+        final TransactionEventDto transactionEvent = transactionMessage.getPayload()
+        def  transactionList = transactionEventReceivedMessages.get(TRANSACTION_EVENT_PLANING_QUEUE)
+        transactionList.add(transactionEvent)
+        log.info("Message received: {}", transactionEvent)
     }
 
     @RabbitListener(queues = TRANSACTION_EVENT_ASSETS_MANAGEMENT_QUEUE)
     void receiveTransactionEventMessageToAssetManagement(final Message<TransactionEventDto> transactionMessage) {
-        final TransactionEventDto transaction = transactionMessage.getPayload()
-        transactionEventAssetManagementMessages.add(transaction)
-        log.info("Message received: {}", transaction)
+        final TransactionEventDto transactionEvent = transactionMessage.getPayload()
+        def  transactionList = transactionEventReceivedMessages.get(TRANSACTION_EVENT_ASSETS_MANAGEMENT_QUEUE)
+        transactionList.add(transactionEvent)
+        log.info("Message received: {}", transactionEvent)
     }
 
     void clearReceivedMessages() {
-        transactionEventPlanningReceivedMessages.removeAll()
-        transactionEventAssetManagementMessages.removeAll()
+        this.transactionEventReceivedMessages = createEmptyMessageBox()
+    }
+
+    static Map<String, List<TransactionEventDto>> createEmptyMessageBox() {
+        Map.of(
+                TRANSACTION_EVENT_PLANING_QUEUE, new ArrayList<TransactionEventDto>(),
+                TRANSACTION_EVENT_ASSETS_MANAGEMENT_QUEUE, new ArrayList<TransactionEventDto>()
+        )
     }
 }
