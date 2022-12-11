@@ -7,10 +7,9 @@ import org.springframework.http.RequestEntity
 import org.springframework.web.client.HttpClientErrorException
 import pl.com.seremak.simplebills.commons.dto.http.TransactionDto
 import pl.com.seremak.simplebills.commons.model.Transaction
+import pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.testUtils.EndpointSpecData
 
 import java.time.LocalDate
-
-import static pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.utils.EndpointSpecData.*
 
 class TransactionEndpointIntSpec extends EndpointIntSpec {
 
@@ -19,9 +18,9 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
 
         given: 'prepare request to get transaction'
         def request =
-                RequestEntity.get(TRANSACTION_URL_PATTERN.formatted(port, "/%d".formatted(transactionNumber)))
+                RequestEntity.get(EndpointSpecData.TRANSACTION_URL_PATTERN.formatted(port, "/%d".formatted(transactionNumber)))
                         .accept(MediaType.APPLICATION_JSON)
-                        .header(AUTHORIZATION_HEADER, BASIC_TOKEN)
+                        .header(EndpointSpecData.AUTHORIZATION_HEADER, EndpointSpecData.BASIC_TOKEN)
                         .build()
 
         when: 'should fetch bill'
@@ -35,19 +34,19 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
 
         where:
         transactionNumber | category | amount
-        1                 | SALARY   | 5000
-        2                 | TRAVEL   | -1000
-        3                 | CAR      | -300
-        4                 | FOOD     | -200
+        1                 | EndpointSpecData.SALARY | 5000
+        2                 | EndpointSpecData.TRAVEL | -1000
+        3                 | EndpointSpecData.CAR    | -300
+        4                 | EndpointSpecData.FOOD   | -200
     }
 
     def 'should return HTTP status 404 when requested when given transaction not found'() {
 
         given: 'prepare request to get transaction'
         def request =
-                RequestEntity.get(TRANSACTION_URL_PATTERN.formatted(port, "/%d".formatted(99)))
+                RequestEntity.get(EndpointSpecData.TRANSACTION_URL_PATTERN.formatted(port, "/%d".formatted(99)))
                         .accept(MediaType.APPLICATION_JSON)
-                        .header(AUTHORIZATION_HEADER, BASIC_TOKEN)
+                        .header(EndpointSpecData.AUTHORIZATION_HEADER, EndpointSpecData.BASIC_TOKEN)
                         .build()
 
         when: 'should fetch bill'
@@ -73,9 +72,9 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
 
         and: 'prepare request for transaction creation'
         def creationRequest =
-                RequestEntity.post(TRANSACTION_URL_PATTERN.formatted(port, StringUtils.EMPTY))
+                RequestEntity.post(EndpointSpecData.TRANSACTION_URL_PATTERN.formatted(port, StringUtils.EMPTY))
                         .accept(MediaType.APPLICATION_JSON)
-                        .header(AUTHORIZATION_HEADER, BASIC_TOKEN)
+                        .header(EndpointSpecData.AUTHORIZATION_HEADER, EndpointSpecData.BASIC_TOKEN)
                         .body(transactionToCreate)
 
 
@@ -89,9 +88,9 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
 
             def createdTransactionNumber = transactionCreationResponse.getBody().getTransactionNumber()
             def fetchResponse = client.exchange(
-                    RequestEntity.get(TRANSACTION_URL_PATTERN.formatted(port, "/%s".formatted(createdTransactionNumber)))
+                    RequestEntity.get(EndpointSpecData.TRANSACTION_URL_PATTERN.formatted(port, "/%s".formatted(createdTransactionNumber)))
                             .accept(MediaType.APPLICATION_JSON)
-                            .header(AUTHORIZATION_HEADER, BASIC_TOKEN)
+                            .header(EndpointSpecData.AUTHORIZATION_HEADER, EndpointSpecData.BASIC_TOKEN)
                             .build(),
                     Transaction.class)
 
@@ -106,11 +105,11 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
 
         where:
         category | type    | description           | amount | date         | amountResponse
-        FOOD     | EXPENSE | "Grocery shopping"    | 232.34 | "2022-10-10" | 0 - amount
-        TRAVEL   | EXPENSE | "Holiday in Spain"    | 5323   | "2022-11-10" | 0 - amount
-        CAR      | EXPENSE | "Tire service"        | 130    | "2022-12-10" | 0 - amount
-        FOOD     | EXPENSE | "Fruits & vegetables" | 75.99  | "2022-12-11" | 0 - amount
-        SALARY   | INCOME  | "December salary"     | 5000   | "2022-10-10" | amount
+        EndpointSpecData.FOOD   | EndpointSpecData.EXPENSE | "Grocery shopping"    | 232.34 | "2022-10-10" | 0 - amount
+        EndpointSpecData.TRAVEL | EndpointSpecData.EXPENSE | "Holiday in Spain"    | 5323   | "2022-11-10" | 0 - amount
+        EndpointSpecData.CAR    | EndpointSpecData.EXPENSE | "Tire service"        | 130    | "2022-12-10" | 0 - amount
+        EndpointSpecData.FOOD   | EndpointSpecData.EXPENSE | "Fruits & vegetables" | 75.99  | "2022-12-11" | 0 - amount
+        EndpointSpecData.SALARY | EndpointSpecData.INCOME  | "December salary"     | 5000   | "2022-10-10" | amount
     }
 
     def 'should return HTTP status 400 when transaction creation body is not valid'() {
@@ -127,9 +126,9 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
 
         and: 'prepare request for transaction creation'
         def creationRequest =
-                RequestEntity.post(TRANSACTION_URL_PATTERN.formatted(port, StringUtils.EMPTY))
+                RequestEntity.post(EndpointSpecData.TRANSACTION_URL_PATTERN.formatted(port, StringUtils.EMPTY))
                         .accept(MediaType.APPLICATION_JSON)
-                        .header(AUTHORIZATION_HEADER, BASIC_TOKEN)
+                        .header(EndpointSpecData.AUTHORIZATION_HEADER, EndpointSpecData.BASIC_TOKEN)
                         .body(transactionToCreate)
 
 
@@ -144,11 +143,11 @@ class TransactionEndpointIntSpec extends EndpointIntSpec {
 
         where:
         category | type    | description           | amount | date
-        FOOD     | EXPENSE | "Grocery shopping"    | null   | "2022-10-10"
-        TRAVEL   | EXPENSE | null                  | 5323   | "2022-11-10"
-        CAR      | null    | "Tire service"        | 130    | "2022-12-10"
-        null     | EXPENSE | "Fruits & vegetables" | 75.99  | "2022-12-11"
-        FOOD     | EXPENSE | "Fruits & vegetables" | -75.99 | "2022-12-11"
-        SALARY   | INCOME  | ""                    | 5000   | "2022-10-10"
+        EndpointSpecData.FOOD   | EndpointSpecData.EXPENSE | "Grocery shopping"    | null   | "2022-10-10"
+        EndpointSpecData.TRAVEL | EndpointSpecData.EXPENSE | null                  | 5323   | "2022-11-10"
+        EndpointSpecData.CAR    | null                     | "Tire service"        | 130    | "2022-12-10"
+        null                    | EndpointSpecData.EXPENSE | "Fruits & vegetables" | 75.99  | "2022-12-11"
+        EndpointSpecData.FOOD   | EndpointSpecData.EXPENSE | "Fruits & vegetables" | -75.99 | "2022-12-11"
+        EndpointSpecData.SALARY | EndpointSpecData.INCOME  | ""                    | 5000   | "2022-10-10"
     }
 }

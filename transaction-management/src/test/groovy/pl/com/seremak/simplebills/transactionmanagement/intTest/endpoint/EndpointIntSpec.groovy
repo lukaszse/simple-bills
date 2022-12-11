@@ -16,6 +16,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 import org.testcontainers.utility.DockerImageName
 import pl.com.seremak.simplebills.commons.dto.http.TransactionDto
 import pl.com.seremak.simplebills.transactionmanagement.TransactionSpecConfig
+import pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.testUtils.EndpointSpecData
 import pl.com.seremak.simplebills.transactionmanagement.messageQueue.MessageListener
 import pl.com.seremak.simplebills.transactionmanagement.messageQueue.MessagePublisher
 import pl.com.seremak.simplebills.transactionmanagement.repository.TransactionCrudRepository
@@ -27,8 +28,6 @@ import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
 import java.util.stream.Collectors
-
-import static pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.utils.EndpointSpecData.TEST_USER
 
 @Slf4j
 @Testcontainers
@@ -77,7 +76,7 @@ class EndpointIntSpec extends Specification {
                 JsonImporter.getDataFromFile("json/transactions.json", new TypeReference<List<TransactionDto>>() {})
         log.info("Number of transaction to populate {}", transactions.size())
         def addedTransactions = transactions.stream()
-                .map(transactionToSave -> transactionService.createTransaction(TEST_USER, transactionToSave))
+                .map(transactionToSave -> transactionService.createTransaction(EndpointSpecData.TEST_USER, transactionToSave))
                 .map(transactionMono -> transactionMono.block())
                 .collect(Collectors.toList())
         log.info("Transaction added to database: {}", addedTransactions.toString())
