@@ -7,9 +7,7 @@ spring:
     mongodb:
       database: test-simple-bills
       uri: mongodb://localhost:27017
-  mongodb:
-    embedded:
-      version: 4.0.21
+
   main:
     allow-bean-definition-overriding: true
 
