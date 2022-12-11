@@ -57,6 +57,7 @@ dependencies {
     testImplementation 'org.testcontainers:junit-jupiter'
     testImplementation 'org.testcontainers:spock'
     testImplementation 'org.testcontainers:mongodb'
+    testImplementation 'org.testcontainers:rabbitmq:'
     testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
