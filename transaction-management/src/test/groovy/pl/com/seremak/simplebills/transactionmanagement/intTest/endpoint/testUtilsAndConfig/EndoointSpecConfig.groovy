@@ -1,4 +1,4 @@
-package pl.com.seremak.simplebills.transactionmanagement.intTest
+package pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.testUtilsAndConfig
 
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -9,13 +9,12 @@ import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.server.SecurityWebFilterChain
-import pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.testUtils.TestRabbitListener
 
 @TestConfiguration
 @ComponentScan(
         basePackages = 'pl.com.seremak.simplebills.transactionmanagement'
 )
-class IntSpecConfig {
+class EndoointSpecConfig {
 
     @Bean
     SecurityWebFilterChain securityWebFilterChain(

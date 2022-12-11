@@ -9,7 +9,6 @@ import org.springframework.http.RequestEntity
 import org.springframework.web.client.HttpClientErrorException
 import pl.com.seremak.simplebills.commons.dto.http.TransactionDto
 import pl.com.seremak.simplebills.commons.model.Transaction
-import pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.testUtils.EndpointSpecData
 import pl.com.seremak.simplebills.transactionmanagement.testUtils.JsonImporter
 import spock.lang.Stepwise
 
@@ -18,7 +17,7 @@ import java.util.stream.Collectors
 
 import static pl.com.seremak.simplebills.commons.constants.MessageQueue.TRANSACTION_EVENT_ASSETS_MANAGEMENT_QUEUE
 import static pl.com.seremak.simplebills.commons.constants.MessageQueue.TRANSACTION_EVENT_PLANING_QUEUE
-import static pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.testUtils.EndpointSpecData.*
+import static pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint.testUtilsAndConfig.EndpointSpecData.*
 
 @Slf4j
 @Stepwise
