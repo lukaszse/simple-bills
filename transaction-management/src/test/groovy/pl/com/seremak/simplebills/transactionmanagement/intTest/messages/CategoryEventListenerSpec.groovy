@@ -1,14 +1,10 @@
 package pl.com.seremak.simplebills.transactionmanagement.intTest.messages
 
-import com.fasterxml.jackson.core.type.TypeReference
+
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
-import pl.com.seremak.simplebills.commons.dto.http.TransactionDto
 import pl.com.seremak.simplebills.commons.dto.http.TransactionQueryParams
 import pl.com.seremak.simplebills.transactionmanagement.service.TransactionService
-import pl.com.seremak.simplebills.transactionmanagement.testUtils.JsonImporter
-
-import java.util.stream.Collectors
 
 import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.CategoryEventListenerSpecData.WAGES
 import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.CategoryEventListenerSpecData.prepareCategoryEventDto
