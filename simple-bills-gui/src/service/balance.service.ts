@@ -31,7 +31,6 @@ export class BalanceService {
     const url = HttpUtils.prepareUrl(BalanceService.host, BalanceService.endpoint);
     return this.httpClient.get<Balance>(url, {headers: HttpUtils.prepareHeaders()})
       .pipe(
-        tap(console.log),
         catchError(HttpUtils.handleError),
         retry({count: 3, delay: 1000})
       );

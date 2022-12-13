@@ -1,10 +1,10 @@
 export interface Deposit {
-  name: string;
-  depositType: DepositType;
-  value: number,
-  bankName: string;
-  durationInMonths: number;
-  annualInterestRate: number
+  name?: string;
+  depositType?: DepositType;
+  value?: number,
+  bankName?: string;
+  durationInMonths?: number;
+  annualInterestRate?: number
 }
 
 export enum DepositType {

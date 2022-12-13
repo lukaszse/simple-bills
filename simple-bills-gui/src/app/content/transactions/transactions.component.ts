@@ -1,15 +1,15 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { DatePipe, DecimalPipe, formatDate } from "@angular/common";
-import { NgbdSortableHeader, SortEvent, SortUtils } from "../../../utils/sortable.directive";
-import { TransactionSearchService } from "../../../service/transaction-search.service";
-import { TransactionCrudService } from "../../../service/transaction-crud.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { TransactionDto } from "../../../dto/transactionDto";
-import { Category } from "../../../dto/category";
-import { CategoryService } from "../../../service/category.service";
-import { Transaction, TransactionType } from "../../../dto/transaction";
-import { BalanceService } from "../../../service/balance.service";
-import { Observable } from "rxjs";
+import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
+import {DatePipe, DecimalPipe, formatDate} from "@angular/common";
+import {NgbdSortableHeader, SortEvent, SortUtils} from "../../../utils/sortable.directive";
+import {TransactionSearchService} from "../../../service/transaction-search.service";
+import {TransactionCrudService} from "../../../service/transaction-crud.service";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {TransactionDto} from "../../../dto/transactionDto";
+import {Category} from "../../../dto/category";
+import {CategoryService} from "../../../service/category.service";
+import {Transaction, TransactionType} from "../../../dto/transaction";
+import {BalanceService} from "../../../service/balance.service";
+import {Observable} from "rxjs";
 
 
 @Component({
@@ -59,19 +59,11 @@ export class TransactionsComponent implements OnInit {
 
   openTransactionCreationWindow(transactionType: string, content) {
     this.resetFormFields(TransactionType[transactionType])
-    this.modalService.open(content, {ariaLabelledBy: 'modal-transaction-creation'}).result.then(
-      () => {
-        console.log(this.transactionDto)
-        this.transactionCrudService.createTransaction(this.transactionDto)
-          .subscribe((creationResponse) => {
-            console.log(creationResponse);
-            this.ngOnInit();
-          });
-      },
-      () => {
-        console.log(`Transaction (${transactionType}) creation canceled`)
-      }
-    );
+    this.modalService.open(content, {ariaLabelledBy: 'modal-transaction-creation'}).result
+      .then(
+        () => this.transactionCrudService.createTransaction(this.transactionDto)
+          .subscribe(() => this.ngOnInit()),
+        () => console.log(`Transaction (${transactionType}) creation canceled`));
   }
 
   openTransactionEditWindow(transaction: Transaction, content) {
@@ -80,34 +72,18 @@ export class TransactionsComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: 'modal-transaction-update'}).result.then(
       () => {
         const transactionToUpdate: Transaction = this.prepareTransactionToUpdate(transaction);
-        console.log(this.transactionDto)
         this.transactionCrudService.updateTransaction(transactionToUpdate)
-          .subscribe((creationResponse) => {
-            console.log(creationResponse);
-            this.ngOnInit();
-          });
+          .subscribe(() => this.ngOnInit());
       },
-      () => {
-        console.log("Transaction update canceled")
-      }
-    );
+      () => console.log("Transaction update canceled"));
   }
 
   openDeletionConfirmationWindow(transactionNumber: number | string, content) {
     this.selectedTransaction = transactionNumber;
     this.modalService.open(content, {ariaLabelledBy: "modal-transaction-deletion"}).result.then(
-      () => {
-        console.log(transactionNumber);
-        return this.transactionCrudService.deleteBill(transactionNumber)
-          .subscribe((deletionResponse) => {
-            console.log(deletionResponse);
-            this.ngOnInit();
-          });
-      },
-      () => {
-        console.log("Transaction deletion canceled")
-      }
-    );
+      () => this.transactionCrudService.deleteBill(transactionNumber)
+        .subscribe(() => this.ngOnInit()),
+      () => console.log("Transaction deletion canceled"));
   }
 
   resetFormFields(transactionType?: TransactionType) {

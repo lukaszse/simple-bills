@@ -4,7 +4,7 @@ export class PageableTransactions {
 
   transactions: Transaction[]
   totalCount: number
-  pageTotalAmount: number
+  pageTotalAmount?: number
 
   constructor(bills: Transaction[], totalCount: number, totalAmount?: number) {
     this.transactions = bills;

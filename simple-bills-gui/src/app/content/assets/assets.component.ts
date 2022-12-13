@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Deposit, DepositType } from "../../../dto/deposit";
-import { DepositService } from "../../../service/deposit.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import {Component, OnInit} from '@angular/core';
+import {Deposit, DepositType} from "../../../dto/deposit";
+import {DepositService} from "../../../service/deposit.service";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
 @Component({
   selector: 'app-assets',
@@ -31,55 +31,31 @@ export class AssetsComponent implements OnInit {
 
   openDepositCreationWindow(content) {
     this.resetFormFields()
-    this.modalService.open(content, {ariaLabelledBy: 'modal-deposit-creation'}).result.then(
-      () => {
-        console.log(this.deposit)
-        this.depositService.createDeposit(this.deposit)
-          .subscribe((creationResponse) => {
-            console.log(creationResponse);
-            this.ngOnInit();
-          });
-      },
-      () => {
-        console.log(`Deposit creation canceled`)
-      }
-    );
+    this.modalService.open(content, {ariaLabelledBy: 'modal-deposit-creation'}).result
+      .then(
+        () => this.depositService.createDeposit(this.deposit)
+          .subscribe(() => this.ngOnInit()),
+        () => console.log(`Deposit creation canceled`));
   }
 
   openDepositEditWindow(deposit: Deposit, content) {
     this.selectedDeposit = deposit.name;
     this.setFormFields(deposit)
     console.log(this.deposit)
-    this.modalService.open(content, {ariaLabelledBy: 'modal-deposit-update'}).result.then(
-      () => {
-        console.log(this.deposit)
-        this.depositService.updateDeposit(this.deposit)
-          .subscribe((creationResponse) => {
-            console.log(creationResponse);
-            this.ngOnInit();
-          });
-      },
-      () => {
-        console.log("Deposit update canceled")
-      }
-    );
+    this.modalService.open(content, {ariaLabelledBy: 'modal-deposit-update'}).result
+      .then(
+        () => this.depositService.updateDeposit(this.deposit)
+          .subscribe(() => this.ngOnInit()),
+        () => console.log("Deposit update canceled"));
   }
 
   openDepositDeletionConfirmationWindow(depositName: string, content) {
     this.selectedDeposit = depositName;
-    this.modalService.open(content, {ariaLabelledBy: "modal-deposit-deletion"}).result.then(
-      () => {
-        console.log(depositName);
-        return this.depositService.deleteDeposit(depositName)
-          .subscribe((deletionResponse) => {
-            console.log(deletionResponse);
-            this.ngOnInit();
-          });
-      },
-      () => {
-        console.log("Deposit deletion canceled")
-      }
-    );
+    this.modalService.open(content, {ariaLabelledBy: "modal-deposit-deletion"}).result
+      .then(
+        () => this.depositService.deleteDeposit(depositName)
+          .subscribe(() => this.ngOnInit()),
+        () => console.log("Deposit deletion canceled"));
   }
 
   resetFormFields() {
