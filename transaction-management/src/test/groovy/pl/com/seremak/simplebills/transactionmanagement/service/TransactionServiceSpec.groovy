@@ -20,6 +20,7 @@ import pl.com.seremak.simplebills.transactionmanagement.repository.TransactionCr
 import pl.com.seremak.simplebills.transactionmanagement.repository.TransactionSearchRepository
 import pl.com.seremak.simplebills.transactionmanagement.repository.UserActivityRepository
 import reactor.core.publisher.Mono
+import reactor.test.StepVerifier
 import spock.lang.Specification
 
 @Slf4j
@@ -90,27 +91,26 @@ class TransactionServiceSpec extends Specification {
                 type: ActionType.UPDATE
         )
 
+        and: "mock database response"
+        1 * transactionCrudRepository.findByUserAndTransactionNumber("testUser", 1) >> Mono.just(existingTransaction)
+        1 * messagePublisher.sendTransactionEventMessage(transactionEventMessage)
+        1 * transactionSearchRepository.updateTransaction(updatedTransaction) >> Mono.just(updatedTransaction)
+
         when:
-        def updatedTransactionMono = transactionService.updateTransaction("testUser", 1, transactionDto).block()
+        def updatedTransactionMono = transactionService.updateTransaction("testUser", 1, transactionDto)
 
         then:
-        noExceptionThrown()
-        1 * transactionCrudRepository.findByUserAndTransactionNumber("testUser", 1) >> Mono.just(existingTransaction)
-        1 * transactionSearchRepository.updateTransaction(updatedTransaction) >> Mono.just(updatedTransaction)
-        1 * messagePublisher.sendTransactionEventMessage(transactionEventMessage)
-
-//        and:
-//        StepVerifier
-//                .create(updatedTransaction)
-//                .expectNext()
-//                .expectNextMatches(transaction -> transaction == updatedTransaction)
-//                .expectComplete()
-//                .verify()
+        StepVerifier
+                .create(updatedTransactionMono)
+                .expectNextMatches(transaction -> transaction == updatedTransaction)
+                .expectComplete()
+                .verify()
 
         where:
         newCategory | newAmount | existingAmount
         "food"      | 300       | 100
         "car"       | 100       | 100
         "travel"    | 100       | 144.23
+        "sport"     | 124.99    | 299.99
     }
 }
