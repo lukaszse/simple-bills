@@ -9,6 +9,8 @@ import org.springframework.data.mongodb.core.ReactiveMongoTemplate
 import org.springframework.test.context.ActiveProfiles
 import org.testcontainers.junit.jupiter.Testcontainers
 import pl.com.seremak.simplebills.commons.dto.http.TransactionDto
+import pl.com.seremak.simplebills.commons.dto.queue.ActionType
+import pl.com.seremak.simplebills.commons.dto.queue.TransactionEventDto
 import pl.com.seremak.simplebills.commons.model.Transaction
 import pl.com.seremak.simplebills.transactionmanagement.config.RabbitMQConfig
 import pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.IntSpecConfig
@@ -19,8 +21,6 @@ import pl.com.seremak.simplebills.transactionmanagement.repository.TransactionSe
 import pl.com.seremak.simplebills.transactionmanagement.repository.UserActivityRepository
 import reactor.core.publisher.Mono
 import spock.lang.Specification
-
-import java.time.Instant
 
 @Slf4j
 @Testcontainers
@@ -61,8 +61,8 @@ class TransactionServiceSpec extends Specification {
 
         given: "prepare test data"
         def transactionDto = new TransactionDto(
-                category: category,
-                amount: amount,
+                category: newCategory,
+                amount: newAmount,
                 type: "EXPENSE"
         )
 
@@ -71,28 +71,46 @@ class TransactionServiceSpec extends Specification {
                 transactionNumber: 1,
                 type: Transaction.Type.EXPENSE,
                 category: "food",
-                amount: -100
+                amount: -1 * existingAmount
         )
 
         def updatedTransaction = new Transaction(
                 user: "testUser",
                 transactionNumber: 1,
                 type: Transaction.Type.EXPENSE,
-                category: category,
-                amount: -1*amount
+                category: newCategory,
+                amount: -1 * newAmount
+        )
+
+        def transactionEventMessage = new TransactionEventDto(
+                username: "testUser",
+                transactionNumber: 1,
+                categoryName: newCategory,
+                amount: existingAmount - newAmount,
+                type: ActionType.UPDATE
         )
 
         when:
-        transactionService.updateTransaction("testUser", 1, transactionDto).block()
+        def updatedTransactionMono = transactionService.updateTransaction("testUser", 1, transactionDto).block()
 
         then:
         noExceptionThrown()
         1 * transactionCrudRepository.findByUserAndTransactionNumber("testUser", 1) >> Mono.just(existingTransaction)
         1 * transactionSearchRepository.updateTransaction(updatedTransaction) >> Mono.just(updatedTransaction)
-        1 * messagePublisher.sendTransactionEventMessage(_)
+        1 * messagePublisher.sendTransactionEventMessage(transactionEventMessage)
+
+//        and:
+//        StepVerifier
+//                .create(updatedTransaction)
+//                .expectNext()
+//                .expectNextMatches(transaction -> transaction == updatedTransaction)
+//                .expectComplete()
+//                .verify()
 
         where:
-        date         | category | amount
-        "2022-10-10" | "food"   | 200
+        newCategory | newAmount | existingAmount
+        "food"      | 300       | 100
+        "car"       | 100       | 100
+        "travel"    | 100       | 144.23
     }
 }
