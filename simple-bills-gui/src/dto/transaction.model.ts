@@ -1,4 +1,4 @@
-export interface Transaction {
+export interface TransactionModel {
   user: string;
   transactionNumber: string;
   type: TransactionType;

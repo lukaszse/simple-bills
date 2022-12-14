@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { HttpUtils } from "../utils/httpClientUtils";
-import { TransactionDto } from "../dto/transactionDto";
+import { HttpUtils } from "../utils/http-client.utils";
+import { TransactionDto } from "../dto/transaction.dto";
 import { catchError, Observable, retry, tap } from "rxjs";
 import { TransactionSearchService } from "./transaction-search.service";
 import { environment } from "../environments/environment";
-import { Transaction } from "../dto/transaction";
+import { TransactionModel } from "../dto/transaction.model";
 
 @Injectable({providedIn: "root"})
 export class TransactionCrudService {
@@ -28,10 +28,10 @@ export class TransactionCrudService {
       )
   }
 
-  updateTransaction(transaction: Transaction): Observable<Transaction> {
+  updateTransaction(transaction: TransactionModel): Observable<TransactionModel> {
     const url = `${HttpUtils.prepareUrlWithId(TransactionCrudService.host, TransactionCrudService.endpoint, transaction.transactionNumber)}`;
     return this.httpClient
-      .patch<Transaction>(url, transaction, {headers: HttpUtils.prepareHeaders()})
+      .patch<TransactionModel>(url, transaction, {headers: HttpUtils.prepareHeaders()})
       .pipe(
         retry({count: 3, delay: 1000}),
         tap((updatedBill) => console.log(`Transaction with transactionNumber=${updatedBill.transactionNumber} updated.`)),

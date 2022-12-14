@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {Deposit, DepositType} from "../../../dto/deposit";
+import {DepositModel, DepositType} from "../../../dto/deposit.model";
 import {DepositService} from "../../../service/deposit.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 
@@ -10,7 +10,7 @@ import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 })
 export class AssetsComponent implements OnInit {
 
-  deposit: Deposit = {
+  deposit: DepositModel = {
     name: null,
     depositType: null,
     value: null,
@@ -19,7 +19,7 @@ export class AssetsComponent implements OnInit {
     annualInterestRate: null
   }
 
-  selectedDeposit: string = null;
+  selectedDeposit?: string = null;
 
   constructor(public depositService: DepositService,
               private modalService: NgbModal) {
@@ -38,7 +38,7 @@ export class AssetsComponent implements OnInit {
         () => console.log(`Deposit creation canceled`));
   }
 
-  openDepositEditWindow(deposit: Deposit, content) {
+  openDepositEditWindow(deposit: DepositModel, content) {
     this.selectedDeposit = deposit.name;
     this.setFormFields(deposit)
     console.log(this.deposit)
@@ -46,7 +46,7 @@ export class AssetsComponent implements OnInit {
       .then(
         () => this.depositService.updateDeposit(this.deposit)
           .subscribe(() => this.ngOnInit()),
-        () => console.log("Deposit update canceled"));
+        () => console.log("DepositModel update canceled"));
   }
 
   openDepositDeletionConfirmationWindow(depositName: string, content) {
@@ -55,7 +55,7 @@ export class AssetsComponent implements OnInit {
       .then(
         () => this.depositService.deleteDeposit(depositName)
           .subscribe(() => this.ngOnInit()),
-        () => console.log("Deposit deletion canceled"));
+        () => console.log("DepositModel deletion canceled"));
   }
 
   resetFormFields() {
@@ -67,7 +67,7 @@ export class AssetsComponent implements OnInit {
     this.deposit.bankName = null;
   }
 
-  setFormFields(deposit: Deposit) {
+  setFormFields(deposit: DepositModel) {
     this.deposit.name = deposit.name;
     this.deposit.bankName = deposit.bankName;
     this.deposit.depositType = deposit.depositType;

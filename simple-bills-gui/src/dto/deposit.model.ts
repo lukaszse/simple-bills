@@ -1,4 +1,4 @@
-export interface Deposit {
+export interface DepositModel {
   name?: string;
   depositType?: DepositType;
   value?: number,

@@ -1,4 +1,4 @@
-export class CategoryUsageLimitBarChart {
+export class CategoryUsageLimitBarChartModel {
 
   categoryName: string;
   name: string;

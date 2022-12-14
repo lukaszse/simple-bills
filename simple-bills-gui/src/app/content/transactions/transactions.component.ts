@@ -4,10 +4,10 @@ import {NgbdSortableHeader, SortEvent, SortUtils} from "../../../utils/sortable.
 import {TransactionSearchService} from "../../../service/transaction-search.service";
 import {TransactionCrudService} from "../../../service/transaction-crud.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {TransactionDto} from "../../../dto/transactionDto";
-import {Category} from "../../../dto/category";
+import {TransactionDto} from "../../../dto/transaction.dto";
+import {CategoryModel} from "../../../dto/category.model";
 import {CategoryService} from "../../../service/category.service";
-import {Transaction, TransactionType} from "../../../dto/transaction";
+import {TransactionModel, TransactionType} from "../../../dto/transaction.model";
 import {BalanceService} from "../../../service/balance.service";
 import {Observable} from "rxjs";
 
@@ -29,13 +29,13 @@ export class TransactionsComponent implements OnInit {
     date: null
   };
 
-  category: Category = {
+  category: CategoryModel = {
     name: null,
     transactionType: null,
     limit: null
   };
 
-  categoriesToSelect$: Observable<Category[]>;
+  categoriesToSelect$: Observable<CategoryModel[]>;
   selectedTransaction: string | number;
   @ViewChildren(NgbdSortableHeader) headers: QueryList<NgbdSortableHeader>;
 
@@ -66,16 +66,16 @@ export class TransactionsComponent implements OnInit {
         () => console.log(`Transaction (${transactionType}) creation canceled`));
   }
 
-  openTransactionEditWindow(transaction: Transaction, content) {
+  openTransactionEditWindow(transaction: TransactionModel, content) {
     this.selectedTransaction = transaction.transactionNumber;
     this.setFormFields(transaction)
     this.modalService.open(content, {ariaLabelledBy: 'modal-transaction-update'}).result.then(
       () => {
-        const transactionToUpdate: Transaction = this.prepareTransactionToUpdate(transaction);
+        const transactionToUpdate: TransactionModel = this.prepareTransactionToUpdate(transaction);
         this.transactionCrudService.updateTransaction(transactionToUpdate)
           .subscribe(() => this.ngOnInit());
       },
-      () => console.log("Transaction update canceled"));
+      () => console.log("TransactionModel update canceled"));
   }
 
   openDeletionConfirmationWindow(transactionNumber: number | string, content) {
@@ -83,7 +83,7 @@ export class TransactionsComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: "modal-transaction-deletion"}).result.then(
       () => this.transactionCrudService.deleteBill(transactionNumber)
         .subscribe(() => this.ngOnInit()),
-      () => console.log("Transaction deletion canceled"));
+      () => console.log("TransactionModel deletion canceled"));
   }
 
   resetFormFields(transactionType?: TransactionType) {
@@ -95,7 +95,7 @@ export class TransactionsComponent implements OnInit {
     this.transactionDto.date = formatDate(Date.now(), "yyyy-MM-dd", "en");
   }
 
-  setFormFields(transaction: Transaction) {
+  setFormFields(transaction: TransactionModel) {
     this.categoriesToSelect$ = this.categoryService.findCategories(transaction.type);
     this.transactionDto.transactionNumber = transaction.transactionNumber
     this.transactionDto.type = transaction.type;
@@ -105,7 +105,7 @@ export class TransactionsComponent implements OnInit {
     this.transactionDto.date = formatDate(transaction.date, "yyyy-MM-dd", "en");
   }
 
-  prepareTransactionToUpdate(transaction: Transaction): Transaction {
+  prepareTransactionToUpdate(transaction: TransactionModel): TransactionModel {
     transaction.type = this.transactionDto.type;
     transaction.category = this.transactionDto.category;
     transaction.description = this.transactionDto.description;

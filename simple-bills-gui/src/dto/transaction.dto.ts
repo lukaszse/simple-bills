@@ -1,4 +1,4 @@
-import { TransactionType } from "./transaction";
+import { TransactionType } from "./transaction.model";
 
 export interface TransactionDto {
   transactionNumber?: string | number;

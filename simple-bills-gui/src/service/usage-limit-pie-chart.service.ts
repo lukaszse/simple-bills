@@ -2,9 +2,9 @@ import { Injectable } from "@angular/core";
 import { environment } from "../environments/environment";
 import { BehaviorSubject, catchError, debounceTime, Observable, retry, Subject, switchMap, tap } from "rxjs";
 import { HttpClient } from "@angular/common/http";
-import { CategoryUsageLimit } from "../dto/categoryUsageLimit";
-import { HttpUtils } from "../utils/httpClientUtils";
-import { CategoryUsagePieChart } from "../dto/categoryUsagePieChart";
+import { CategoryUsageLimitModel } from "../dto/category-usage-limit.model";
+import { HttpUtils } from "../utils/http-client.utils";
+import { CategoryUsagePieChartModel } from "../dto/category-usage.pie.chart.model";
 
 @Injectable({providedIn: "root"})
 export class UsageLimitPieChartService {
@@ -14,7 +14,7 @@ export class UsageLimitPieChartService {
 
   private _findCategoryUsageLimit$ = new Subject<void>();
   private _findTotalUsageLimit$ = new Subject<void>();
-  private _categoryUsagePieChart$ = new BehaviorSubject<CategoryUsagePieChart[]>(null);
+  private _categoryUsagePieChart$ = new BehaviorSubject<CategoryUsagePieChartModel[]>(null);
   private _loading$ = new BehaviorSubject<boolean>(true);
 
 
@@ -31,7 +31,7 @@ export class UsageLimitPieChartService {
       });
   }
 
-  private findCategoryUsageLimits(total?: boolean): Observable<CategoryUsageLimit[]> {
+  private findCategoryUsageLimits(total?: boolean): Observable<CategoryUsageLimitModel[]> {
     const url = HttpUtils.prepareUrl(UsageLimitPieChartService.host, UsageLimitPieChartService.endpoint);
     const completeUrl = total ? `${url}?total=true` : url;
     return this.httpClient
@@ -56,20 +56,20 @@ export class UsageLimitPieChartService {
     return this._loading$.asObservable();
   }
 
-  private static preparePieCharData(categoryUsageLimits: CategoryUsageLimit[]): CategoryUsagePieChart[] {
+  private static preparePieCharData(categoryUsageLimits: CategoryUsageLimitModel[]): CategoryUsagePieChartModel[] {
     const totalUsage: number = UsageLimitPieChartService.calculateTotalUsage(categoryUsageLimits);
     return categoryUsageLimits
       .map(categoryUsageLimit =>
-        new CategoryUsagePieChart(UsageLimitPieChartService.prepareCategoryNameLabel(categoryUsageLimit, totalUsage), categoryUsageLimit.usage));
+        new CategoryUsagePieChartModel(UsageLimitPieChartService.prepareCategoryNameLabel(categoryUsageLimit, totalUsage), categoryUsageLimit.usage));
   }
 
-  private static calculateTotalUsage(categoryUsageLimits: CategoryUsageLimit[]) {
+  private static calculateTotalUsage(categoryUsageLimits: CategoryUsageLimitModel[]) {
     return categoryUsageLimits
       .map(categoryUsageLimit => categoryUsageLimit.usage)
       .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   }
 
-  private static prepareCategoryNameLabel(categoryUsageLimit: CategoryUsageLimit, totalUsage: number): string {
+  private static prepareCategoryNameLabel(categoryUsageLimit: CategoryUsageLimitModel, totalUsage: number): string {
     const percentageUsage: string = `${Math.round((categoryUsageLimit.usage / totalUsage) * 100)}%`
     return `${categoryUsageLimit.categoryName} (${percentageUsage})`;
   }

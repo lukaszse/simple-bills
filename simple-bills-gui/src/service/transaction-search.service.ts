@@ -1,12 +1,12 @@
 import { Injectable, PipeTransform } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { BehaviorSubject, catchError, debounceTime, Observable, retry, Subject, switchMap, tap } from "rxjs";
-import { Transaction } from "../dto/transaction";
+import { TransactionModel } from "../dto/transaction.model";
 import { map } from "rxjs/operators";
 import { DatePipe, DecimalPipe } from "@angular/common";
-import { PageableTransactions } from "../dto/pageableTransactions";
+import { PageableTransactionsModel } from "../dto/pageable-transactions.model";
 import { SortableState, SortDirection } from "../utils/sortable.directive";
-import { HttpUtils } from "../utils/httpClientUtils";
+import { HttpUtils } from "../utils/http-client.utils";
 import { environment } from "../environments/environment";
 
 
@@ -15,7 +15,7 @@ export class TransactionSearchService {
 
   private static host: string = environment.transactionManagementHost;
   private static endpoint: string = "/transactions";
-  private _pageableTransactions$ = new BehaviorSubject<PageableTransactions>(null);
+  private _pageableTransactions$ = new BehaviorSubject<PageableTransactionsModel>(null);
   private _loading$ = new BehaviorSubject<boolean>(true);
   private _search$ = new Subject<void>()
 
@@ -49,21 +49,21 @@ export class TransactionSearchService {
                            sortDirection: string,
                            sortColumn: string,
                            dateFrom: Date,
-                           dateTo: Date): Observable<PageableTransactions> {
+                           dateTo: Date): Observable<PageableTransactionsModel> {
 
     let url = HttpUtils.prepareUrl(TransactionSearchService.host, TransactionSearchService.endpoint, pageSize, pageNumber, sortDirection, sortColumn, dateFrom, dateTo);
-    return this.httpClient.get<Transaction[]>(url, {headers: HttpUtils.prepareHeaders(), observe: 'response'})
+    return this.httpClient.get<TransactionModel[]>(url, {headers: HttpUtils.prepareHeaders(), observe: 'response'})
       .pipe(
         tap(console.log),
         retry({count: 3, delay: 1000}),
         map((response) => {
-          return new PageableTransactions(response.body, Number(response.headers.get(HttpUtils.X_TOTAL_COUNT)));
+          return new PageableTransactionsModel(response.body, Number(response.headers.get(HttpUtils.X_TOTAL_COUNT)));
         }),
         catchError(HttpUtils.handleError),
       );
   }
 
-  private _search(): Observable<PageableTransactions> {
+  private _search(): Observable<PageableTransactionsModel> {
     const {sortColumn, sortDirection, pageSize, pageNumber, searchTerm, dateFrom, dateTo} = this._state;
     let pageableBills$ = this.findTransactions(pageSize, pageNumber, sortDirection, sortColumn, dateFrom, dateTo).pipe()
     pageableBills$ = TransactionSearchService.search(pageableBills$, searchTerm, this.decimalPipe, this.datePipe)
@@ -73,30 +73,30 @@ export class TransactionSearchService {
         tap(console.log));
   }
 
-  private static search(transactions: Observable<PageableTransactions>,
+  private static search(transactions: Observable<PageableTransactionsModel>,
                         text: string,
                         decimalPipe: PipeTransform,
-                        datePipe: DatePipe): Observable<PageableTransactions> {
+                        datePipe: DatePipe): Observable<PageableTransactionsModel> {
     return transactions.pipe(
       map(pageableTransactions => {
         const transactions = this.matchBills(pageableTransactions, text, decimalPipe, datePipe);
-        return new PageableTransactions(transactions, pageableTransactions.totalCount);
+        return new PageableTransactionsModel(transactions, pageableTransactions.totalCount);
       }))
   }
 
-  public static setAmountSum(pageableBills: PageableTransactions): PageableTransactions {
+  public static setAmountSum(pageableBills: PageableTransactionsModel): PageableTransactionsModel {
     pageableBills.pageTotalAmount = this.countAmountSum(pageableBills.transactions)
     return pageableBills;
   }
 
-  private static countAmountSum(transactions: Transaction[]): number {
+  private static countAmountSum(transactions: TransactionModel[]): number {
     return transactions
       .map((transaction) => transaction.amount)
       .map(amount => amount == null ? 0 : amount)
       .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
   }
 
-  private static matchBills(pageableTransaction: PageableTransactions, text: string, decimalPipe: PipeTransform, datePipe: DatePipe) {
+  private static matchBills(pageableTransaction: PageableTransactionsModel, text: string, decimalPipe: PipeTransform, datePipe: DatePipe) {
     return pageableTransaction.transactions.filter(transaction => {
       const term = text.toLowerCase();
       return decimalPipe.transform(transaction.transactionNumber).includes(term)

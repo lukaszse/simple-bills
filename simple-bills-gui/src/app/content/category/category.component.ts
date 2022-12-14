@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
-import {Category} from "../../../dto/category";
+import {CategoryModel} from "../../../dto/category.model";
 import {CategoryService} from "../../../service/category.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {TransactionType} from "../../../dto/transaction";
+import {TransactionType} from "../../../dto/transaction.model";
 
 @Component({
   selector: 'app-category',
@@ -11,14 +11,14 @@ import {TransactionType} from "../../../dto/transaction";
 })
 export class CategoryComponent implements OnInit {
 
-  category: Category = {
+  category: CategoryModel = {
     name: null,
     transactionType: null,
     limit: null
   };
 
-  categories: Category[];
-  allowableReplacementCategories: Category[];
+  categories: CategoryModel[];
+  allowableReplacementCategories: CategoryModel[];
   totalLimit: number;
   categoryToDelete: string = null;
   replacementCategory: string = null;
@@ -45,18 +45,18 @@ export class CategoryComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: 'modal-category-creation'}).result
       .then(
         () => this.categoryService.createCategory(this.category)
-          .subscribe((deletionResponse) => this.ngOnInit()),
+          .subscribe(() => this.ngOnInit()),
         () => console.log("Exit without any action.")
       );
   }
 
-  openEditWindowForSelectedCategory(category: Category, content) {
+  openEditWindowForSelectedCategory(category: CategoryModel, content) {
     this.setFormCategoryFields(category);
     this.expenseTransactionType = category.transactionType === TransactionType.EXPENSE;
     this.modalService.open(content, {ariaLabelledBy: 'modal-category-update'}).result
       .then(
         () => this.categoryService.updateCategory(this.category)
-          .subscribe((updateResponse) => this.ngOnInit()),
+          .subscribe(() => this.ngOnInit()),
         () => console.log("Exit without any action.")
       );
   }
@@ -68,18 +68,18 @@ export class CategoryComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: 'modal-category-deletion'}).result
       .then(
         () => this.categoryService.deleteCategory(categoryName, this.replacementCategory)
-          .subscribe((deletionResponse) => this.ngOnInit()),
+          .subscribe(() => this.ngOnInit()),
         () => console.log("Exit without any action.")
       );
   }
 
-  private setFormCategoryFields(category: Category) {
+  private setFormCategoryFields(category: CategoryModel) {
     this.category.name = category.name;
     this.category.transactionType = category.transactionType;
     this.category.limit = category.limit;
   }
 
-  private static countTotalLimit(categories: Category[]): number {
+  private static countTotalLimit(categories: CategoryModel[]): number {
     return categories
       .map((category) => category.limit)
       .map(limit => limit == null ? 0 : limit)
