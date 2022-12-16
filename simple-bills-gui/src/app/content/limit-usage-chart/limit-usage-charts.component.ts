@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UsageLimitBarChartService } from "../../../service/usage-limit-bar-chart.service";
+import {darkRed, lightGray} from "../../../utils/chart-colors.enum";
 
 @Component({
   selector: 'app-limit-usage-chart',
@@ -23,7 +24,7 @@ export class LimitUsageChartsComponent implements OnInit {
   maxLength: number = 35;
 
   colorScheme = {
-    domain: ['#A10A28', '#AAAAAA'],
+    domain: [darkRed, lightGray],
   };
 
   constructor(public barChartService: UsageLimitBarChartService) {

@@ -1,5 +1,5 @@
 export interface TransactionModel {
-  user: string;
+  user?: string;
   transactionNumber: string;
   type: TransactionType;
   category: string;
