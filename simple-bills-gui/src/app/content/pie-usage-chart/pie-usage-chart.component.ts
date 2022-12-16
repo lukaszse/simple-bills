@@ -1,7 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { UsageLimitPieChartService } from "../../../service/usage-limit-pie-chart.service";
 import { CurrencyPipe } from "@angular/common";
-import {brown, darkGreen, deepPurple, lightBlue, lightGreen, lightPurple, pink} from "../../../utils/chart-colors.enum";
+import {
+  brown,
+  darkGreen,
+  deepPurple,
+  lightBlue,
+  lightGreen,
+  lightPurple,
+  pink
+} from "../../../utils/chart-colors.enum";
 
 @Component({
   selector: 'app-pie-usage-chart',
@@ -27,7 +35,8 @@ export class PieUsageChartComponent implements OnInit {
       lightBlue,
       lightGreen,
       darkGreen,
-      brown],
+      brown
+    ],
   };
 
   constructor(public pieChartService: UsageLimitPieChartService, private currencyPipe: CurrencyPipe) {

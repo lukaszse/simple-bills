@@ -1,15 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {CategoryModel} from "../../../dto/category.model";
 import {CategoryService} from "../../../service/category.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
 import {TransactionType} from "../../../dto/transaction.model";
+import { first, Subscription } from "rxjs";
 
 @Component({
   selector: 'app-category',
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.css']
 })
-export class CategoryComponent implements OnInit {
+export class CategoryComponent implements OnInit, OnDestroy {
 
   category: CategoryModel = {
     name: null,
@@ -24,18 +25,25 @@ export class CategoryComponent implements OnInit {
   replacementCategory: string = null;
   expenseTransactionType: boolean;
 
+  findCategorySubscription: Subscription;
+
 
   constructor(private categoryService: CategoryService,
               private modalService: NgbModal) {
   }
 
   ngOnInit(): void {
-    this.categoryService.findCategories().subscribe(
+    this.findCategorySubscription = this.categoryService.findCategories()
+      .subscribe(
       (categories) => {
         this.categories = categories;
         this.totalLimit = CategoryComponent.countTotalLimit(categories);
       }
     );
+  }
+
+  ngOnDestroy(): void {
+    this.findCategorySubscription.unsubscribe();
   }
 
   openCreationWindow(transactionType: "INCOME" | "EXPENSE", content) {
@@ -45,6 +53,7 @@ export class CategoryComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: 'modal-category-creation'}).result
       .then(
         () => this.categoryService.createCategory(this.category)
+          .pipe(first())
           .subscribe(() => this.ngOnInit()),
         () => console.log("Exit without any action.")
       );
@@ -56,6 +65,7 @@ export class CategoryComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: 'modal-category-update'}).result
       .then(
         () => this.categoryService.updateCategory(this.category)
+          .pipe(first())
           .subscribe(() => this.ngOnInit()),
         () => console.log("Exit without any action.")
       );
@@ -68,6 +78,7 @@ export class CategoryComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: 'modal-category-deletion'}).result
       .then(
         () => this.categoryService.deleteCategory(categoryName, this.replacementCategory)
+          .pipe(first())
           .subscribe(() => this.ngOnInit()),
         () => console.log("Exit without any action.")
       );
