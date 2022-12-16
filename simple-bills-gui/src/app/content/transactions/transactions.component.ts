@@ -9,7 +9,7 @@ import {CategoryModel} from "../../../dto/category.model";
 import {CategoryService} from "../../../service/category.service";
 import {TransactionModel, TransactionType} from "../../../dto/transaction.model";
 import {BalanceService} from "../../../service/balance.service";
-import {Observable} from "rxjs";
+import { first, Observable } from "rxjs";
 
 
 @Component({
@@ -62,6 +62,7 @@ export class TransactionsComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: 'modal-transaction-creation'}).result
       .then(
         () => this.transactionCrudService.createTransaction(this.transactionDto)
+          .pipe(first())
           .subscribe(() => this.ngOnInit()),
         () => console.log(`Transaction (${transactionType}) creation canceled`));
   }
@@ -73,6 +74,7 @@ export class TransactionsComponent implements OnInit {
       () => {
         const transactionToUpdate: TransactionModel = this.prepareTransactionToUpdate(transaction);
         this.transactionCrudService.updateTransaction(transactionToUpdate)
+          .pipe(first())
           .subscribe(() => this.ngOnInit());
       },
       () => console.log("TransactionModel update canceled"));
@@ -82,6 +84,7 @@ export class TransactionsComponent implements OnInit {
     this.selectedTransaction = transactionNumber;
     this.modalService.open(content, {ariaLabelledBy: "modal-transaction-deletion"}).result.then(
       () => this.transactionCrudService.deleteBill(transactionNumber)
+        .pipe(first())
         .subscribe(() => this.ngOnInit()),
       () => console.log("TransactionModel deletion canceled"));
   }

@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {DepositModel, DepositType} from "../../../dto/deposit.model";
 import {DepositService} from "../../../service/deposit.service";
 import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import { first } from "rxjs";
 
 @Component({
   selector: 'app-assets',
@@ -34,6 +35,7 @@ export class AssetsComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: 'modal-deposit-creation'}).result
       .then(
         () => this.depositService.createDeposit(this.deposit)
+          .pipe(first())
           .subscribe(() => this.ngOnInit()),
         () => console.log(`Deposit creation canceled`));
   }
@@ -45,6 +47,7 @@ export class AssetsComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: 'modal-deposit-update'}).result
       .then(
         () => this.depositService.updateDeposit(this.deposit)
+          .pipe(first())
           .subscribe(() => this.ngOnInit()),
         () => console.log("DepositModel update canceled"));
   }
@@ -54,6 +57,7 @@ export class AssetsComponent implements OnInit {
     this.modalService.open(content, {ariaLabelledBy: "modal-deposit-deletion"}).result
       .then(
         () => this.depositService.deleteDeposit(depositName)
+          .pipe(first())
           .subscribe(() => this.ngOnInit()),
         () => console.log("DepositModel deletion canceled"));
   }
