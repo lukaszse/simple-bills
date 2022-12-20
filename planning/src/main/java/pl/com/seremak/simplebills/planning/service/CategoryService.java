@@ -48,12 +48,11 @@ public class CategoryService {
         return createCategory(category);
     }
 
-    public Mono<Category> createCustomCategory(final CategoryDto categoryDto) {
-        return createCategory(toCategory(categoryDto, Category.Type.CUSTOM));
-    }
-
     public Flux<Category> createAllCategories(final Set<Category> categories) {
-        return categoryRepository.saveAll(categories);
+        final Set<Category> versionedCategories = categories.stream()
+                .map(VersionedEntityUtils::setMetadata)
+                .collect(Collectors.toSet());
+        return categoryRepository.saveAll(versionedCategories);
     }
 
     public Mono<List<Category>> findAllCategories(final String username) {
@@ -91,7 +90,7 @@ public class CategoryService {
                         .collectList()
                         .map(masterUserStandardCategories ->
                                 findAllMissingCategories(username, userStandardCategories, masterUserStandardCategories)))
-                .flatMapMany(categoryRepository::saveAll)
+                .flatMapMany(this::createAllCategories)
                 .collectList()
                 .doOnSuccess(CategoryService::logMissingCategoryAddingSummary);
     }
