@@ -1,6 +1,6 @@
 FROM node:18-alpine3.15 as build
 WORKDIR /app
-RUN npm install -g @angular/cli
+RUN npm install -g @angular/cli@15.0.4
 COPY ./package.json .
 RUN npm config set legacy-peer-deps true
 RUN npm install --force
