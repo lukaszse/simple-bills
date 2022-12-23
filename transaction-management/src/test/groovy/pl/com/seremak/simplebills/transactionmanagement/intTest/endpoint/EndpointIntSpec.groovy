@@ -16,7 +16,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 import pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.IntSpecConfig
 import pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.TestRabbitListener
 import pl.com.seremak.simplebills.transactionmanagement.repository.TransactionCrudRepository
-import pl.com.seremak.simplebills.transactionmanagement.service.SequentialIdService
+import pl.com.seremak.simplebills.transactionmanagement.service.SequentialIdRepository
 import pl.com.seremak.simplebills.transactionmanagement.service.TransactionService
 import spock.lang.Shared
 import spock.lang.Specification
@@ -43,7 +43,7 @@ class EndpointIntSpec extends Specification {
     TransactionService transactionService
 
     @Autowired
-    SequentialIdService sequentialIdService
+    SequentialIdRepository sequentialIdService
 
     @Autowired
     TransactionCrudRepository transactionCrudRepository
@@ -62,7 +62,7 @@ class EndpointIntSpec extends Specification {
         mongoDBContainer.start()
         rabbitMQContainer.start()
         log.info("MongoDb container connection string: {}", mongoDBContainer.getConnectionString())
-        registry.add("spring.data.mongodb.uri", () ->   mongoDBContainer.getConnectionString())
+        registry.add("spring.data.mongodb.uri", () -> mongoDBContainer.getConnectionString())
         registry.add("spring.rabbitmq.host", () -> rabbitMQContainer.getHost())
         registry.add("spring.rabbitmq.port", () -> rabbitMQContainer.getAmqpPort())
     }

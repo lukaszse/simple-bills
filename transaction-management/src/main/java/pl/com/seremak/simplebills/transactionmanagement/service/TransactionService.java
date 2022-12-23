@@ -33,11 +33,11 @@ import static pl.com.seremak.simplebills.commons.converter.TransactionConverter.
 @RequiredArgsConstructor
 public class TransactionService {
 
-    public static final String OPERATION_ERROR_MESSAGE = "Cannot {} transaction with transactionNumber={} for user={}. Error={}";
+    private static final String OPERATION_ERROR_MESSAGE = "Cannot {} transaction with transactionNumber={} for user={}. Error={}";
     private static final String NOT_FOUND_ERROR_MESSAGE = "Transaction with transactionNumber=%s not found.";
     private final TransactionCrudRepository transactionCrudRepository;
-    private final SequentialIdService sequentialIdRepository;
     private final TransactionSearchRepository transactionSearchRepository;
+    private final SequentialIdRepository sequentialIdRepository;
     private final MessagePublisher messagePublisher;
 
 
@@ -131,7 +131,6 @@ public class TransactionService {
     }
 
     private static TransactionDto updateCategory(final Transaction transaction, final String newCategoryName) {
-
         final TransactionDto transactionDto = TransactionConverter.toTransactionDto(transaction);
         transactionDto.setCategory(newCategoryName);
         return transactionDto;

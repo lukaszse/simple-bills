@@ -7,18 +7,16 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
-import pl.com.seremak.simplebills.commons.exceptions.NotFoundException;
 import pl.com.seremak.simplebills.commons.model.SequentialId;
 import reactor.core.publisher.Mono;
 
 @Component
 @RequiredArgsConstructor
-public class SequentialIdService {
+public class SequentialIdRepository {
 
     private static final int STARTING_ID = 1;
     public static final String ID_FIELD = "_id";
     public static final String SEQUENTIAL_ID_FIELD = "sequentialId";
-    public static final String SEQUENTIAL_ID_NOT_FOUND_ERROR_MESSAGE = "Sequential id for user=%s not found";
     private final ReactiveMongoTemplate mongoTemplate;
 
     public Mono<Integer> generateId(final String user) {
@@ -29,12 +27,6 @@ public class SequentialIdService {
                         SequentialId.class)
                 .map(SequentialId::getSequentialId)
                 .switchIfEmpty(insertFirstSequentialId(user));
-    }
-
-    public Mono<Void> deleteUser(final String user) {
-        return mongoTemplate.findAndRemove(prepareFindUserQuery(user), SequentialId.class)
-                .switchIfEmpty(Mono.error(new NotFoundException(SEQUENTIAL_ID_NOT_FOUND_ERROR_MESSAGE.formatted(user))))
-                .then();
     }
 
     private Mono<Integer> insertFirstSequentialId(final String user) {

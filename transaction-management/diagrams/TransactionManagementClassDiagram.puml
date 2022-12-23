@@ -1,0 +1,122 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class TransactionEndpoint {
+    -TransactionService transactionService
+    +Mono<ResponseEntity<Transaction>> createTransaction(Principal principal, TransactionDto transactionDto)
+    +Mono<ResponseEntity<Transaction>> findTransactionByTransactionNumber(Principal principal, Integer transactionNumber)
+    +Mono<ResponseEntity<List<Transaction>>>findAllTransactionsByCategory(Principal principal, TransactionQueryParams params)
+    +Mono<ResponseEntity<Void>> deleteTransaction(Principal principal, Integer transactionNumber)
+    +Mono<ResponseEntity<Transaction>> updateTransaction(Principal principal, TransactionDto transactionDto, Integer transactionNumber)
+}
+
+class TransactionService {
+    {static} -String OPERATION_ERROR_MESSAGE
+    {static} -String NOT_FOUND_ERROR_MESSAGE
+    -TransactionCrudRepository transactionCrudRepository
+    -TransactionSearchRepository transactionSearchRepository
+    -SequentialIdRepository sequentialIdRepository
+    -MessagePublisher messagePublisher
+    +Mono<Transaction> createTransaction(String username, TransactionDto transactionDto)
+    +Mono<Transaction> updateTransaction(String username, Integer transactionNumber, TransactionDto transactionDto)
+    +Mono<Transaction> findTransactionByTransactionNumber(String username, Integer transactionNumber)
+    +Mono<Tuple2<List<Transaction>, Long>> findTransactionsByCategory(String username, TransactionQueryParams params)
+    +Mono<Transaction> deleteTransactionByTransactionNumber(String username, Integer transactionNumber)
+    +Flux<Transaction> handleCategoryDeletion(CategoryEventDto categoryEventDto)
+    -Mono<Transaction> createTransaction(Transaction transaction)
+    -private Mono<Transaction> updateTransaction(Transaction transaction)
+    -Flux<Transaction> changeTransactionCategory(String username, String oldCategoryName, String newCategoryName)
+    -Mono<Long> countTransactionsByCategory(String username, TransactionQueryParams params)
+    -void prepareAndSendTransactionEventMessage(Transaction transaction, ActionType actionType)
+    -void prepareAndSendTransactionUpdateActionMessage(Transaction oldTransaction, Transaction newTransaction)
+    -{static} Transaction setTransactionNumber(Transaction transaction, Integer id)
+    -{static} Transaction setCurrentDateIfMissing(Transaction transaction)
+    -{static} TransactionDto updateCategory(Transaction transaction, String newCategoryName)
+}
+
+
+interface Principal {
+    boolean equals(Object another)
+    String toString()
+    int hashCode()
+    String getName()
+    boolean implies(Subject subject)
+}
+
+class TransactionDto {
+    -Integer transactionNumber
+    -String type
+    -LocalDate date
+    -String description
+    -String category
+    -BigDecimal amount
+    .. getters and setters ..
+}
+
+class TransactionQueryParams {
+    -String category
+    -LocalDate dateFrom
+    -LocalDate dateTo
+    -Integer pageSize = 10
+    -Integer pageNumber = 1
+    -SortDirection sortDirection = DESC
+    -String sortColumn = "transactionNumber"
+    .. getters and setters ..
+}
+
+enum SortDirection {
+    ASC
+    DESC
+}
+
+interface TransactionCrudRepository {
+    Flux<Transaction> findByUserAndCategory(String user, String category)
+    Mono<Transaction> deleteByUserAndTransactionNumber(String user, Integer transactionNumber)
+    Mono<Transaction> findByUserAndTransactionNumber(String user, Integer transactionNumber)
+}
+
+class TransactionSearchRepository {
+    -ReactiveMongoTemplate reactiveMongoTemplate
+    +Flux<Transaction> find(String username, TransactionQueryParams params)
+    +Mono<Long> count(String username, TransactionQueryParams params)
+    +Mono<Transaction> updateTransaction(Transaction transaction)
+    -{static} Query prepareFindTransactionQuery(String user, Integer transactionNumber)
+}
+
+class SequentialIdRepository {
+    -ReactiveMongoTemplate reactiveMongoTemplate
+    +Mono<Integer> generateId(String username)
+    +Mono<Integer> insertFirstSequentialId(String username)
+    +Query prepareFindUserQuery(String username)
+    +Update prepareSequentialIdIncrementUpdate(String username)
+    +SequentialId buildFirstSequentialId(String username)
+}
+
+
+class SequentialId{
+    -String user
+    -int sequentialId
+    .. getters and setters ..
+}
+
+class MessagePublisher {
+    -RabbitTemplate
+    +void sendUserCreationMessage(String username)
+    +void sendTransactionEventMessage(TransactionEventDto transactionEventDto)
+}
+
+
+TransactionEndpoint o-- TransactionService
+TransactionEndpoint ..> TransactionDto
+TransactionEndpoint ..> TransactionQueryParams
+TransactionEndpoint .left.> Principal
+TransactionService ..> TransactionDto
+TransactionService .left.> TransactionQueryParams
+TransactionQueryParams ..> SortDirection
+TransactionService o--- TransactionCrudRepository
+TransactionService o---- TransactionSearchRepository
+TransactionService o---- SequentialIdRepository
+TransactionService o-- MessagePublisher
+SequentialIdRepository ..> SequentialId
+
+@enduml

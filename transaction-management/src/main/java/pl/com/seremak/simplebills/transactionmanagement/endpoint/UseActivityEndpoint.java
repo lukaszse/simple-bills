@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +25,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class UseActivityEndpoint {
 
     public static final String USER_INFO_FETCHED_MESSAGE = "User info for user={} successfully extracted from token.";
-    public static final String USER_INFO_REQUEST_RECEIVED_MESSAGE = "Extracting information about user from jwt token with sub={}";
     public static final String USER_ACTIVITY_ADDED_MESSAGE = "User activity {} added for user {}";
 
     private final UserActivityService userActivityService;
