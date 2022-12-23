@@ -99,7 +99,7 @@ enum Transaction.Type {
     EXPENSE
 }
 
-class VersionedEntity {
+abstract class VersionedEntity {
     Metadata metadata
 }
 
