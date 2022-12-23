@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { Deposit, DepositType } from "../../../dto/deposit";
-import { DepositService } from "../../../service/deposit.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import {Component, OnInit} from '@angular/core';
+import {DepositModel, DepositType} from "../../../dto/deposit.model";
+import {DepositService} from "../../../service/deposit.service";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import { first } from "rxjs";
 
 @Component({
   selector: 'app-assets',
@@ -10,7 +11,7 @@ import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
 })
 export class AssetsComponent implements OnInit {
 
-  deposit: Deposit = {
+  deposit: DepositModel = {
     name: null,
     depositType: null,
     value: null,
@@ -19,7 +20,7 @@ export class AssetsComponent implements OnInit {
     annualInterestRate: null
   }
 
-  selectedDeposit: string = null;
+  selectedDeposit?: string = null;
 
   constructor(public depositService: DepositService,
               private modalService: NgbModal) {
@@ -31,55 +32,34 @@ export class AssetsComponent implements OnInit {
 
   openDepositCreationWindow(content) {
     this.resetFormFields()
-    this.modalService.open(content, {ariaLabelledBy: 'modal-deposit-creation'}).result.then(
-      () => {
-        console.log(this.deposit)
-        this.depositService.createDeposit(this.deposit)
-          .subscribe((creationResponse) => {
-            console.log(creationResponse);
-            this.ngOnInit();
-          });
-      },
-      () => {
-        console.log(`Deposit creation canceled`)
-      }
-    );
+    this.modalService.open(content, {ariaLabelledBy: 'modal-deposit-creation'}).result
+      .then(
+        () => this.depositService.createDeposit(this.deposit)
+          .pipe(first())
+          .subscribe(() => this.ngOnInit()),
+        () => console.log(`Deposit creation canceled`));
   }
 
-  openDepositEditWindow(deposit: Deposit, content) {
+  openDepositEditWindow(deposit: DepositModel, content) {
     this.selectedDeposit = deposit.name;
     this.setFormFields(deposit)
     console.log(this.deposit)
-    this.modalService.open(content, {ariaLabelledBy: 'modal-deposit-update'}).result.then(
-      () => {
-        console.log(this.deposit)
-        this.depositService.updateDeposit(this.deposit)
-          .subscribe((creationResponse) => {
-            console.log(creationResponse);
-            this.ngOnInit();
-          });
-      },
-      () => {
-        console.log("Deposit update canceled")
-      }
-    );
+    this.modalService.open(content, {ariaLabelledBy: 'modal-deposit-update'}).result
+      .then(
+        () => this.depositService.updateDeposit(this.deposit)
+          .pipe(first())
+          .subscribe(() => this.ngOnInit()),
+        () => console.log("DepositModel update canceled"));
   }
 
   openDepositDeletionConfirmationWindow(depositName: string, content) {
     this.selectedDeposit = depositName;
-    this.modalService.open(content, {ariaLabelledBy: "modal-deposit-deletion"}).result.then(
-      () => {
-        console.log(depositName);
-        return this.depositService.deleteDeposit(depositName)
-          .subscribe((deletionResponse) => {
-            console.log(deletionResponse);
-            this.ngOnInit();
-          });
-      },
-      () => {
-        console.log("Deposit deletion canceled")
-      }
-    );
+    this.modalService.open(content, {ariaLabelledBy: "modal-deposit-deletion"}).result
+      .then(
+        () => this.depositService.deleteDeposit(depositName)
+          .pipe(first())
+          .subscribe(() => this.ngOnInit()),
+        () => console.log("DepositModel deletion canceled"));
   }
 
   resetFormFields() {
@@ -91,7 +71,7 @@ export class AssetsComponent implements OnInit {
     this.deposit.bankName = null;
   }
 
-  setFormFields(deposit: Deposit) {
+  setFormFields(deposit: DepositModel) {
     this.deposit.name = deposit.name;
     this.deposit.bankName = deposit.bankName;
     this.deposit.depositType = deposit.depositType;

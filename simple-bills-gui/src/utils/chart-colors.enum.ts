@@ -1,0 +1,10 @@
+export const deepPurple: string = '#3F3B6C'
+export const lightPurple: string = '#624F82'
+export const pink: string = '#9F73AB'
+export const lightBlue: string = '#A3C7D6'
+export const lightGreen: string = '#a5d6a3'
+export const darkGreen: string = '#646e3e'
+export const brown: string = '#6e563e'
+export const darkRed: string = '#A10A28'
+export const lightGray: string = '#AAAAAA'
+

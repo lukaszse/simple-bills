@@ -91,8 +91,7 @@ export class HttpUtils {
                                               redirectUri: string,
                                               scopes: string[]) {
     const scopeParam = HttpUtils.prepareScopesParam(scopes);
-    return `${authUrl}?response_type=code&scope=${scopes}&client_id=${clientId}&redirect_uri=${redirectUri}`
-      .replaceAll(",", "%20")
+    return `${authUrl}?response_type=code&scope=${scopeParam}&client_id=${clientId}&redirect_uri=${redirectUri}`;
   }
 
   public static prepareOAuth2CodeFlowUrlParams(code: string, clientId: string, redirectUri: string): string {
@@ -109,11 +108,7 @@ export class HttpUtils {
   }
 
   private static prepareScopesParam(scopes: string[]): string {
-    return scopes.join();
-  }
-
-  private escapeRegExp(string) {
-    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return scopes.join("%20");
   }
 }
 

@@ -19,6 +19,7 @@ import pl.com.seremak.simplebills.commons.model.Balance;
 import pl.com.seremak.simplebills.commons.model.Category;
 import pl.com.seremak.simplebills.commons.model.Deposit;
 import pl.com.seremak.simplebills.commons.utils.JwtExtractionHelper;
+import pl.com.seremak.simplebills.commons.utils.VersionedEntityUtils;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
@@ -71,6 +72,7 @@ public class DepositService {
                         .switchIfEmpty(billsPlanClient.createCategory(token, prepareAssetCategory(depositDto))))
                 .then(transactionsClient.createTransaction(token, toTransactionDto(depositDto)))
                 .map(depositTransaction -> toDeposit(username, depositTransaction.getTransactionNumber(), depositDto))
+                .map(VersionedEntityUtils::setMetadata)
                 .flatMap(depositRepository::save)
                 .doOnNext(createdDeposit ->
                         log.info("Deposit with name={} and username={} created.", createdDeposit.getName(), createdDeposit.getUsername()));

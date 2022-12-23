@@ -3,11 +3,11 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Cookie } from "ng2-cookies";
 import { environment } from "../environments/environment";
 import { catchError, tap } from "rxjs";
-import { HttpUtils } from "../utils/httpClientUtils";
+import { HttpUtils } from "../utils/http-client.utils";
 
 
 @Injectable({providedIn: "root"})
-export class OAuth2Service {
+export class Oauth2Service {
 
   private readonly scopes = ["openid", "write", "read"];
   public clientId = environment.clientId;

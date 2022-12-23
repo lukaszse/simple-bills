@@ -1,11 +1,11 @@
 import { Injectable } from "@angular/core";
 import { environment } from "../environments/environment";
 import { BehaviorSubject, catchError, debounceTime, Observable, retry, Subject, switchMap, tap } from "rxjs";
-import { Deposit } from "../dto/deposit";
+import { DepositModel } from "../dto/deposit.model";
 import { HttpClient } from "@angular/common/http";
-import { Balance } from "../dto/balance";
-import { HttpUtils } from "../utils/httpClientUtils";
-import { Transaction } from "../dto/transaction";
+import { BalanceModel } from "../dto/balance.model";
+import { HttpUtils } from "../utils/http-client.utils";
+import { TransactionModel } from "../dto/transaction.model";
 
 @Injectable({providedIn: "root"})
 export class DepositService {
@@ -14,7 +14,7 @@ export class DepositService {
   private static endpoint = "/deposits";
 
   private _findDeposits$ = new Subject<void>()
-  private _deposits$ = new BehaviorSubject<Deposit[]>(null);
+  private _deposits$ = new BehaviorSubject<DepositModel[]>(null);
   private _loading$ = new BehaviorSubject<boolean>(true);
 
   constructor(private httpClient: HttpClient) {
@@ -28,9 +28,9 @@ export class DepositService {
       .subscribe((result) => this._deposits$.next(result))
   }
 
-  private findDeposits(): Observable<Deposit[]> {
+  private findDeposits(): Observable<DepositModel[]> {
     const url = HttpUtils.prepareUrl(DepositService.host, DepositService.endpoint);
-    return this.httpClient.get<Balance>(url, {headers: HttpUtils.prepareHeaders()})
+    return this.httpClient.get<BalanceModel>(url, {headers: HttpUtils.prepareHeaders()})
       .pipe(
         tap(console.log),
         retry({count: 3, delay: 1000}),
@@ -38,7 +38,7 @@ export class DepositService {
       );
   }
 
-  createDeposit(deposit: Deposit): Observable<string | Object> {
+  createDeposit(deposit: DepositModel): Observable<string | Object> {
     const url = HttpUtils.prepareUrl(DepositService.host, DepositService.endpoint);
     return this.httpClient
       .post<string>(url, deposit, {headers: HttpUtils.prepareHeaders()})
@@ -50,10 +50,10 @@ export class DepositService {
       )
   }
 
-  updateDeposit(deposit: Deposit): Observable<Transaction> {
+  updateDeposit(deposit: DepositModel): Observable<TransactionModel> {
     const url = `${HttpUtils.prepareUrlWithId(DepositService.host, DepositService.endpoint, deposit.name)}`;
     return this.httpClient
-      .patch<Transaction>(url, deposit, {headers: HttpUtils.prepareHeaders()})
+      .patch<TransactionModel>(url, deposit, {headers: HttpUtils.prepareHeaders()})
       .pipe(
         tap((updatedBill) => console.log(`Transaction with transactionNumber=${updatedBill.transactionNumber} updated.`)),
         retry({count: 3, delay: 1000}),

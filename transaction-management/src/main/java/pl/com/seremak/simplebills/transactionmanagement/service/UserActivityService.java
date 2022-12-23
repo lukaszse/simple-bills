@@ -25,11 +25,11 @@ public class UserActivityService {
     public Mono<UserActivity> addUserLogging(final String username) {
         final UserActivity newUserActivity = UserActivity.of(username, UserActivity.Activity.LOGGING_IN);
         final UserActivity newUserActivityToSave = VersionedEntityUtils.setMetadata(newUserActivity);
-        return createCreateStandardCategories(username)
+        return createStandardCategoriesForUser(username)
                 .then(userActivityRepository.save(newUserActivityToSave));
     }
 
-    private Mono<Boolean> createCreateStandardCategories(final String username) {
+    private Mono<Boolean> createStandardCategoriesForUser(final String username) {
         return userActivityRepository.countByUsernameAndActivity(username, UserActivity.Activity.LOGGING_IN)
                 .map(count -> count == 0)
                 .doOnNext(userNotExists -> sendMessageToCategoryService(userNotExists, username))

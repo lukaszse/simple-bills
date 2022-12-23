@@ -1,4 +1,4 @@
-export class CategoryUsagePieChart {
+export class CategoryUsagePieChartModel {
 
   name: string;
   value: number;

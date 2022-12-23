@@ -1,28 +1,31 @@
-import { Component, OnInit } from '@angular/core';
-import { Category } from "../../../dto/category";
-import { CategoryService } from "../../../service/category.service";
-import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
-import { TransactionType } from "../../../dto/transaction";
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import {CategoryModel} from "../../../dto/category.model";
+import {CategoryService} from "../../../service/category.service";
+import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
+import {TransactionType} from "../../../dto/transaction.model";
+import { first, Subscription } from "rxjs";
 
 @Component({
   selector: 'app-category',
   templateUrl: './category.component.html',
   styleUrls: ['./category.component.css']
 })
-export class CategoryComponent implements OnInit {
+export class CategoryComponent implements OnInit, OnDestroy {
 
-  category: Category = {
+  category: CategoryModel = {
     name: null,
     transactionType: null,
     limit: null
   };
 
-  categories: Category[];
-  allowableReplacementCategories: Category[];
+  categories: CategoryModel[];
+  allowableReplacementCategories: CategoryModel[];
   totalLimit: number;
   categoryToDelete: string = null;
   replacementCategory: string = null;
   expenseTransactionType: boolean;
+
+  findCategorySubscription: Subscription;
 
 
   constructor(private categoryService: CategoryService,
@@ -30,7 +33,8 @@ export class CategoryComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.categoryService.findCategories().subscribe(
+    this.findCategorySubscription = this.categoryService.findCategories()
+      .subscribe(
       (categories) => {
         this.categories = categories;
         this.totalLimit = CategoryComponent.countTotalLimit(categories);
@@ -38,67 +42,55 @@ export class CategoryComponent implements OnInit {
     );
   }
 
+  ngOnDestroy(): void {
+    this.findCategorySubscription.unsubscribe();
+  }
+
   openCreationWindow(transactionType: "INCOME" | "EXPENSE", content) {
     const transactionTypeEnum = TransactionType[transactionType];
     this.expenseTransactionType = transactionTypeEnum === TransactionType.EXPENSE;
     this.resetFormFields(transactionTypeEnum)
-    this.modalService.open(content, {ariaLabelledBy: 'modal-category-creation'}).result.then(
-      () => {
-        this.categoryService.createCategory(this.category)
-          .subscribe((deletionResponse) => {
-            console.log(deletionResponse);
-            this.ngOnInit();
-          });
-      },
-      () => {
-        console.log("Exit without any action.")
-      }
-    );
+    this.modalService.open(content, {ariaLabelledBy: 'modal-category-creation'}).result
+      .then(
+        () => this.categoryService.createCategory(this.category)
+          .pipe(first())
+          .subscribe(() => this.ngOnInit()),
+        () => console.log("Exit without any action.")
+      );
   }
 
-  openEditWindowForSelectedCategory(category: Category, content) {
+  openEditWindowForSelectedCategory(category: CategoryModel, content) {
     this.setFormCategoryFields(category);
     this.expenseTransactionType = category.transactionType === TransactionType.EXPENSE;
-    this.modalService.open(content, {ariaLabelledBy: 'modal-category-update'}).result.then(
-      () => {
-        this.categoryService.updateCategory(this.category)
-          .subscribe((updateResponse) => {
-            console.log(updateResponse);
-            this.ngOnInit();
-          });
-      },
-      () => {
-        console.log("Exit without any action.")
-      }
-    );
+    this.modalService.open(content, {ariaLabelledBy: 'modal-category-update'}).result
+      .then(
+        () => this.categoryService.updateCategory(this.category)
+          .pipe(first())
+          .subscribe(() => this.ngOnInit()),
+        () => console.log("Exit without any action.")
+      );
   }
 
   openDeletionConfirmationWindow(categoryName: string, content) {
     this.categoryToDelete = categoryName;
     this.replacementCategory = null;
     this.allowableReplacementCategories = this.categories.filter(category => category.name !== categoryName);
-    this.modalService.open(content, {ariaLabelledBy: 'modal-category-deletion'}).result.then(
-      (result) => {
-        console.log(result);
-        this.categoryService.deleteCategory(categoryName, this.replacementCategory)
-          .subscribe((deletionResponse) => {
-            console.log(deletionResponse);
-            this.ngOnInit();
-          });
-      },
-      (result) => {
-        console.log(result);
-      }
-    );
+    this.modalService.open(content, {ariaLabelledBy: 'modal-category-deletion'}).result
+      .then(
+        () => this.categoryService.deleteCategory(categoryName, this.replacementCategory)
+          .pipe(first())
+          .subscribe(() => this.ngOnInit()),
+        () => console.log("Exit without any action.")
+      );
   }
 
-  private setFormCategoryFields(category: Category) {
+  private setFormCategoryFields(category: CategoryModel) {
     this.category.name = category.name;
     this.category.transactionType = category.transactionType;
     this.category.limit = category.limit;
   }
 
-  private static countTotalLimit(categories: Category[]): number {
+  private static countTotalLimit(categories: CategoryModel[]): number {
     return categories
       .map((category) => category.limit)
       .map(limit => limit == null ? 0 : limit)

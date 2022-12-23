@@ -1,5 +1,5 @@
-export interface Transaction {
-  user: string;
+export interface TransactionModel {
+  user?: string;
   transactionNumber: string;
   type: TransactionType;
   category: string;

@@ -1,6 +1,6 @@
 package pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint
 
-import com.fasterxml.jackson.core.type.TypeReference
+
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang3.StringUtils
 import org.springframework.http.HttpStatus
@@ -9,11 +9,9 @@ import org.springframework.http.RequestEntity
 import org.springframework.web.client.HttpClientErrorException
 import pl.com.seremak.simplebills.commons.dto.http.TransactionDto
 import pl.com.seremak.simplebills.commons.model.Transaction
-import pl.com.seremak.simplebills.transactionmanagement.testUtils.JsonImporter
 import spock.lang.Stepwise
 
 import java.time.LocalDate
-import java.util.stream.Collectors
 
 import static pl.com.seremak.simplebills.commons.constants.MessageQueue.TRANSACTION_EVENT_ASSETS_MANAGEMENT_QUEUE
 import static pl.com.seremak.simplebills.commons.constants.MessageQueue.TRANSACTION_EVENT_PLANING_QUEUE

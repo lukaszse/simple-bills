@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { OAuth2Service } from "../../service/oAuth2.service";
+import { Oauth2Service } from "../../service/oauth2.service";
 
 @Component({
   selector: 'app-menu',
@@ -11,7 +11,7 @@ export class MenuComponent implements OnInit {
 
   public isLogged: boolean = false;
 
-  constructor(private oauth2Service: OAuth2Service) {
+  constructor(private oauth2Service: Oauth2Service) {
   }
 
   ngOnInit() {
