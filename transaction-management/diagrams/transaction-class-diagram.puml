@@ -84,13 +84,13 @@ class TransactionSearchRepository {
 }
 
 class Transaction {
-    Transaction.Type type
-    String user
-    Integer transactionNumber
-    Instant date
-    String description
-    String category
-    BigDecimal amount
+    -Transaction.Type type
+    -String user
+    -Integer transactionNumber
+    -Instant date
+    -String description
+    -String category
+    -BigDecimal amount
     .. getters and setters ..
 }
 
@@ -100,13 +100,15 @@ enum Transaction.Type {
 }
 
 abstract class VersionedEntity {
-    Metadata metadata
+    -Metadata metadata
+    .. getters and setters ..
 }
 
 class Metadata {
-    Long version
-    Instant createdAt
-    Instant modifiedAt
+    -Long version
+    -Instant createdAt
+    -Instant modifiedAt
+    .. getters and setters ..
 }
 
 class SequentialIdRepository {
