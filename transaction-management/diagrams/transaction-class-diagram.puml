@@ -83,6 +83,32 @@ class TransactionSearchRepository {
     -{static} Query prepareFindTransactionQuery(String user, Integer transactionNumber)
 }
 
+class Transaction {
+    Transaction.Type type
+    String user
+    Integer transactionNumber
+    Instant date
+    String description
+    String category
+    BigDecimal amount
+    .. getters and setters ..
+}
+
+enum Transaction.Type {
+    INCOME
+    EXPENSE
+}
+
+class VersionedEntity {
+    Metadata metadata
+}
+
+class Metadata {
+    Long version
+    Instant createdAt
+    Instant modifiedAt
+}
+
 class SequentialIdRepository {
     -ReactiveMongoTemplate reactiveMongoTemplate
     +Mono<Integer> generateId(String username)
@@ -112,11 +138,16 @@ TransactionEndpoint ..> TransactionQueryParams
 TransactionEndpoint .left.> Principal
 TransactionService ..> TransactionDto
 TransactionService .left.> TransactionQueryParams
-TransactionQueryParams ..> SortDirection
+TransactionQueryParams *.. SortDirection
 TransactionService o--- TransactionCrudRepository
 TransactionService o---- TransactionSearchRepository
 TransactionService o---- SequentialIdRepository
 TransactionService o-- MessagePublisher
 SequentialIdRepository ..> SequentialId
+VersionedEntity <|-- Transaction
+Transaction +-left- Transaction.Type
+TransactionSearchRepository ..> Transaction
+TransactionCrudRepository ..> Transaction
+VersionedEntity *-- Metadata
 
 @enduml
