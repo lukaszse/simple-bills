@@ -11,20 +11,31 @@ import { map } from "rxjs/operators";
 export class UserService {
 
   private static host: string = environment.transactionManagementHost;
-  private static userEndpoint: string = "/user";
+  private static userInfoEndpoint: string = "/user/info";
+  private static userLoggingActivityEndpoint: string = "/user/logging"
 
   constructor(private httpClient: HttpClient) {
   }
 
   getUser(): Observable<string> {
     return this.httpClient
-      .get<User>(HttpUtils.prepareUrl(UserService.host, UserService.userEndpoint),
+      .get<User>(HttpUtils.prepareUrl(UserService.host, UserService.userInfoEndpoint),
         {headers: HttpUtils.prepareHeaders(), observe: 'response'})
       .pipe(
         tap(console.log),
         retry({count: 3, delay: 1000}),
         map(response => response.body),
         map(this.getShowUserName)
+      );
+  }
+
+  addUserLogging(): void {
+    this.httpClient
+      .post<User>(HttpUtils.prepareUrl(UserService.host, UserService.userLoggingActivityEndpoint),
+        {headers: HttpUtils.prepareHeaders(), observe: 'response'})
+      .pipe(
+        tap(console.log),
+        retry({count: 3, delay: 1000})
       );
   }
 

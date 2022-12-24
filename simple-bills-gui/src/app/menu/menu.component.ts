@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Oauth2Service } from "../../service/oauth2.service";
+import { UserService } from "../../service/user.service";
 
 @Component({
   selector: 'app-menu',
@@ -11,7 +12,7 @@ export class MenuComponent implements OnInit {
 
   public isLogged: boolean = false;
 
-  constructor(private oauth2Service: Oauth2Service) {
+  constructor(private oauth2Service: Oauth2Service, private userService: UserService) {
   }
 
   ngOnInit() {
@@ -24,6 +25,7 @@ export class MenuComponent implements OnInit {
 
   login() {
     window.location.href = this.oauth2Service.prepareOAuthProviderLoginUrl();
+    this.userService.addUserLogging()
   }
 
   logout() {
