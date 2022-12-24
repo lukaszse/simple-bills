@@ -1,0 +1,56 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class BalanceEndpoint {
+    -BalanceService balanceService
+    +finsBalance(JwtAuthenticationToken principal
+}
+
+class Balance {
+    -String username
+    -BigDecimal balance
+    .. getters and setters ..
+}
+
+class BalanceService {
+    -BalanceRepository balanceRepository
+    +Mono<Balance> updateBalance(TransactionEventDto transactionEventDto)
+    +Mono<Balance> createNewClearBalance(String username)
+    -{static} Balance prepareNewBalanceForUser(String username)
+    -{static}Balance updateBalance(Balance balance, TransactionEventDto transactionEventDto)
+}
+
+interface Principal {
+    boolean equals(Object another)
+    String toString()
+    int hashCode()
+    String getName()
+    boolean implies(Subject subject)
+}
+
+interface BalanceRepository {
+    findBalance(String username)
+}
+
+class TransactionEventDto {
+        -String username
+        -String categoryName
+        -Integer transactionNumber
+        -BigDecimal amount
+        -ActionType type
+        -Instant date
+}
+
+interface ReactiveCrudRepository
+
+BalanceEndpoint .left.> Principal
+BalanceEndpoint o-- BalanceService
+BalanceEndpoint ..> Balance
+BalanceService .left.> Balance
+BalanceRepository ..> Balance
+BalanceService o-- BalanceRepository
+BalanceRepository -right-|> ReactiveCrudRepository
+BalanceEndpoint ..> TransactionEventDto
+BalanceService ..> TransactionEventDto
+
+@enduml
