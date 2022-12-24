@@ -146,7 +146,7 @@ TransactionService o--- TransactionCrudRepository
 TransactionService o---- TransactionSearchRepository
 TransactionService o---- SequentialIdRepository
 TransactionService o-- MessagePublisher
-SequentialIdRepository ..> SequentialId
+SequentialIdRepository .up.> SequentialId
 VersionedEntity <|-- Transaction
 Transaction +-left- Transaction.Type
 TransactionSearchRepository .up.> Transaction
@@ -154,7 +154,7 @@ TransactionCrudRepository .up.> Transaction
 TransactionService ..> Transaction
 TransactionEndpoint ..> Transaction
 VersionedEntity *--- Metadata
-TransactionCrudRepository ---|> ReactiveCrudRepository
+TransactionCrudRepository --|> ReactiveCrudRepository
 
 
 @enduml
