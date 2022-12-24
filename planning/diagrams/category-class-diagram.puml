@@ -78,7 +78,7 @@ class CategoryUsageLimitService {
     -CategoryUsageLimitRepository categoryUsageLimitRepository
     -CategoryUsageLimitSearchRepository categoryUsageLimitSearchRepository
     -CategoryRepository categoryRepository
-    +Mono<List<CategoryUsageLimit>> findAllCategoryUsageLimits(String username,  String yearMonth,  boolean total)
+    +Mono<List<CategoryUsageLimit>> findAllCategoryUsageLimits(String username, String yearMonth, boolean total)
     +Mono<CategoryUsageLimit> updateCategoryUsageLimitAfterNewTransaction(TransactionEventDto transactionEventDto)
     +Mono<CategoryUsageLimit> updateCategoryUsageLimit(String username, String categoryName,  BigDecimal newLimit)
     +Mono<CategoryUsageLimit> createNewCategoryUsageLimit(TransactionEventDto transactionEventDto)

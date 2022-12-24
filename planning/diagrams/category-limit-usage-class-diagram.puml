@@ -1,0 +1,56 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class CategoryUsageLimitEndpoint {
+    -CategoryUsageLimitService categoryUsageLimitService
+    +Mono<ResponseEntity<List<CategoryUsageLimit>>> findAllCategoryUsageLimits(Principal principal, String yearMonth, boolean total)
+}
+
+class CategoryUsageLimitService {
+    -CategoryUsageLimitRepository categoryUsageLimitRepository
+    -CategoryUsageLimitSearchRepository categoryUsageLimitSearchRepository
+    -CategoryRepository categoryRepository
+    +Mono<List<CategoryUsageLimit>> findAllCategoryUsageLimits(String username, String yearMonth, boolean total)
+    +Mono<CategoryUsageLimit> updateCategoryUsageLimitAfterNewTransaction(TransactionEventDto transactionEventDto)
+    +Mono<CategoryUsageLimit> updateCategoryUsageLimit(String username, String categoryName,  BigDecimal newLimit)
+    +Mono<CategoryUsageLimit> createNewCategoryUsageLimit(TransactionEventDto transactionEventDto)
+    +Mono<CategoryUsageLimit> createNewCategoryUsageLimit(String username, String categoryName)
+    +Mono<CategoryUsageLimit> deleteCategoryUsageLimit(String username, String categoryName)
+    -Mono<CategoryUsageLimit> createCategoryUsageLimitForExpense(Category category, Instant transactionYearMonth)
+    -Mono<Category> getLimitForNewCategoryUsageLimit(String username, String categoryName)
+    -Mono<CategoryUsageLimit> updateCategoryUsageLimitAfterNewTransaction(CategoryUsageLimit categoryUsageLimit,
+     TransactionEventDto transactionEventDto)
+    -Mono<CategoryUsageLimit> updateCategoryUsageLimit(CategoryUsageLimit categoryUsageLimit, BigDecimal newLimit)
+    -{static} List<CategoryUsageLimit> extractTotalUsageLimit(List<CategoryUsageLimit> categoryUsageLimits)
+    -{static} String getTransactionYearMonthOrSetCurrentIfNotExists(TransactionEventDto transactionEventDto)
+}
+
+class CategoryUsageLimitSearchRepository {
+    -ReactiveMongoTemplate mongoTemplate
+    +Mono<CategoryUsageLimit> updateCategoryUsageLimit(
+    CategoryUsageLimit categoryUsageLimit)
+    -{static}static Query prepareFindBillQuery(
+    String username, String categoryName, String yearMonth)
+}
+
+interface CategoryUsageLimitRepository {
+        Flux<CategoryUsageLimit> findByUsernameAndYearMonth(String username, String yearMonth);
+           Mono<CategoryUsageLimit> findByUsernameAndCategoryNameAndYearMonth(
+        String username, String categoryName, String yearMonth);
+            Mono<CategoryUsageLimit> deleteByUsernameAndCategoryName(String username, String categoryName);
+}
+
+interface Principal {
+    boolean equals(Object another)
+    String toString()
+    int hashCode()
+    String getName()
+    boolean implies(Subject subject)
+}
+
+CategoryUsageLimitEndpoint o-- CategoryUsageLimitService
+CategoryUsageLimitService o-- CategoryUsageLimitSearchRepository
+CategoryUsageLimitService o-- CategoryUsageLimitRepository
+
+
+@enduml

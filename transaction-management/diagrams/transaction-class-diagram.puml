@@ -10,6 +10,21 @@ class TransactionEndpoint {
     +Mono<ResponseEntity<Transaction>> updateTransaction(Principal principal, TransactionDto transactionDto, Integer transactionNumber)
 }
 
+class MessageListener {
+    -TransactionService transactionService
+    +void receiveCategoryDeletionMessage(final Message<CategoryEventDto> message)
+}
+
+class CategoryEventDto {
+    String username
+    String categoryName
+    ActionType actionType
+    Category.Type transactionType
+    BigDecimal limit
+    BigDecimal usageOfLimit
+    String replacementCategoryName
+}
+
 class TransactionService {
     {static} -String OPERATION_ERROR_MESSAGE
     {static} -String NOT_FOUND_ERROR_MESSAGE
@@ -152,6 +167,9 @@ TransactionEndpoint o-- TransactionService
 TransactionEndpoint ..> TransactionDto
 TransactionEndpoint ..> TransactionQueryParams
 TransactionEndpoint .right.> Principal
+MessageListener o-- TransactionService
+MessageListener .right.> CategoryEventDto
+TransactionService .up.> CategoryEventDto
 TransactionService .left.> TransactionDto
 TransactionService .left.> TransactionQueryParams
 TransactionQueryParams *.. SortDirection
