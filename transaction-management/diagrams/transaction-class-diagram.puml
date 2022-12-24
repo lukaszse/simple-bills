@@ -158,7 +158,7 @@ class TransactionEventDto {
     BigDecimal amount
     ActionType type
     Instant date
-   .. getters and setters ..
+   .. getters setters and builder ..
 }
 
 interface ReactiveCrudRepository

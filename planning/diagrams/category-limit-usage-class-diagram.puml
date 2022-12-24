@@ -6,6 +6,19 @@ class CategoryUsageLimitEndpoint {
     +Mono<ResponseEntity<List<CategoryUsageLimit>>> findAllCategoryUsageLimits(Principal principal, String yearMonth, boolean total)
 }
 
+class MessageListener {
+    -UserSetupService userSetupService
+    -TransactionPostingService transactionPostingService
+    +void receiveUserCreationMessage(final String username)
+    +void receiveTransactionEventMessage(final Message<TransactionEventDto> transactionMessage)
+}
+
+class TransactionPostingService{
+    -BalanceService balanceService
+    -CategoryUsageLimitService categoryUsageLimitService
+    +Mono<Balance> postTransaction(final TransactionEventDto transactionEventDto)
+}
+
 class CategoryUsageLimitService {
     -CategoryUsageLimitRepository categoryUsageLimitRepository
     -CategoryUsageLimitSearchRepository categoryUsageLimitSearchRepository
@@ -25,6 +38,15 @@ class CategoryUsageLimitService {
     -{static} String getTransactionYearMonthOrSetCurrentIfNotExists(TransactionEventDto transactionEventDto)
 }
 
+class CategoryUsageLimit {
+    -String username
+    -String categoryName
+    -BigDecimal limit
+    -BigDecimal usage
+    -String yearMonth
+    .. getter, setters and builder ..
+}
+
 class CategoryUsageLimitSearchRepository {
     -ReactiveMongoTemplate mongoTemplate
     +Mono<CategoryUsageLimit> updateCategoryUsageLimit(
@@ -40,6 +62,8 @@ interface CategoryUsageLimitRepository {
             Mono<CategoryUsageLimit> deleteByUsernameAndCategoryName(String username, String categoryName);
 }
 
+interface ReactiveCrudRepository
+
 interface Principal {
     boolean equals(Object another)
     String toString()
@@ -48,9 +72,32 @@ interface Principal {
     boolean implies(Subject subject)
 }
 
-CategoryUsageLimitEndpoint o-- CategoryUsageLimitService
+class TransactionEventDto {
+    String username
+    String categoryName
+    Integer transactionNumber
+    BigDecimal amount
+    ActionType type
+    Instant date
+   .. getters setters and builder ..
+}
+
+
+MessageListener o-- TransactionPostingService
+TransactionPostingService o--> CategoryUsageLimitService
+TransactionPostingService ..> TransactionEventDto
+CategoryUsageLimitEndpoint o--- CategoryUsageLimitService
+CategoryUsageLimitEndpoint ..> Principal
+CategoryUsageLimitEndpoint ...> CategoryUsageLimit
 CategoryUsageLimitService o-- CategoryUsageLimitSearchRepository
 CategoryUsageLimitService o-- CategoryUsageLimitRepository
+CategoryUsageLimitService .left.> CategoryUsageLimit
+CategoryUsageLimitSearchRepository ...> CategoryUsageLimit
+CategoryUsageLimitRepository ..> CategoryUsageLimit
+CategoryUsageLimitRepository -|> ReactiveCrudRepository
+CategoryUsageLimitService .right.> TransactionEventDto
+MessageListener ..> TransactionEventDto
+
 
 
 @enduml
