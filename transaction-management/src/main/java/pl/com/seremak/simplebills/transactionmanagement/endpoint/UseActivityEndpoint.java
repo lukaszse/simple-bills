@@ -35,11 +35,11 @@ public class UseActivityEndpoint {
                 .map(ResponseEntity::ok);
     }
 
-    @PostMapping(value = "/logging", produces = APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<UserActivity>> addUserLogging(@AuthenticationPrincipal final Principal principal) {
+    @PostMapping(value = "/activity", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    Mono<ResponseEntity<UserActivity>> addUserActivity(@AuthenticationPrincipal final Principal principal, @RequestBody final String activity) {
         final TokenUser tokenUser = TokenExtractionHelper.extractTokenUser(principal);
         log.info(USER_INFO_FETCHED_MESSAGE, tokenUser.getPreferredUsername());
-        return userActivityService.addUserLogging(tokenUser.getPreferredUsername())
+        return userActivityService.addUserActivity(tokenUser.getPreferredUsername(), activity)
                 .doOnSuccess(userActivity -> log.info(USER_ACTIVITY_ADDED_MESSAGE, userActivity.getActivity(), userActivity.getUsername()))
                 .map(ResponseEntity::ok);
     }

@@ -133,6 +133,7 @@ class MessagePublisher {
     +void sendTransactionEventMessage(TransactionEventDto transactionEventDto)
 }
 
+interface ReactiveCrudRepository
 
 TransactionEndpoint o-- TransactionService
 TransactionEndpoint ..> TransactionDto
@@ -140,7 +141,7 @@ TransactionEndpoint ..> TransactionQueryParams
 TransactionEndpoint .left.> Principal
 TransactionService ..> TransactionDto
 TransactionService .left.> TransactionQueryParams
-TransactionQueryParams *.. SortDirection
+TransactionQueryParams *.up. SortDirection
 TransactionService o--- TransactionCrudRepository
 TransactionService o---- TransactionSearchRepository
 TransactionService o---- SequentialIdRepository
@@ -148,8 +149,12 @@ TransactionService o-- MessagePublisher
 SequentialIdRepository ..> SequentialId
 VersionedEntity <|-- Transaction
 Transaction +-left- Transaction.Type
-TransactionSearchRepository ..> Transaction
-TransactionCrudRepository ..> Transaction
-VersionedEntity *-- Metadata
+TransactionSearchRepository .up.> Transaction
+TransactionCrudRepository .up.> Transaction
+TransactionService ..> Transaction
+TransactionEndpoint ..> Transaction
+VersionedEntity *--- Metadata
+TransactionCrudRepository ---|> ReactiveCrudRepository
+
 
 @enduml

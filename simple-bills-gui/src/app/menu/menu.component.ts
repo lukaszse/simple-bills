@@ -25,11 +25,12 @@ export class MenuComponent implements OnInit {
 
   login() {
     window.location.href = this.oauth2Service.prepareOAuthProviderLoginUrl();
-    this.userService.addUserLogging()
+    this.userService.addUserLoggingIn()
   }
 
   logout() {
     this.oauth2Service.deleteTokenCookie();
     window.location.href = this.oauth2Service.redirectUri;
+    this.userService.addUserLoggingOut()
   }
 }

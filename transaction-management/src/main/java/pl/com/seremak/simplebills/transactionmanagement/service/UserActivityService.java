@@ -3,11 +3,14 @@ package pl.com.seremak.simplebills.transactionmanagement.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import pl.com.seremak.simplebills.commons.converter.UserActivityConverter;
 import pl.com.seremak.simplebills.commons.model.UserActivity;
 import pl.com.seremak.simplebills.commons.utils.VersionedEntityUtils;
 import pl.com.seremak.simplebills.transactionmanagement.messageQueue.MessagePublisher;
 import pl.com.seremak.simplebills.transactionmanagement.repository.UserActivityRepository;
 import reactor.core.publisher.Mono;
+
+import java.util.Objects;
 
 @Slf4j
 @Service
@@ -22,18 +25,27 @@ public class UserActivityService {
     private final MessagePublisher messagePublisher;
     private final UserActivityRepository userActivityRepository;
 
-    public Mono<UserActivity> addUserLogging(final String username) {
-        final UserActivity newUserActivity = UserActivity.of(username, UserActivity.Activity.LOGGING_IN);
-        final UserActivity newUserActivityToSave = VersionedEntityUtils.setMetadata(newUserActivity);
-        return createStandardCategoriesForUser(username)
-                .then(userActivityRepository.save(newUserActivityToSave));
+    public Mono<UserActivity> addUserActivity(final String username, final String activityName) {
+        final UserActivity newUserActivity = UserActivityConverter.toUserActivity(username, activityName);
+        return createStandardCategoriesForNewUser(newUserActivity)
+                .then(Mono.just(newUserActivity))
+                .map(VersionedEntityUtils::setMetadata)
+                .flatMap(userActivityRepository::save);
     }
 
-    private Mono<Boolean> createStandardCategoriesForUser(final String username) {
-        return userActivityRepository.countByUsernameAndActivity(username, UserActivity.Activity.LOGGING_IN)
-                .map(count -> count == 0)
-                .doOnNext(userNotExists -> sendMessageToCategoryService(userNotExists, username))
-                .doOnSuccess(UserActivityService::logInfoAboutMessageToCategoryService);
+    private Mono<UserActivity> createStandardCategoriesForNewUser(final UserActivity userActivity) {
+        if (!Objects.equals(userActivity.getActivity(), UserActivity.Activity.LOGGING_IN)) {
+            return Mono.just(userActivity);
+        }
+        return checkIfUserAlreadyExists(userActivity)
+                .doOnNext(userNotExists -> sendMessageToCategoryService(userNotExists, userActivity.getUsername()))
+                .doOnSuccess(UserActivityService::logInfoAboutMessageToCategoryService)
+                .then(Mono.just(userActivity));
+    }
+
+    private Mono<Boolean> checkIfUserAlreadyExists(UserActivity userActivity) {
+        return userActivityRepository.countByUsernameAndActivity(userActivity.getUsername(), UserActivity.Activity.LOGGING_IN)
+                .map(count -> count == 0);
     }
 
     private void sendMessageToCategoryService(final boolean userNotExists, final String username) {

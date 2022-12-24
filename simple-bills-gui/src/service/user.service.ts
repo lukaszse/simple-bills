@@ -12,7 +12,7 @@ export class UserService {
 
   private static host: string = environment.transactionManagementHost;
   private static userInfoEndpoint: string = "/user/info";
-  private static userLoggingActivityEndpoint: string = "/user/logging"
+  private static userActivityEndpoint: string = "/user/activity"
 
   constructor(private httpClient: HttpClient) {
   }
@@ -29,9 +29,19 @@ export class UserService {
       );
   }
 
-  addUserLogging(): void {
+  addUserLoggingIn(): void {
+    this.addUserActivity("LOGGING_IN")
+
+  }
+
+  addUserLoggingOut(): void {
+    this.addUserActivity("LOGGING_OUT")
+  }
+
+  private addUserActivity(activity: "LOGGING_IN" | "LOGGING_OUT"): void {
     this.httpClient
-      .post<User>(HttpUtils.prepareUrl(UserService.host, UserService.userLoggingActivityEndpoint),
+      .post<User>(HttpUtils.prepareUrl(UserService.host, UserService.userActivityEndpoint),
+        {activity: activity},
         {headers: HttpUtils.prepareHeaders(), observe: 'response'})
       .pipe(
         tap(console.log),
@@ -39,7 +49,7 @@ export class UserService {
       );
   }
 
-  getShowUserName(user: User): string {
+  private getShowUserName(user: User): string {
     if (user.givenName) {
       return user.givenName;
     } else if (user.name) {
