@@ -70,9 +70,12 @@ enum SortDirection {
 }
 
 interface TransactionCrudRepository {
-    Flux<Transaction> findByUserAndCategory(String user, String category)
-    Mono<Transaction> deleteByUserAndTransactionNumber(String user, Integer transactionNumber)
-    Mono<Transaction> findByUserAndTransactionNumber(String user, Integer transactionNumber)
+    Flux<Transaction> findByUserAndCategory(
+    String user, String category)
+    Mono<Transaction> deleteByUserAndTransactionNumber(
+    String user, ;Integer transactionNumber)
+    Mono<Transaction> findByUserAndTransactionNumber(
+    String user, Integer transactionNumber)
 }
 
 class TransactionSearchRepository {
@@ -133,28 +136,41 @@ class MessagePublisher {
     +void sendTransactionEventMessage(TransactionEventDto transactionEventDto)
 }
 
+class TransactionEventDto {
+    String username
+    String categoryName
+    Integer transactionNumber
+    BigDecimal amount
+    ActionType type
+    Instant date
+   .. getters and setters ..
+}
+
 interface ReactiveCrudRepository
 
 TransactionEndpoint o-- TransactionService
 TransactionEndpoint ..> TransactionDto
 TransactionEndpoint ..> TransactionQueryParams
-TransactionEndpoint .left.> Principal
-TransactionService ..> TransactionDto
+TransactionEndpoint .right.> Principal
+TransactionService .left.> TransactionDto
 TransactionService .left.> TransactionQueryParams
-TransactionQueryParams *.up. SortDirection
-TransactionService o--- TransactionCrudRepository
-TransactionService o---- TransactionSearchRepository
-TransactionService o---- SequentialIdRepository
+TransactionQueryParams *.. SortDirection
+TransactionService o-- TransactionCrudRepository
+TransactionService o-- TransactionSearchRepository
+TransactionService o-- SequentialIdRepository
 TransactionService o-- MessagePublisher
 SequentialIdRepository .up.> SequentialId
 VersionedEntity <|-- Transaction
+VersionedEntity *-- Metadata
 Transaction +-left- Transaction.Type
 TransactionSearchRepository .up.> Transaction
 TransactionCrudRepository .up.> Transaction
 TransactionService ..> Transaction
 TransactionEndpoint ..> Transaction
-VersionedEntity *--- Metadata
-TransactionCrudRepository --|> ReactiveCrudRepository
+TransactionCrudRepository -left-|> ReactiveCrudRepository
+TransactionService ..> TransactionEventDto
+MessagePublisher .up.> TransactionEventDto
+
 
 
 @enduml

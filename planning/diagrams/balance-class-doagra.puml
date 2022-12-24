@@ -12,6 +12,18 @@ class Balance {
     .. getters and setters ..
 }
 
+abstract class VersionedEntity {
+    -Metadata metadata
+    .. getters and setters ..
+}
+
+class Metadata {
+    -Long version
+    -Instant createdAt
+    -Instant modifiedAt
+    .. getters and setters ..
+}
+
 class BalanceService {
     -BalanceRepository balanceRepository
     +Mono<Balance> updateBalance(TransactionEventDto transactionEventDto)
@@ -52,5 +64,7 @@ BalanceService o-- BalanceRepository
 BalanceRepository -right-|> ReactiveCrudRepository
 BalanceEndpoint ..> TransactionEventDto
 BalanceService ..> TransactionEventDto
+Balance --|> VersionedEntity
+VersionedEntity *-- Metadata
 
 @enduml

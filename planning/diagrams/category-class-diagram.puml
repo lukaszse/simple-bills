@@ -1,27 +1,177 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
-
-List <|-- AbstractList
-Collection <|-- AbstractCollection
-
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
-
-class ArrayList {
-Object[] elementData
-size()
+class CategoryEndpoint {
+    -CategoryService categoryService
+    +Mono<ResponseEntity<Category>> createCategory(Principal principal, CategoryDto categoryDto)
+    +Mono<ResponseEntity<List<Category>>> findAllCategories(Principal principal)
+    +Mono<ResponseEntity<Category>> findCategoryByName(Principal principal, String categoryName)
+    +Mono<ResponseEntity<Category>> updateCategory(Principal principal, CategoryDto categoryDto, String categoryName)
+    +Mono<ResponseEntity<Void>> deleteCategoryName(Principal principal, String category, String replacementCategory)
 }
 
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
+class Category {
+    -String username
+    -String name
+    -Category.Type type
+    -TransactionType transactionType
+    -BigDecimal limit
+    -BigDecimal usageOfLimit
+    .. getters and setters ..
 }
+
+abstract class VersionedEntity {
+    -Metadata metadata
+    .. getters and setters ..
+}
+
+class Metadata {
+    -Long version
+    -Instant createdAt
+    -Instant modifiedAt
+    .. getters and setters ..
+}
+
+class CategoryDto {
+    -String username
+    -String name
+    -String transactionType
+    -Category.Type type
+    -BigDecimal limit
+    .. getters and setters ..
+}
+
+class CategoryService {
+    -CategoryRepository categoryRepository
+    -CategoryUsageLimitService categoryUsageLimitService
+    -CategorySearchRepository categorySearchRepository
+    -MessagePublisher messagePublisher
+    +Mono<Category> createCustomCategory(String username, CategoryDto categoryDto)
+    +Flux<Category> createAllCategories(Set<Category> categories)
+    +public Mono<List<Category>> findAllCategories(String username)
+    +public Mono<Category> findCategory(String username, String categoryName)
+    +Mono<Category> updateCategory(String username, String categoryName, CategoryDto categoryDto)
+    +Mono<Category> deleteCategory(String username, String categoryName, String incomingReplacementCategory)
+    +Mono<List<Category>> createStandardCategoriesForUserIfNotExists(String username)
+    +Flux<Category> findStandardCategoriesForUser(String username)
+    +{static} Set<Category> findAllMissingCategories(String username, List<Category> userStandardCategories,
+    -Mono<Category> createCategory(Category category)
+    -Mono<String> reassignTransactionOfDeletedCategory(Category deletedCategory, String replacementCategoryName)
+    -void createNewCategoryUsageLimit(Category category)
+    -void updateCategoryUsageLimit(Category category)
+    -Mono<String> findOrCreateReplacementCategory(Category deletedCategory, String replacementCategoryName)
+    List<Category> masterUserStandardCategories)
+    List<String> incomeStandardCategoryNames, List<String> expenseStandardCategoryNames)
+    -{static} Set<Category> findAllMissingCategories(String username, List<Category> userStandardCategories,
+    List<Category> masterUserStandardCategories)
+    -{static} Set<String> extractExistingStandardCategoryNamesForUser(List<Category> userStandardCategories)
+}
+
+interface CategoryRepository {
+    Flux<Category> findCategoriesByUsername( String username)
+    Flux<Category> findCategoriesByUsernameAndName( String username,  String name)
+    Flux<Category> findCategoriesByUsernameAndType( String username,  Category.Type type)
+    Mono<Category> deleteCategoryByUsernameAndName( String username,  String name)
+}
+
+class CategoryUsageLimitService {
+    -CategoryUsageLimitRepository categoryUsageLimitRepository
+    -CategoryUsageLimitSearchRepository categoryUsageLimitSearchRepository
+    -CategoryRepository categoryRepository
+    +Mono<List<CategoryUsageLimit>> findAllCategoryUsageLimits(String username,  String yearMonth,  boolean total)
+    +Mono<CategoryUsageLimit> updateCategoryUsageLimitAfterNewTransaction(TransactionEventDto transactionEventDto)
+    +Mono<CategoryUsageLimit> updateCategoryUsageLimit(String username, String categoryName,  BigDecimal newLimit)
+    +Mono<CategoryUsageLimit> createNewCategoryUsageLimit(TransactionEventDto transactionEventDto)
+    +Mono<CategoryUsageLimit> createNewCategoryUsageLimit(String username, String categoryName)
+    +Mono<CategoryUsageLimit> deleteCategoryUsageLimit(String username, String categoryName)
+    -Mono<CategoryUsageLimit> createCategoryUsageLimitForExpense(Category category, Instant transactionYearMonth)
+    -Mono<Category> getLimitForNewCategoryUsageLimit(String username, String categoryName)
+    -Mono<CategoryUsageLimit> updateCategoryUsageLimitAfterNewTransaction(CategoryUsageLimit categoryUsageLimit,
+     TransactionEventDto transactionEventDto)
+    -Mono<CategoryUsageLimit> updateCategoryUsageLimit(CategoryUsageLimit categoryUsageLimit, BigDecimal newLimit)
+    -{static} List<CategoryUsageLimit> extractTotalUsageLimit(List<CategoryUsageLimit> categoryUsageLimits)
+    -{static} String getTransactionYearMonthOrSetCurrentIfNotExists(TransactionEventDto transactionEventDto)
+}
+
+class CategorySearchRepository {
+    -ReactiveMongoTemplate mongoTemplate
+    +Mono<Category> updateCategory(Category category)
+    -{static} Query prepareFindBillQuery(String username, String categoryName)
+}
+
+class MessagePublisher {
+    -RabbitTemplate rabbitTemplate
+    +void sendCategoryEventMessage(
+    CategoryEventDto categoryEventDto)
+}
+
+class CategoryEventDto {
+    String username
+    String categoryName
+    ActionType actionType
+    Category.Type transactionType
+    BigDecimal limit
+    BigDecimal usageOfLimit
+    String replacementCategoryName
+}
+
+enum Category.Type {
+    ASSET
+    STANDARD
+    CUSTOM
+    UNDEFINED
+}
+
+class CategoryUsageLimitSearchRepository {
+    -ReactiveMongoTemplate mongoTemplate
+    +Mono<CategoryUsageLimit> updateCategoryUsageLimit(
+    CategoryUsageLimit categoryUsageLimit)
+    -{static}static Query prepareFindBillQuery(
+    String username, String categoryName, String yearMonth)
+}
+
+interface CategoryUsageLimitRepository {
+        Flux<CategoryUsageLimit> findByUsernameAndYearMonth(String username, String yearMonth);
+           Mono<CategoryUsageLimit> findByUsernameAndCategoryNameAndYearMonth(
+        String username, String categoryName, String yearMonth);
+            Mono<CategoryUsageLimit> deleteByUsernameAndCategoryName(String username, String categoryName);
+}
+
+interface Principal {
+    boolean equals(Object another)
+    String toString()
+    int hashCode()
+    String getName()
+    boolean implies(Subject subject)
+}
+
+interface ReactiveCrudRepository
+
+CategoryEndpoint ..> Principal
+CategoryEndpoint ..> Category
+CategoryEndpoint .right.> CategoryDto
+CategoryService .up.> CategoryDto
+Category --|> VersionedEntity
+VersionedEntity *-left-Metadata
+CategoryEndpoint o-- CategoryService
+CategoryService .left.> Category
+CategoryService o--- CategoryRepository
+CategoryRepository -right-|> ReactiveCrudRepository
+CategoryService o-- CategoryUsageLimitService
+CategoryService o-- CategorySearchRepository
+CategoryService o-left- MessagePublisher
+MessagePublisher .up.> CategoryEventDto
+CategoryService .left.> CategoryEventDto
+CategorySearchRepository .left.> Category
+CategoryRepository ..> Category
+Category +-left- Category.Type
+CategoryDto ..> Category.Type
+CategoryUsageLimitService o-- CategoryUsageLimitRepository
+CategoryUsageLimitRepository --|> ReactiveCrudRepository
+CategoryUsageLimitService o-- CategoryUsageLimitSearchRepository
+
+
+
+
 
 @enduml

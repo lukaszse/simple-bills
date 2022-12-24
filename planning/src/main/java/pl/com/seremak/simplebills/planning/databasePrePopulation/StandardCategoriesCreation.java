@@ -7,10 +7,17 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import pl.com.seremak.simplebills.commons.model.Category;
 import pl.com.seremak.simplebills.planning.service.CategoryService;
 import pl.com.seremak.simplebills.planning.utils.BillPlanConstants;
 
 import java.util.List;
+import java.util.Set;
+
+import static pl.com.seremak.simplebills.commons.converter.CategoryConverter.toCategories;
+import static pl.com.seremak.simplebills.commons.model.Category.TransactionType.EXPENSE;
+import static pl.com.seremak.simplebills.commons.model.Category.TransactionType.INCOME;
+import static pl.com.seremak.simplebills.commons.utils.CollectionUtils.mergeLists;
 
 @Slf4j
 @Component

@@ -128,28 +128,6 @@ public class CategoryService {
                         messagePublisher.sendCategoryEventMessage(toCategoryDeletionEventDto(deletedCategory, existingReplacementCategoryName)));
     }
 
-    private static Set<Category> findAllMissingCategories(final String username,
-                                                          final List<Category> userStandardCategories,
-                                                          final List<Category> masterUserStandardCategories) {
-        final Set<String> existingStandardCategoryNamesForUser = extractExistingStandardCategoryNamesForUser(userStandardCategories);
-        return masterUserStandardCategories.stream()
-                .filter(masterUserStandardCategory -> !existingStandardCategoryNamesForUser.contains(masterUserStandardCategory.getName()))
-                .map(masterUserCategoryToCopy -> toCategory(username, masterUserCategoryToCopy.getName(), masterUserCategoryToCopy.getTransactionType()))
-                .collect(Collectors.toSet());
-    }
-
-    public static void logMissingCategoryAddingSummary(final List<Category> addedCategories) {
-        final String addedCategoryNames = addedCategories.stream()
-                .map(Category::getName)
-                .collect(Collectors.joining(", "));
-        if (addedCategories.isEmpty()) {
-            log.info("No missing categories found");
-
-        } else {
-            log.info("{} missing categories added: {}", addedCategories.size(), addedCategoryNames);
-        }
-    }
-
     private void createNewCategoryUsageLimit(final Category category) {
         if (nonNull(category)) {
             categoryUsageLimitService.createNewCategoryUsageLimit(category.getUsername(), category.getName())
@@ -162,12 +140,6 @@ public class CategoryService {
             categoryUsageLimitService.updateCategoryUsageLimit(category.getUsername(), category.getName(), category.getLimit())
                     .subscribe();
         }
-    }
-
-    private static Set<String> extractExistingStandardCategoryNamesForUser(final List<Category> userStandardCategories) {
-        return userStandardCategories.stream()
-                .map(Category::getName)
-                .collect(Collectors.toSet());
     }
 
     private Mono<String> findOrCreateReplacementCategory(final Category deletedCategory,
@@ -184,5 +156,34 @@ public class CategoryService {
                         .flatMap(this::createCategory)
                         .map(Category::getName)
                         .doOnNext(createdCategoryName -> log.info("New category with name={} created.", createdCategoryName)));
+    }
+
+    private static Set<Category> findAllMissingCategories(final String username,
+                                                          final List<Category> userStandardCategories,
+                                                          final List<Category> masterUserStandardCategories) {
+        final Set<String> existingStandardCategoryNamesForUser = extractExistingStandardCategoryNamesForUser(userStandardCategories);
+        return masterUserStandardCategories.stream()
+                .filter(masterUserStandardCategory -> !existingStandardCategoryNamesForUser.contains(masterUserStandardCategory.getName()))
+                .map(masterUserCategoryToCopy -> toCategory(username, masterUserCategoryToCopy.getName(), masterUserCategoryToCopy.getTransactionType()))
+                .collect(Collectors.toSet());
+    }
+
+
+    private static Set<String> extractExistingStandardCategoryNamesForUser(final List<Category> userStandardCategories) {
+        return userStandardCategories.stream()
+                .map(Category::getName)
+                .collect(Collectors.toSet());
+    }
+
+    public static void logMissingCategoryAddingSummary(final List<Category> addedCategories) {
+        final String addedCategoryNames = addedCategories.stream()
+                .map(Category::getName)
+                .collect(Collectors.joining(", "));
+        if (addedCategories.isEmpty()) {
+            log.info("No missing categories found");
+
+        } else {
+            log.info("{} missing categories added: {}", addedCategories.size(), addedCategoryNames);
+        }
     }
 }
