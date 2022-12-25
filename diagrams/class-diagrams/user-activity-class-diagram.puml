@@ -1,0 +1,80 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class UserActivityEndpoint {
+    -UserActivityService userActivityService
+    +Mono<ResponseEntity<TokenUser>> getUserInfo(Principal principal)
+    +Mono<ResponseEntity<UserActivity>> addUserActivity(Principal principal, String activity)
+}
+
+class UserActivityService {
+    -MessagePublisher messagePublisher
+    -UserActivityRepository userActivityRepository
+    +Mono<UserActivity> addUserActivity(String username, String activityName)
+    -Mono<Boolean> createStandardCategoriesForUser(String username)
+    -void sendMessageToCategoryService(boolean userNotExists, String username)
+}
+
+interface Principal {
+    boolean equals(Object another)
+    String toString()
+    int hashCode()
+    String getName()
+    boolean implies(Subject subject)
+}
+
+class MessagePublisher {
+    -RabbitTemplate
+    +void sendUserCreationMessage(
+    String username)
+    +void sendTransactionEventMessage(
+    TransactionEventDto transactionEventDto)
+}
+
+interface UserActivityRepository {
+    Mono<Long> countByUsernameAndActivity(String username, UserActivity.Activity activity)
+}
+
+class UserActivity {
+    -String username
+    -Activity activity
+    ... getters, setters and builder..
+}
+
+enum UserActivity.Activity {
+    LOGGING_IN
+    LOGGING_OUT
+}
+
+class UserActivityConverter {
+    +{static} UserActivity toUserActivity(
+    String username, String activityNae)
+}
+
+class TokenExtractionHelper {
+    +{static} String extractUsername(Principal principal)
+    +{static} TokenUser extractTokenUser(Principal principal)
+    +{static} String extractUsername(JwtAuthenticationToken jwtAuthenticationToken)
+    +{static}TokenUser extractUsernameFromJwtAuthenticationToken(JwtAuthenticationToken jwtAuthenticationToken)
+    +{static}validateUsername(Principal principal, String username)
+
+}
+
+interface ReactiveCrudRepository
+
+UserActivityEndpoint o-- UserActivityService
+UserActivityEndpoint .right.> Principal
+UserActivityService o--- MessagePublisher
+UserActivityService o-- UserActivityRepository
+UserActivityService ..> UserActivityConverter
+UserActivity <.up. UserActivityEndpoint
+UserActivity <.up. UserActivityService
+UserActivity <.. UserActivityRepository
+UserActivity +-left- UserActivity.Activity
+UserActivityConverter .left.> UserActivity
+UserActivityEndpoint .up.> TokenExtractionHelper
+UserActivityRepository --|> ReactiveCrudRepository
+TokenExtractionHelper ..> Principal
+
+
+@enduml

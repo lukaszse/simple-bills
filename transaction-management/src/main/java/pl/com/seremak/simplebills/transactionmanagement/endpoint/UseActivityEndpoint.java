@@ -4,12 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.com.seremak.simplebills.commons.dto.http.TokenUser;
+import pl.com.seremak.simplebills.commons.model.UserActivity;
 import pl.com.seremak.simplebills.commons.utils.TokenExtractionHelper;
 import pl.com.seremak.simplebills.transactionmanagement.service.UserActivityService;
 import reactor.core.publisher.Mono;
@@ -26,18 +23,24 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class UseActivityEndpoint {
 
     public static final String USER_INFO_FETCHED_MESSAGE = "User info for user={} successfully extracted from token.";
-    public static final String USER_INFO_REQUEST_RECEIVED_MESSAGE = "Extracting information about user from jwt token with sub={}";
     public static final String USER_ACTIVITY_ADDED_MESSAGE = "User activity {} added for user {}";
 
     private final UserActivityService userActivityService;
 
-    @GetMapping(produces = APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<TokenUser>> findInfoAboutLoggedUser(@AuthenticationPrincipal final Principal principal) {
+    @GetMapping(value = "/info", produces = APPLICATION_JSON_VALUE)
+    static Mono<ResponseEntity<TokenUser>> getUserInfo(@AuthenticationPrincipal final Principal principal) {
         final TokenUser tokenUser = TokenExtractionHelper.extractTokenUser(principal);
         log.info(USER_INFO_FETCHED_MESSAGE, tokenUser.getPreferredUsername());
-        return userActivityService.addUserLogging(tokenUser.getPreferredUsername())
+        return Mono.just(tokenUser)
+                .map(ResponseEntity::ok);
+    }
+
+    @PostMapping(value = "/activity", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
+    Mono<ResponseEntity<UserActivity>> addUserActivity(@AuthenticationPrincipal final Principal principal, @RequestBody final String activity) {
+        final TokenUser tokenUser = TokenExtractionHelper.extractTokenUser(principal);
+        log.info(USER_INFO_FETCHED_MESSAGE, tokenUser.getPreferredUsername());
+        return userActivityService.addUserActivity(tokenUser.getPreferredUsername(), activity)
                 .doOnSuccess(userActivity -> log.info(USER_ACTIVITY_ADDED_MESSAGE, userActivity.getActivity(), userActivity.getUsername()))
-                .then(Mono.just(tokenUser))
                 .map(ResponseEntity::ok);
     }
 }

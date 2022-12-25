@@ -1,0 +1,104 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class CategoryUsageLimitEndpoint {
+    -CategoryUsageLimitService categoryUsageLimitService
+    +Mono<ResponseEntity<List<CategoryUsageLimit>>> findAllCategoryUsageLimits(Principal principal, String yearMonth, boolean total)
+}
+
+class MessageListener {
+    -UserSetupService userSetupService
+    -TransactionPostingService transactionPostingService
+    +void receiveUserCreationMessage(final String username)
+    +void receiveTransactionEventMessage(
+    final Message<TransactionEventDto> transactionMessage)
+}
+
+class TransactionPostingService{
+    -BalanceService balanceService
+    -CategoryUsageLimitService categoryUsageLimitService
+    +Mono<Balance> postTransaction(final TransactionEventDto transactionEventDto)
+}
+
+class CategoryUsageLimitService {
+    -CategoryUsageLimitRepository categoryUsageLimitRepository
+    -CategoryUsageLimitSearchRepository categoryUsageLimitSearchRepository
+    -CategoryRepository categoryRepository
+    +Mono<List<CategoryUsageLimit>> findAllCategoryUsageLimits(String username, String yearMonth, boolean total)
+    +Mono<CategoryUsageLimit> updateCategoryUsageLimitAfterNewTransaction(TransactionEventDto transactionEventDto)
+    +Mono<CategoryUsageLimit> updateCategoryUsageLimit(String username, String categoryName,  BigDecimal newLimit)
+    +Mono<CategoryUsageLimit> createNewCategoryUsageLimit(TransactionEventDto transactionEventDto)
+    +Mono<CategoryUsageLimit> createNewCategoryUsageLimit(String username, String categoryName)
+    +Mono<CategoryUsageLimit> deleteCategoryUsageLimit(String username, String categoryName)
+    -Mono<CategoryUsageLimit> createCategoryUsageLimitForExpense(Category category, Instant transactionYearMonth)
+    -Mono<Category> getLimitForNewCategoryUsageLimit(String username, String categoryName)
+    -Mono<CategoryUsageLimit> updateCategoryUsageLimitAfterNewTransaction(CategoryUsageLimit categoryUsageLimit,
+     TransactionEventDto transactionEventDto)
+    -Mono<CategoryUsageLimit> updateCategoryUsageLimit(CategoryUsageLimit categoryUsageLimit, BigDecimal newLimit)
+    -{static} List<CategoryUsageLimit> extractTotalUsageLimit(List<CategoryUsageLimit> categoryUsageLimits)
+    -{static} String getTransactionYearMonthOrSetCurrentIfNotExists(TransactionEventDto transactionEventDto)
+}
+
+class CategoryUsageLimit {
+    -String username
+    -String categoryName
+    -BigDecimal limit
+    -BigDecimal usage
+    -String yearMonth
+    .. getter, setters and builder ..
+}
+
+class CategoryUsageLimitSearchRepository {
+    -ReactiveMongoTemplate mongoTemplate
+    +Mono<CategoryUsageLimit> updateCategoryUsageLimit(
+    CategoryUsageLimit categoryUsageLimit)
+    -{static}static Query prepareFindBillQuery(
+    String username, String categoryName, String yearMonth)
+}
+
+interface CategoryUsageLimitRepository {
+        Flux<CategoryUsageLimit> findByUsernameAndYearMonth(String username, String yearMonth);
+           Mono<CategoryUsageLimit> findByUsernameAndCategoryNameAndYearMonth(
+        String username, String categoryName, String yearMonth);
+            Mono<CategoryUsageLimit> deleteByUsernameAndCategoryName(String username, String categoryName);
+}
+
+interface ReactiveCrudRepository
+
+interface Principal {
+    boolean equals(Object another)
+    String toString()
+    int hashCode()
+    String getName()
+    boolean implies(Subject subject)
+}
+
+class TransactionEventDto {
+    String username
+    String categoryName
+    Integer transactionNumber
+    BigDecimal amount
+    ActionType type
+    Instant date
+   .. getters setters and builder ..
+}
+
+
+MessageListener o-- TransactionPostingService
+TransactionPostingService o--> CategoryUsageLimitService
+TransactionPostingService ..> TransactionEventDto
+CategoryUsageLimitEndpoint o--- CategoryUsageLimitService
+CategoryUsageLimitEndpoint ..> Principal
+CategoryUsageLimitEndpoint ...> CategoryUsageLimit
+CategoryUsageLimitService o-- CategoryUsageLimitSearchRepository
+CategoryUsageLimitService o-- CategoryUsageLimitRepository
+CategoryUsageLimitService .left.> CategoryUsageLimit
+CategoryUsageLimitSearchRepository ...> CategoryUsageLimit
+CategoryUsageLimitRepository ..> CategoryUsageLimit
+CategoryUsageLimitRepository -|> ReactiveCrudRepository
+CategoryUsageLimitService .right.> TransactionEventDto
+MessageListener ..> TransactionEventDto
+
+
+
+@enduml

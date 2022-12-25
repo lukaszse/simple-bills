@@ -1,0 +1,86 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class MessageListener {
+    -UserSetupService userSetupService
+    -TransactionPostingService transactionPostingService
+    +void receiveUserCreationMessage(final String username)
+    +void receiveTransactionEventMessage(final Message<TransactionEventDto> transactionMessage)
+}
+
+class TransactionPostingService{
+    -BalanceService balanceService
+    -CategoryUsageLimitService categoryUsageLimitService
+    +Mono<Balance> postTransaction(final TransactionEventDto transactionEventDto)
+}
+
+class BalanceEndpoint {
+    -BalanceService balanceService
+    +finsBalance(Principal principal)
+}
+
+class Balance {
+    -String username
+    -BigDecimal balance
+    .. getters and setters ..
+}
+
+abstract class VersionedEntity {
+    -Metadata metadata
+    .. getters and setters ..
+}
+
+class Metadata {
+    -Long version
+    -Instant createdAt
+    -Instant modifiedAt
+    .. getters and setters ..
+}
+
+class BalanceService {
+    -BalanceRepository balanceRepository
+    +Mono<Balance> updateBalance(TransactionEventDto transactionEventDto)
+    +Mono<Balance> createNewClearBalance(String username)
+    -{static} Balance prepareNewBalanceForUser(String username)
+    -{static}Balance updateBalance(Balance balance, TransactionEventDto transactionEventDto)
+}
+
+interface Principal {
+    boolean equals(Object another)
+    String toString()
+    int hashCode()
+    String getName()
+    boolean implies(Subject subject)
+}
+
+interface BalanceRepository {
+    findBalance(String username)
+}
+
+class TransactionEventDto {
+        -String username
+        -String categoryName
+        -Integer transactionNumber
+        -BigDecimal amount
+        -ActionType type
+        -Instant date
+}
+
+interface ReactiveCrudRepository
+
+MessageListener o-- TransactionPostingService
+TransactionPostingService o-- BalanceService
+BalanceEndpoint ...> Principal
+BalanceEndpoint o--- BalanceService
+BalanceEndpoint ..> Balance
+BalanceService .left.> Balance
+BalanceRepository ..> Balance
+BalanceService o-- BalanceRepository
+BalanceRepository --|> ReactiveCrudRepository
+BalanceService ..> TransactionEventDto
+MessageListener ..> TransactionEventDto
+TransactionPostingService ..> TransactionEventDto
+Balance --|> VersionedEntity
+VersionedEntity *-- Metadata
+
+@enduml

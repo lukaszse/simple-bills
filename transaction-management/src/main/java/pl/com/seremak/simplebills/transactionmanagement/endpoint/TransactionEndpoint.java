@@ -30,8 +30,8 @@ import static pl.com.seremak.simplebills.commons.utils.EndpointUtils.prepareCrea
 @RequiredArgsConstructor
 public class TransactionEndpoint {
 
-    public static final String X_TOTAL_COUNT_HEADER = "x-total-count";
-    public static final String TRANSACTION_URI_PATTERN = "/transactions/%s";
+    private static final String X_TOTAL_COUNT_HEADER = "x-total-count";
+    private static final String TRANSACTION_URI_PATTERN = "/transactions/%s";
     private final TransactionService transactionService;
 
 

@@ -11,14 +11,15 @@ import { map } from "rxjs/operators";
 export class UserService {
 
   private static host: string = environment.transactionManagementHost;
-  private static userEndpoint: string = "/user";
+  private static userInfoEndpoint: string = "/user/info";
+  private static userActivityEndpoint: string = "/user/activity"
 
   constructor(private httpClient: HttpClient) {
   }
 
   getUser(): Observable<string> {
     return this.httpClient
-      .get<User>(HttpUtils.prepareUrl(UserService.host, UserService.userEndpoint),
+      .get<User>(HttpUtils.prepareUrl(UserService.host, UserService.userInfoEndpoint),
         {headers: HttpUtils.prepareHeaders(), observe: 'response'})
       .pipe(
         tap(console.log),
@@ -28,7 +29,27 @@ export class UserService {
       );
   }
 
-  getShowUserName(user: User): string {
+  addUserLoggingIn(): void {
+    this.addUserActivity("LOGGING_IN")
+
+  }
+
+  addUserLoggingOut(): void {
+    this.addUserActivity("LOGGING_OUT")
+  }
+
+  private addUserActivity(activity: "LOGGING_IN" | "LOGGING_OUT"): void {
+    this.httpClient
+      .post<User>(HttpUtils.prepareUrl(UserService.host, UserService.userActivityEndpoint),
+        {activity: activity},
+        {headers: HttpUtils.prepareHeaders(), observe: 'response'})
+      .pipe(
+        tap(console.log),
+        retry({count: 3, delay: 1000})
+      );
+  }
+
+  private getShowUserName(user: User): string {
     if (user.givenName) {
       return user.givenName;
     } else if (user.name) {
