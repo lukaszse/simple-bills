@@ -20,7 +20,7 @@ import static pl.com.seremak.simplebills.assetmanagement.utils.HttpClientUtils.U
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class BillsPlanClient {
+public class PlanningClient {
 
     private final WebClient balanceClient;
     private final WebClient categoryClient;

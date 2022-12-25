@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import pl.com.seremak.simplebills.assetmanagement.integration.client.BillsPlanClient;
-import pl.com.seremak.simplebills.assetmanagement.integration.client.TransactionsClient;
+import pl.com.seremak.simplebills.assetmanagement.integration.client.PlanningClient;
+import pl.com.seremak.simplebills.assetmanagement.integration.client.TransactionManagementClient;
 import pl.com.seremak.simplebills.assetmanagement.repository.DepositRepository;
 import pl.com.seremak.simplebills.assetmanagement.repository.DepositSearchRepository;
 import pl.com.seremak.simplebills.commons.dto.http.CategoryDto;
@@ -31,11 +31,11 @@ import static pl.com.seremak.simplebills.commons.model.Transaction.Type.EXPENSE;
 @Service
 @RequiredArgsConstructor
 public class DepositService {
-    
+
     private final DepositRepository depositRepository;
     private final DepositSearchRepository depositSearchRepository;
-    private final BillsPlanClient billsPlanClient;
-    private final TransactionsClient transactionsClient;
+    private final PlanningClient planningClient;
+    private final TransactionManagementClient transactionManagementClient;
 
 
     public void handleTransactionEvent(final TransactionEventDto transactionEventDto) {
@@ -61,11 +61,11 @@ public class DepositService {
     }
 
     public Mono<Deposit> createDeposit(final String username, final String authHeader, final DepositDto depositDto) {
-        return billsPlanClient.getBalance(authHeader)
+        return planningClient.getBalance(authHeader)
                 .filter(balance -> validateBalance(balance, depositDto.getValue()))
-                .then(billsPlanClient.getCategory(username, authHeader, Category.Type.ASSET.toString().toLowerCase())
-                        .switchIfEmpty(billsPlanClient.createCategory(authHeader, prepareAssetCategory(depositDto))))
-                .then(transactionsClient.createTransaction(authHeader, toTransactionDto(depositDto)))
+                .then(planningClient.getCategory(username, authHeader, Category.Type.ASSET.toString().toLowerCase())
+                        .switchIfEmpty(planningClient.createCategory(authHeader, prepareAssetCategory())))
+                .then(transactionManagementClient.createTransaction(authHeader, toTransactionDto(depositDto)))
                 .map(depositTransaction -> toDeposit(username, depositTransaction.getTransactionNumber(), depositDto))
                 .map(VersionedEntityUtils::setMetadata)
                 .flatMap(depositRepository::save)
@@ -80,7 +80,7 @@ public class DepositService {
         final Deposit deposit = toDeposit(username, depositName, depositDto);
         return depositSearchRepository.updateDepositByName(deposit)
                 .publishOn(Schedulers.boundedElastic())
-                .doOnNext(updatedDeposit -> transactionsClient.updateTransaction(authHeader, toTransactionDto(updatedDeposit)).subscribe())
+                .doOnNext(updatedDeposit -> transactionManagementClient.updateTransaction(authHeader, toTransactionDto(updatedDeposit)).subscribe())
                 .doOnNext(updatedDeposit ->
                         log.info("Deposit with name={} and username={} updated.", updatedDeposit.getName(), updatedDeposit.getUsername()));
     }
@@ -96,7 +96,7 @@ public class DepositService {
     public Mono<Deposit> deleteDeposit(final String username, final String authHeader, final String depositName) {
         return depositRepository.deleteByUsernameAndName(username, depositName)
                 .publishOn(Schedulers.boundedElastic())
-                .doOnNext(deletedDeposit -> transactionsClient.deleteTransaction(authHeader, deletedDeposit.getTransactionNumber()).subscribe())
+                .doOnNext(deletedDeposit -> transactionManagementClient.deleteTransaction(authHeader, deletedDeposit.getTransactionNumber()).subscribe())
                 .doOnNext(deletedDeposit ->
                         log.info("Deposit with name={} and username={} deleted.", deletedDeposit.getName(), deletedDeposit.getUsername()));
     }
@@ -121,7 +121,7 @@ public class DepositService {
         }
     }
 
-    private static CategoryDto prepareAssetCategory(final DepositDto depositDto) {
+    private static CategoryDto prepareAssetCategory() {
         return CategoryDto.builder()
                 .type(Category.Type.ASSET)
                 .transactionType(EXPENSE.toString())

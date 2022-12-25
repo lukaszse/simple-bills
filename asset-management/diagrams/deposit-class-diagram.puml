@@ -3,6 +3,168 @@
 
 class DepositEndpoint {
     -DepositService depositService
-
+    +Mono<ResponseEntity<Deposit>> createDeposit(Principal principal, String authHeader DepositDto depositDto)
+    +Mono<ResponseEntity<List<Deposit>>> findDeposits(Principal principal)
+    +Mono<ResponseEntity<Deposit>> findDeposit(Principal principal, String depositName)
+    +Mono<ResponseEntity<Deposit>> updateDeposit(Principal principal, String authHeader, DepositDto depositDto, String depositName)
+    +Mono<ResponseEntity<Void>> deleteDeposit(Principal principal, String authHeader, String depositName)
 }
+
+interface Principal {
+    boolean equals(Object another)
+    String toString()
+    int hashCode()
+    String getName()
+    boolean implies(Subject subject)
+}
+
+class MessageListener {
+    -DepositService depositService
+    +void receiveAssetTransactionEvent(
+    Message<TransactionEventDto> assetTransactionEventMessage)
+}
+
+class DepositService {
+    -DepositRepository depositRepository
+    -DepositSearchRepository depositSearchRepository
+    -PlanningClient planningClient
+    -TransactionManagementClient transactionManagementClient
+    +void handleTransactionEvent(TransactionEventDto transactionEventDto)
+    +Mono<List<Deposit>> findAllDeposits(String username)
+    +Mono<Deposit> findDepositByName(String username, String depositName)
+    +Mono<Deposit> createDeposit(String username, String authHeader, DepositDto depositDto)
+    +Mono<Deposit> updateDeposit(String username, String authHeader, String depositName, DepositDto depositDto)
+    +Mono<Deposit> updateDeposit(TransactionEventDto transactionEventDto)
+    +Mono<Deposit> deleteDeposit(String username, String authHeader, String depositName)
+    +Mono<Deposit> deleteDeposit(TransactionEventDto transactionEventDto)
+    -{static} boolean validateBalance(Balance balance, BigDecimal expense)
+    -{static} CategoryDto prepareAssetCategory()
+    -{static} validateAssetTransactionEventDto(TransactionEventDto transactionEventDto)
+}
+
+class DepositDto {
+    -String name
+    -BigDecimal value
+    -Deposit.DepositType depositType
+    -String bankName
+    -Integer durationInMonths
+    -BigDecimal annualInterestRate
+    .. getters, setters and builder ..
+}
+
+class Deposit {
+    -String username
+    -String name
+    -BigDecimal value
+    -DepositType depositType
+    -String bankName
+    -Integer durationInMonths
+    -BigDecimal annualInterestRate
+    -Integer transactionNumber
+}
+
+enum Deposit.DepositType {
+    PERPETUAL
+    TERM
+}
+
+class DepositRepository {
+    +Flux<Deposit> findAllByUsername(String username)
+    +Mono<Deposit> findByUsernameAndName(
+    String username, String name)
+    +Mono<Deposit> deleteByUsernameAndName(
+    String username, String name)
+    +Mono<Deposit> deleteByUsernameAndTransactionNumber(
+    String username, Integer transactionNumber)
+}
+
+interface ReactiveCrudRepository
+
+class DepositSearchRepository {
+    -ReactiveMongoTemplate reactiveMongoTemplate
+    +Mono<Deposit> updateDepositByName(
+    Deposit deposit)
+    +Mono<Deposit> updateDepositByTransactionNumber(
+    Deposit deposit)
+    -{static} Query prepareFindDepositQuery(
+    String username, String depositName)
+}
+
+class PlanningClient {
+    -WebClient balanceClient
+    -WebClient categoryClient
+    +Mono<Balance> getBalance(
+    String authHeader)
+    +Mono<Category> getCategory(
+    String username, String autHeader, String categoryName)
+    +Mono<Category> createCategory(
+    String authHeader, CategoryDto categoryDto)
+    -{static}boolean isNotFoundStatus(
+    Throwable exception, String username, String categoryName)
+}
+
+class TransactionManagementClient {
+    -WebClient transactionClient
+    +Mono<Transaction> createTransaction(
+    String authHeader, TransactionDto transactionDto)
+    +Mono<Transaction> updateTransaction(
+    String authHeader, TransactionDto transactionDto)
+    +Mono<Void> deleteTransaction(
+    String authHeader, Integer transactionNumber)
+}
+
+class TransactionDto {
+    -Integer transactionNumber
+    -String type
+    -LocalDate date
+    -String description
+    -String category
+    -BigDecimal amount
+    .. getters and setters ..
+}
+
+class CategoryDto {
+    -String username
+    -String name
+    -String transactionType
+    -Category.Type type
+    -BigDecimal limit
+    .. getters and setters ..
+}
+
+class TransactionEventDto {
+        -String username
+        -String categoryName
+        -Integer transactionNumber
+        -BigDecimal amount
+        -ActionType type
+        -Instant date
+}
+
+DepositEndpoint .right.> Principal
+DepositEndpoint ..> DepositDto
+DepositEndpoint o-- DepositService
+MessageListener o-- DepositService
+DepositService .left.>DepositDto
+DepositEndpoint ..> Deposit
+DepositService .left.> Deposit
+Deposit +.right. Deposit.DepositType
+DepositDto *.. Deposit.DepositType
+DepositService o-- DepositRepository
+DepositRepository ..> Deposit
+DepositSearchRepository ..> Deposit
+DepositRepository --|> ReactiveCrudRepository
+DepositService o-- DepositSearchRepository
+DepositService o-- PlanningClient
+DepositService o--- TransactionManagementClient
+DepositService .right.> TransactionEventDto
+MessageListener ..> TransactionEventDto
+DepositService .right.> TransactionDto
+TransactionManagementClient .up.> TransactionDto
+PlanningClient .up.> CategoryDto
+DepositService ..> CategoryDto
+
+
+
+
 @enduml

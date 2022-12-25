@@ -43,8 +43,7 @@ public class DepositEndpoint {
     }
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<Deposit>>> findDeposits(@AuthenticationPrincipal final Principal principal,
-                                                            @RequestHeader("Authorization") final String authHeader) {
+    public Mono<ResponseEntity<List<Deposit>>> findDeposits(@AuthenticationPrincipal final Principal principal) {
         final String username = TokenExtractionHelper.extractUsername(principal);
         return depositService.findAllDeposits(username)
                 .doOnSuccess(deposits -> log.info("{} Deposit for username={} found.", deposits.size(), username))
@@ -53,7 +52,6 @@ public class DepositEndpoint {
 
     @GetMapping(value = "{depositName}", produces = APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Deposit>> findDeposit(@AuthenticationPrincipal final Principal principal,
-                                                     @RequestHeader("Authorization") final String authHeader,
                                                      @PathVariable final String depositName) {
         final String username = TokenExtractionHelper.extractUsername(principal);
         return depositService.findDepositByName(username, decodeUriParam(depositName))

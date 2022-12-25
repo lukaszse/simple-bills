@@ -13,7 +13,7 @@ import static pl.com.seremak.simplebills.commons.constants.MessageQueue.TRANSACT
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class messageListener {
+public class MessageListener {
 
     private final DepositService depositService;
 

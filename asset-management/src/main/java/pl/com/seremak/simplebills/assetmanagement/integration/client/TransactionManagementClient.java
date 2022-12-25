@@ -14,7 +14,7 @@ import static pl.com.seremak.simplebills.assetmanagement.utils.HttpClientUtils.U
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class TransactionsClient {
+public class TransactionManagementClient {
 
     private final WebClient transactionClient;
 
