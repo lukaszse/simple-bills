@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.com.seremak.simplebills.commons.dto.http.TokenUser;
+import pl.com.seremak.simplebills.commons.dto.http.UserActivityDto;
 import pl.com.seremak.simplebills.commons.model.UserActivity;
 import pl.com.seremak.simplebills.commons.utils.TokenExtractionHelper;
 import pl.com.seremak.simplebills.transactionmanagement.service.UserActivityService;
@@ -36,10 +37,10 @@ public class UseActivityEndpoint {
     }
 
     @PostMapping(value = "/activity", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<UserActivity>> addUserActivity(@AuthenticationPrincipal final Principal principal, @RequestBody final String activity) {
+    Mono<ResponseEntity<UserActivity>> addUserActivity(@AuthenticationPrincipal final Principal principal, @RequestBody final UserActivityDto userActivityDto) {
         final TokenUser tokenUser = TokenExtractionHelper.extractTokenUser(principal);
         log.info(USER_INFO_FETCHED_MESSAGE, tokenUser.getPreferredUsername());
-        return userActivityService.addUserActivity(tokenUser.getPreferredUsername(), activity)
+        return userActivityService.addUserActivity(tokenUser.getPreferredUsername(), userActivityDto.getActivity())
                 .doOnSuccess(userActivity -> log.info(USER_ACTIVITY_ADDED_MESSAGE, userActivity.getActivity(), userActivity.getUsername()))
                 .map(ResponseEntity::ok);
     }

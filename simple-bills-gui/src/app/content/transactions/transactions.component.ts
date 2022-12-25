@@ -14,7 +14,7 @@ import { first, Observable } from "rxjs";
 @Component({
   selector: 'app-transactions',
   templateUrl: './transactions.component.html',
-  styleUrls: ['./transactions.component.css'],
+  styleUrls: ['./transactions.component.scss'],
   providers: [DecimalPipe, DatePipe]
 })
 export class TransactionsComponent implements OnInit {

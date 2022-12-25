@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Observable, retry, tap } from "rxjs";
+import { first, Observable, retry, tap } from "rxjs";
 import { HttpUtils } from "../utils/http-client.utils";
 import { environment } from "../environments/environment";
 import { UserDto } from "../dto/user.dto";
@@ -44,9 +44,12 @@ export class UserService {
         {activity: activity},
         {headers: HttpUtils.prepareHeaders(), observe: 'response'})
       .pipe(
+        first(),
         tap(console.log),
-        retry({count: 3, delay: 1000})
-      );
+        retry({count: 3, delay: 1000}),
+        map(() => true)
+      )
+      .subscribe();
   }
 
   private getShowUserName(user: UserDto): string {

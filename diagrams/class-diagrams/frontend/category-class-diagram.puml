@@ -1,0 +1,49 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+
+class CategoryComponent {
+    +category: CategoryModel
+    +categories: CategoryModel[]
+    +allowableReplacementCategories: CategoryModel[]
+    +totalLimit: number
+    +categoryToDelete: string
+    +replacementCategory: string
+    +expenseTransactionType: boolean
+    +findCategorySubscription: Subscription
+    -categoryService: CategoryService
+    -modalService: NgbModal
+    +ngOnInit(): void
+    +ngOnDestroy(): void
+    +openCreationWindow(transactionType: "INCOME" | "EXPENSE", content): void
+    +openEditWindowForSelectedCategory(category: CategoryModel, content): void
+    +openDeletionConfirmationWindow(categoryName: string, content): void
+    -setFormCategoryFields(category: CategoryModel): void
+    -resetFormFields(transactionType: TransactionType): void
+    -{static}static countTotalLimit(categories: CategoryModel[]): number
+}
+
+class CategoryService {
+  -{static} host: string
+  -{static} endpoint: string
+  -httpClient: HttpClient
+  +categories$: Observable<CategoryModel[]>
+  +createCategory(category: CategoryModel): Observable<string | Object>
+  +updateCategory(category: CategoryModel): Observable<string | Object>
+  +findCategories(transactionType?: TransactionType): Observable<CategoryModel[]>
+  +deleteCategory(categoryName: string, categoryToReplace: string): Observable<string | Object>
+  -filterCategories(categories: CategoryModel[], transactionType?: TransactionType): CategoryModel[]
+}
+
+interface CategoryModel {
+  name: string
+  transactionType: TransactionType
+  limit: number
+}
+
+CategoryComponent o-- CategoryService
+CategoryComponent ..> CategoryModel
+CategoryService .right.> CategoryModel
+
+
+@enduml
