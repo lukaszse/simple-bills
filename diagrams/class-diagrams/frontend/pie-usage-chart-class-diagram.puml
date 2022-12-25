@@ -1,0 +1,41 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class PieUsageChartComponent {
+
+    +view: number[]
+    +gradient: boolean
+    +showLegend: boolean
+    +showLabels: boolean
+    +isDoughnut: boolean
+    +maxLength: number
+    +colorScheme
+    +pieChartService: UsageLimitPieChartService
+}
+
+class UsageLimitPieChartService {
+    -host: string
+    -endpoint: string
+    -_findCategoryUsageLimit$ = new Subject<void>()
+    -_findTotalUsageLimit$ = new Subject<void>()
+    -_categoryUsagePieChart$ = new BehaviorSubject<CategoryUsagePieChartModel[]>(null)
+    -_loading$ = new BehaviorSubject<boolean>(true)
+    +refresh(): void
+    +get categoryUsagePieChart$(): : Observable<CategoryUsagePieChartModel[]>
+    +get loading$(): Observable<boolean>
+    -findCategoryUsageLimits(total?: boolean): Observable<CategoryUsageLimitModel[]>
+    -{static}preparePieCharData(categoryUsageLimits: CategoryUsageLimitModel[]): CategoryUsagePieChartModel[]
+    -{static}calculateTotalUsage(categoryUsageLimits: CategoryUsageLimitModel[])
+    -{static}prepareCategoryNameLabel(categoryUsageLimit: CategoryUsageLimitModel, totalUsage: number): string
+}
+
+class CategoryUsagePieChartModel {
+  +name: string
+  +value: number
+}
+
+PieUsageChartComponent o-- UsageLimitPieChartService
+UsageLimitPieChartService .up.> CategoryUsagePieChartModel
+PieUsageChartComponent .right.> CategoryUsagePieChartModel
+
+@enduml

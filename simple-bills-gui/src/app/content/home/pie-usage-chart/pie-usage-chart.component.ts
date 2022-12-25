@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { UsageLimitPieChartService } from "../../../../service/usage-limit-pie-chart.service";
-import { CurrencyPipe } from "@angular/common";
 import {
   brown,
   darkGreen,
@@ -18,7 +17,7 @@ import {
 })
 export class PieUsageChartComponent implements OnInit {
 
-  view: any[] = [450, 350];
+  view: number[] = [450, 350];
 
   // options
   gradient: boolean = false;
@@ -39,7 +38,7 @@ export class PieUsageChartComponent implements OnInit {
     ],
   };
 
-  constructor(public pieChartService: UsageLimitPieChartService, private currencyPipe: CurrencyPipe) {
+  constructor(public pieChartService: UsageLimitPieChartService) {
   }
 
   ngOnInit(): void {
