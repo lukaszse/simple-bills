@@ -1,8 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import {CategoryModel} from "../../../dto/category.model";
-import {CategoryService} from "../../../service/category.service";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {TransactionType} from "../../../dto/transaction.model";
+import { CategoryModel } from "../../../dto/category.model";
+import { CategoryService } from "../../../service/category.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { TransactionType } from "../../../dto/transaction.model";
 import { first, Subscription } from "rxjs";
 
 @Component({
@@ -35,11 +35,11 @@ export class CategoryComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.findCategorySubscription = this.categoryService.findCategories()
       .subscribe(
-      (categories) => {
-        this.categories = categories;
-        this.totalLimit = CategoryComponent.countTotalLimit(categories);
-      }
-    );
+        (categories) => {
+          this.categories = categories;
+          this.totalLimit = CategoryComponent.countTotalLimit(categories);
+        }
+      );
   }
 
   ngOnDestroy(): void {
@@ -90,16 +90,16 @@ export class CategoryComponent implements OnInit, OnDestroy {
     this.category.limit = category.limit;
   }
 
+  private resetFormFields(transactionType: TransactionType) {
+    this.category.name = null;
+    this.category.transactionType = transactionType;
+    this.category.limit = null;
+  }
+
   private static countTotalLimit(categories: CategoryModel[]): number {
     return categories
       .map((category) => category.limit)
       .map(limit => limit == null ? 0 : limit)
       .reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-  }
-
-  resetFormFields(transactionType: TransactionType) {
-    this.category.name = null;
-    this.category.transactionType = transactionType;
-    this.category.limit = null;
   }
 }
