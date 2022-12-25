@@ -61,6 +61,7 @@ class Deposit {
     -Integer durationInMonths
     -BigDecimal annualInterestRate
     -Integer transactionNumber
+    .. getters, setters and builder ..
 }
 
 enum Deposit.DepositType {
@@ -120,7 +121,7 @@ class TransactionDto {
     -String description
     -String category
     -BigDecimal amount
-    .. getters and setters ..
+    .. getters, setters and builder ..
 }
 
 class CategoryDto {
@@ -129,7 +130,7 @@ class CategoryDto {
     -String transactionType
     -Category.Type type
     -BigDecimal limit
-    .. getters and setters ..
+    .. getters, setters and builder ..
 }
 
 class TransactionEventDto {
@@ -139,6 +140,8 @@ class TransactionEventDto {
         -BigDecimal amount
         -ActionType type
         -Instant date
+        .. getters, setters and builder ..
+
 }
 
 DepositEndpoint .right.> Principal

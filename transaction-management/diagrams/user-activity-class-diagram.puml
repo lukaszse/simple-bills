@@ -25,8 +25,10 @@ interface Principal {
 
 class MessagePublisher {
     -RabbitTemplate
-    +void sendUserCreationMessage(String username)
-    +void sendTransactionEventMessage(TransactionEventDto transactionEventDto)
+    +void sendUserCreationMessage(
+    String username)
+    +void sendTransactionEventMessage(
+    TransactionEventDto transactionEventDto)
 }
 
 interface UserActivityRepository {
@@ -36,7 +38,7 @@ interface UserActivityRepository {
 class UserActivity {
     -String username
     -Activity activity
-    ... getters and setters..
+    ... getters, setters and builder..
 }
 
 enum UserActivity.Activity {
@@ -45,7 +47,8 @@ enum UserActivity.Activity {
 }
 
 class UserActivityConverter {
-    +{static} UserActivity toUserActivity(String username, String activityNae)
+    +{static} UserActivity toUserActivity(
+    String username, String activityNae)
 }
 
 class TokenExtractionHelper {
@@ -59,17 +62,19 @@ class TokenExtractionHelper {
 
 interface ReactiveCrudRepository
 
-UserActivityEndpoint o--- UserActivityService
+UserActivityEndpoint o-- UserActivityService
 UserActivityEndpoint .right.> Principal
-UserActivityService o---- MessagePublisher
+UserActivityService o--- MessagePublisher
 UserActivityService o-- UserActivityRepository
 UserActivityService ..> UserActivityConverter
 UserActivity <.up. UserActivityEndpoint
 UserActivity <.up. UserActivityService
 UserActivity <.. UserActivityRepository
 UserActivity +-left- UserActivity.Activity
+UserActivityConverter .left.> UserActivity
 UserActivityEndpoint .up.> TokenExtractionHelper
 UserActivityRepository --|> ReactiveCrudRepository
+TokenExtractionHelper ..> Principal
 
 
 @enduml

@@ -3,11 +3,16 @@
 
 class TransactionEndpoint {
     -TransactionService transactionService
-    +Mono<ResponseEntity<Transaction>> createTransaction(Principal principal, TransactionDto transactionDto)
-    +Mono<ResponseEntity<Transaction>> findTransactionByTransactionNumber(Principal principal, Integer transactionNumber)
-    +Mono<ResponseEntity<List<Transaction>>>findAllTransactionsByCategory(Principal principal, TransactionQueryParams params)
-    +Mono<ResponseEntity<Void>> deleteTransaction(Principal principal, Integer transactionNumber)
-    +Mono<ResponseEntity<Transaction>> updateTransaction(Principal principal, TransactionDto transactionDto, Integer transactionNumber)
+    +Mono<ResponseEntity<Transaction>> createTransaction(
+    Principal principal, TransactionDto transactionDto)
+    +Mono<ResponseEntity<Transaction>> findTransactionByTransactionNumber(
+    Principal principal, Integer transactionNumber)
+    +Mono<ResponseEntity<List<Transaction>>>findAllTransactionsByCategory(
+    Principal principal, TransactionQueryParams params)
+    +Mono<ResponseEntity<Void>> deleteTransaction(
+    Principal principal, Integer transactionNumber)
+    +Mono<ResponseEntity<Transaction>> updateTransaction(
+    Principal principal, TransactionDto transactionDto, Integer transactionNumber)
 }
 
 class MessageListener {
@@ -23,6 +28,7 @@ class CategoryEventDto {
     BigDecimal limit
     BigDecimal usageOfLimit
     String replacementCategoryName
+    .. getters, setters and builder ..
 }
 
 class TransactionService {
@@ -33,20 +39,28 @@ class TransactionService {
     -SequentialIdRepository sequentialIdRepository
     -MessagePublisher messagePublisher
     +Mono<Transaction> createTransaction(String username, TransactionDto transactionDto)
-    +Mono<Transaction> updateTransaction(String username, Integer transactionNumber, TransactionDto transactionDto)
-    +Mono<Transaction> findTransactionByTransactionNumber(String username, Integer transactionNumber)
-    +Mono<Tuple2<List<Transaction>, Long>> findTransactionsByCategory(String username, TransactionQueryParams params)
-    +Mono<Transaction> deleteTransactionByTransactionNumber(String username, Integer transactionNumber)
+    +Mono<Transaction> updateTransaction(
+    String username, Integer transactionNumber, TransactionDto transactionDto)
+    +Mono<Transaction> findTransactionByTransactionNumber(
+    String username, Integer transactionNumber)
+    +Mono<Tuple2<List<Transaction>, Long>> findTransactionsByCategory(
+    String username, TransactionQueryParams params)
+    +Mono<Transaction> deleteTransactionByTransactionNumber(
+    String username, Integer transactionNumber)
     +Flux<Transaction> handleCategoryDeletion(CategoryEventDto categoryEventDto)
     -Mono<Transaction> createTransaction(Transaction transaction)
     -private Mono<Transaction> updateTransaction(Transaction transaction)
-    -Flux<Transaction> changeTransactionCategory(String username, String oldCategoryName, String newCategoryName)
+    -Flux<Transaction> changeTransactionCategory(
+    String username, String oldCategoryName, String newCategoryName)
     -Mono<Long> countTransactionsByCategory(String username, TransactionQueryParams params)
-    -void prepareAndSendTransactionEventMessage(Transaction transaction, ActionType actionType)
-    -void prepareAndSendTransactionUpdateActionMessage(Transaction oldTransaction, Transaction newTransaction)
+    -void prepareAndSendTransactionEventMessage(
+    Transaction transaction, ActionType actionType)
+    -void prepareAndSendTransactionUpdateActionMessage(
+    Transaction oldTransaction, Transaction newTransaction)
     -{static} Transaction setTransactionNumber(Transaction transaction, Integer id)
     -{static} Transaction setCurrentDateIfMissing(Transaction transaction)
-    -{static} TransactionDto updateCategory(Transaction transaction, String newCategoryName)
+    -{static} TransactionDto updateCategory(
+    Transaction transaction, String newCategoryName)
 }
 
 
@@ -65,7 +79,7 @@ class TransactionDto {
     -String description
     -String category
     -BigDecimal amount
-    .. getters and setters ..
+    .. getters, setters and builder ..
 }
 
 class TransactionQueryParams {
@@ -109,7 +123,7 @@ class Transaction {
     -String description
     -String category
     -BigDecimal amount
-    .. getters and setters ..
+    .. getters, setters and builder ..
 }
 
 enum Transaction.Type {
