@@ -19,6 +19,7 @@ import { LimitUsageChartsComponent } from './content/limit-usage-chart/limit-usa
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { PieUsageChartComponent } from "./content/pie-usage-chart/pie-usage-chart.component";
 import { AssetsComponent } from './content/assets/assets.component';
+import { LoginComponent } from "./content/login/login.component";
 
 
 @NgModule({
@@ -33,7 +34,8 @@ import { AssetsComponent } from './content/assets/assets.component';
     NgbdSortableHeader,
     LimitUsageChartsComponent,
     PieUsageChartComponent,
-    AssetsComponent
+    AssetsComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
