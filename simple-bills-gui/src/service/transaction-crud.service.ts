@@ -1,7 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { HttpUtils } from "../utils/http-client.utils";
-import { TransactionDto } from "../dto/transaction.dto";
 import { catchError, Observable, retry, tap } from "rxjs";
 import { TransactionSearchService } from "./transaction-search.service";
 import { environment } from "../environments/environment";
@@ -16,7 +15,7 @@ export class TransactionCrudService {
   constructor(private httpClient: HttpClient, private transactionSearchService: TransactionSearchService) {
   }
 
-  createTransaction(transaction: TransactionDto): Observable<string | Object> {
+  createTransaction(transaction: TransactionModel): Observable<string | Object> {
     const url = HttpUtils.prepareUrl(TransactionCrudService.host, TransactionCrudService.endpoint);
     return this.httpClient
       .post<string>(url, transaction, {headers: HttpUtils.prepareHeaders()})
@@ -40,7 +39,7 @@ export class TransactionCrudService {
       )
   }
 
-  deleteBill(transactionNumber: number | string): Observable<number | Object> {
+  deleteTransaction(transactionNumber: number | string): Observable<number | Object> {
     const url = `${HttpUtils.prepareUrlWithId(TransactionCrudService.host, TransactionCrudService.endpoint, transactionNumber)}`;
     return this.httpClient
       .delete<string>(url, {headers: HttpUtils.prepareHeaders()})

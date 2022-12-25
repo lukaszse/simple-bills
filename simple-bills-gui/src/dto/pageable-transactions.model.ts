@@ -6,8 +6,8 @@ export class PageableTransactionsModel {
   totalCount: number
   pageTotalAmount?: number
 
-  constructor(bills: TransactionModel[], totalCount: number, totalAmount?: number) {
-    this.transactions = bills;
+  constructor(transactions: TransactionModel[], totalCount: number, totalAmount?: number) {
+    this.transactions = transactions;
     this.totalCount = totalCount;
     this.pageTotalAmount = totalAmount;
   }

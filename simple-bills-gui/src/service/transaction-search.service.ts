@@ -40,7 +40,7 @@ export class TransactionSearchService {
       .subscribe((result) => this._pageableTransactions$.next(result));
   }
 
-  public refresh() {
+  public refresh(): void {
     this._search$.next();
   }
 
@@ -84,7 +84,7 @@ export class TransactionSearchService {
       }))
   }
 
-  public static setAmountSum(pageableBills: PageableTransactionsModel): PageableTransactionsModel {
+  private static setAmountSum(pageableBills: PageableTransactionsModel): PageableTransactionsModel {
     pageableBills.pageTotalAmount = this.countAmountSum(pageableBills.transactions)
     return pageableBills;
   }
@@ -117,23 +117,23 @@ export class TransactionSearchService {
     return this._loading$.asObservable();
   }
 
-  get page() {
+  get page(): number {
     return this._state.pageNumber;
   }
 
-  get pageSize() {
+  get pageSize(): number {
     return this._state.pageSize;
   }
 
-  get searchTerm() {
+  get searchTerm(): string {
     return this._state.searchTerm;
   }
 
-  get dateFrom() {
+  get dateFrom(): Date {
     return this._state.dateFrom;
   }
 
-  get dateTo() {
+  get dateTo(): Date {
     return this._state.dateTo;
   }
 

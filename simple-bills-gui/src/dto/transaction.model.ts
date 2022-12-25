@@ -1,6 +1,6 @@
 export interface TransactionModel {
   user?: string;
-  transactionNumber: string;
+  transactionNumber: string | number;
   type: TransactionType;
   category: string;
   description: string;
