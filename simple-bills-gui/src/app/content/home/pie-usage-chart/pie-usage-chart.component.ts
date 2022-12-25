@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { UsageLimitPieChartService } from "../../../service/usage-limit-pie-chart.service";
+import { UsageLimitPieChartService } from "../../../../service/usage-limit-pie-chart.service";
 import { CurrencyPipe } from "@angular/common";
 import {
   brown,
@@ -9,7 +9,7 @@ import {
   lightGreen,
   lightPurple,
   pink
-} from "../../../utils/chart-colors.enum";
+} from "../../../../utils/chart-colors.enum";
 
 @Component({
   selector: 'app-pie-usage-chart',
