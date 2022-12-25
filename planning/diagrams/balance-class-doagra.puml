@@ -16,7 +16,7 @@ class TransactionPostingService{
 
 class BalanceEndpoint {
     -BalanceService balanceService
-    +finsBalance(JwtAuthenticationToken principal
+    +finsBalance(Principal principal)
 }
 
 class Balance {

@@ -10,7 +10,8 @@ class MessageListener {
     -UserSetupService userSetupService
     -TransactionPostingService transactionPostingService
     +void receiveUserCreationMessage(final String username)
-    +void receiveTransactionEventMessage(final Message<TransactionEventDto> transactionMessage)
+    +void receiveTransactionEventMessage(
+    final Message<TransactionEventDto> transactionMessage)
 }
 
 class TransactionPostingService{

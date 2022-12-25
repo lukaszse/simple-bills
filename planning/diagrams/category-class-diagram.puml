@@ -147,7 +147,7 @@ interface Principal {
 
 interface ReactiveCrudRepository
 
-CategoryEndpoint ..> Principal
+CategoryEndpoint .right.> Principal
 CategoryEndpoint ..> Category
 CategoryEndpoint .right.> CategoryDto
 CategoryService .up.> CategoryDto
@@ -163,11 +163,11 @@ CategoryService o-left- MessagePublisher
 MessagePublisher .up.> CategoryEventDto
 CategoryService .left.> CategoryEventDto
 CategorySearchRepository .left.> Category
-CategoryRepository ..> Category
+CategoryRepository .up.> Category
 Category +-left- Category.Type
 CategoryDto ..> Category.Type
-CategoryUsageLimitService o-- CategoryUsageLimitRepository
-CategoryUsageLimitRepository --|> ReactiveCrudRepository
+CategoryUsageLimitService o--- CategoryUsageLimitRepository
+CategoryUsageLimitRepository -left-|> ReactiveCrudRepository
 CategoryUsageLimitService o-- CategoryUsageLimitSearchRepository
 
 
