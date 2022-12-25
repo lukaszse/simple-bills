@@ -1,14 +1,13 @@
-import {Component, OnInit, QueryList, ViewChildren} from '@angular/core';
-import {DatePipe, DecimalPipe, formatDate} from "@angular/common";
-import {NgbdSortableHeader, SortEvent, SortUtils} from "../../../utils/sortable.directive";
-import {TransactionSearchService} from "../../../service/transaction-search.service";
-import {TransactionCrudService} from "../../../service/transaction-crud.service";
-import {NgbModal} from "@ng-bootstrap/ng-bootstrap";
-import {TransactionDto} from "../../../dto/transaction.dto";
-import {CategoryModel} from "../../../dto/category.model";
-import {CategoryService} from "../../../service/category.service";
-import {TransactionModel, TransactionType} from "../../../dto/transaction.model";
-import {BalanceService} from "../../../service/balance.service";
+import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { DatePipe, DecimalPipe, formatDate } from "@angular/common";
+import { NgbdSortableHeader, SortEvent, SortUtils } from "../../../utils/sortable.directive";
+import { TransactionSearchService } from "../../../service/transaction-search.service";
+import { TransactionCrudService } from "../../../service/transaction-crud.service";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { CategoryModel } from "../../../dto/category.model";
+import { CategoryService } from "../../../service/category.service";
+import { TransactionModel, TransactionType } from "../../../dto/transaction.model";
+import { BalanceService } from "../../../service/balance.service";
 import { first, Observable } from "rxjs";
 
 
@@ -20,7 +19,7 @@ import { first, Observable } from "rxjs";
 })
 export class TransactionsComponent implements OnInit {
 
-  transactionDto: TransactionDto = {
+  transactionDto: TransactionModel = {
     transactionNumber: null,
     type: null,
     category: null,
@@ -83,13 +82,13 @@ export class TransactionsComponent implements OnInit {
   openDeletionConfirmationWindow(transactionNumber: number | string, content) {
     this.selectedTransaction = transactionNumber;
     this.modalService.open(content, {ariaLabelledBy: "modal-transaction-deletion"}).result.then(
-      () => this.transactionCrudService.deleteBill(transactionNumber)
+      () => this.transactionCrudService.deleteTransaction(transactionNumber)
         .pipe(first())
         .subscribe(() => this.ngOnInit()),
       () => console.log("TransactionModel deletion canceled"));
   }
 
-  resetFormFields(transactionType?: TransactionType) {
+  private resetFormFields(transactionType?: TransactionType) {
     this.categoriesToSelect$ = this.categoryService.findCategories(transactionType);
     this.transactionDto.type = transactionType;
     this.transactionDto.category = null;
@@ -98,7 +97,7 @@ export class TransactionsComponent implements OnInit {
     this.transactionDto.date = formatDate(Date.now(), "yyyy-MM-dd", "en");
   }
 
-  setFormFields(transaction: TransactionModel) {
+  private setFormFields(transaction: TransactionModel) {
     this.categoriesToSelect$ = this.categoryService.findCategories(transaction.type);
     this.transactionDto.transactionNumber = transaction.transactionNumber
     this.transactionDto.type = transaction.type;
@@ -108,7 +107,7 @@ export class TransactionsComponent implements OnInit {
     this.transactionDto.date = formatDate(transaction.date, "yyyy-MM-dd", "en");
   }
 
-  prepareTransactionToUpdate(transaction: TransactionModel): TransactionModel {
+  private prepareTransactionToUpdate(transaction: TransactionModel): TransactionModel {
     transaction.type = this.transactionDto.type;
     transaction.category = this.transactionDto.category;
     transaction.description = this.transactionDto.description;

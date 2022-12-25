@@ -65,7 +65,7 @@ export class CategoryService {
       )
   }
 
-  filterCategories(categories: CategoryModel[], transactionType?: TransactionType): CategoryModel[] {
+  private filterCategories(categories: CategoryModel[], transactionType?: TransactionType): CategoryModel[] {
     return transactionType ?
       categories.filter(category => category.transactionType === transactionType) : categories;
   }

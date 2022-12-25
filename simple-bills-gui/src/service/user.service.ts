@@ -3,7 +3,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable, retry, tap } from "rxjs";
 import { HttpUtils } from "../utils/http-client.utils";
 import { environment } from "../environments/environment";
-import { User } from "../dto/user";
+import { UserDto } from "../dto/user.dto";
 import { map } from "rxjs/operators";
 
 
@@ -19,7 +19,7 @@ export class UserService {
 
   getUser(): Observable<string> {
     return this.httpClient
-      .get<User>(HttpUtils.prepareUrl(UserService.host, UserService.userInfoEndpoint),
+      .get<UserDto>(HttpUtils.prepareUrl(UserService.host, UserService.userInfoEndpoint),
         {headers: HttpUtils.prepareHeaders(), observe: 'response'})
       .pipe(
         tap(console.log),
@@ -40,7 +40,7 @@ export class UserService {
 
   private addUserActivity(activity: "LOGGING_IN" | "LOGGING_OUT"): void {
     this.httpClient
-      .post<User>(HttpUtils.prepareUrl(UserService.host, UserService.userActivityEndpoint),
+      .post<UserDto>(HttpUtils.prepareUrl(UserService.host, UserService.userActivityEndpoint),
         {activity: activity},
         {headers: HttpUtils.prepareHeaders(), observe: 'response'})
       .pipe(
@@ -49,7 +49,7 @@ export class UserService {
       );
   }
 
-  private getShowUserName(user: User): string {
+  private getShowUserName(user: UserDto): string {
     if (user.givenName) {
       return user.givenName;
     } else if (user.name) {

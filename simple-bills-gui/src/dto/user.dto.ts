@@ -1,4 +1,4 @@
-export interface User {
+export interface UserDto {
   preferredUsername: string;
   name: string
   givenName: string

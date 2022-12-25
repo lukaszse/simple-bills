@@ -1,0 +1,57 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+class HomeComponent {
+    +loggedUsername: Observable<string>
+    +balanceService: BalanceService
+    -userService: UserService
+    +ngOnInit(): void
+    +getUser(): Observable<string>
+}
+
+class BalanceService {
+    -{static}host: string
+    -{static}endpoint: string
+    -_findBalance$: Subject<void>
+    -_balance$: BehaviorSubject<BalanceModel>
+    -_loading$: BehaviorSubject<boolean>
+    -httpClient: HttpClient
+   +findBalance(): Observable<BalanceModel>
+   +refresh(): void
+   +get balance$(): Observable<BalanceModel>
+   +get loading$(): Observable<boolean>
+}
+
+interface BalanceModel {
+  username: string
+  balance: number
+}
+
+class UserService {
+    -{static}host: string
+    -{static}userInfoEndpoint: string
+    -{static}userActivityEndpoint: string
+    -httpClient: HttpClient
+    +getUser(): Observable<string>
+    +addUserLoggingIn(): void
+    +addUserLoggingOut(): void
+    -private addUserActivity(
+    activity: "LOGGING_IN" | "LOGGING_OUT"): void
+    -getShowUserName(user: UserDto): string
+}
+
+interface UserDto {
+  preferredUsername: string;
+  name: string
+  givenName: string
+  familyName: string
+}
+
+HomeComponent o-- BalanceService
+HomeComponent o-- UserService
+HomeComponent .right.> BalanceModel
+BalanceService .up.> BalanceModel
+UserService .up.> UserDto
+
+
+@enduml
