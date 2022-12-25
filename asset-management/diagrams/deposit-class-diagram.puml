@@ -1,0 +1,8 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+class DepositEndpoint {
+    -DepositService depositService
+
+}
+@enduml
