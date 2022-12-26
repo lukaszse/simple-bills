@@ -24,7 +24,6 @@ export class MenuComponent implements OnInit {
   }
 
   login() {
-    this.userService.addUserLoggingIn()
     window.location.href = this.oauth2Service.prepareOAuthProviderLoginUrl();
   }
 
