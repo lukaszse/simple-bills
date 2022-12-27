@@ -1,0 +1,17 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor Użytkownik as user
+participant "Simple bills GUI\n(Frontend)" as gui
+participant "Transaction management\n(service)" as transaction
+participant "Planning \n(service)" as planning
+participant "Asset management" as asset
+queue "Queue\n(RabbitMQ)" as rabbit
+
+user -> gui: dodaj depozyt
+
+gui -> asset: POST /deposits\n+request body
+
+@enduml
