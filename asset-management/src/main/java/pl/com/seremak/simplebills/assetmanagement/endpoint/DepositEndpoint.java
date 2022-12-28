@@ -1,6 +1,11 @@
 package pl.com.seremak.simplebills.assetmanagement.endpoint;
 
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +13,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.com.seremak.simplebills.assetmanagement.service.DepositService;
 import pl.com.seremak.simplebills.commons.dto.http.DepositDto;
+import pl.com.seremak.simplebills.commons.model.Balance;
 import pl.com.seremak.simplebills.commons.model.Deposit;
 import pl.com.seremak.simplebills.commons.utils.TokenExtractionHelper;
 import reactor.core.publisher.Mono;
@@ -31,6 +37,15 @@ public class DepositEndpoint {
 
     private final DepositService depositService;
 
+    @Operation(summary = "Create deposit")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Deposit created",
+                    content = {@Content(mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Balance.class))}),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content)})
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Deposit>> createDeposit(@AuthenticationPrincipal final Principal principal,
                                                        @RequestHeader("Authorization") final String authHeader,
@@ -42,6 +57,13 @@ public class DepositEndpoint {
                 .map(deposit -> prepareCreatedResponse(DEPOSITS_URI_PATTERN, deposit.getName(), deposit));
     }
 
+    @Operation(summary = "Get all deposits")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deposits found",
+                    content = {@Content(mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Balance.class))}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content)})
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<List<Deposit>>> findDeposits(@AuthenticationPrincipal final Principal principal) {
         final String username = TokenExtractionHelper.extractUsername(principal);
@@ -50,6 +72,15 @@ public class DepositEndpoint {
                 .map(ResponseEntity::ok);
     }
 
+    @Operation(summary = "Get deposit by name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deposit found",
+                    content = {@Content(mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Balance.class))}),
+            @ApiResponse(responseCode = "404", description = "Not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content)})
     @GetMapping(value = "{depositName}", produces = APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Deposit>> findDeposit(@AuthenticationPrincipal final Principal principal,
                                                      @PathVariable final String depositName) {
@@ -59,6 +90,17 @@ public class DepositEndpoint {
                 .map(ResponseEntity::ok);
     }
 
+    @Operation(summary = "Update deposit by name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Deposit found",
+                    content = {@Content(mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Balance.class))}),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content)})
     @PatchMapping(value = "{depositName}", produces = APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Deposit>> updateDeposit(@AuthenticationPrincipal final Principal principal,
                                                        @RequestHeader("Authorization") final String authHeader,
@@ -72,6 +114,15 @@ public class DepositEndpoint {
                 .map(ResponseEntity::ok);
     }
 
+    @Operation(summary = "Delete deposit by name")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Deposit found",
+                    content = {@Content(mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Balance.class))}),
+            @ApiResponse(responseCode = "404", description = "Not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content)})
     @DeleteMapping(value = "{depositName}")
     public Mono<ResponseEntity<Void>> deleteDeposit(@AuthenticationPrincipal final Principal principal,
                                                     @RequestHeader("Authorization") final String authHeader,

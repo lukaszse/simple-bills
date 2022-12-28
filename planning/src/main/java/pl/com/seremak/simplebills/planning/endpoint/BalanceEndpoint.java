@@ -39,7 +39,7 @@ public class BalanceEndpoint {
             @ApiResponse(responseCode = "200", description = "Balance found",
                     content = {@Content(mediaType = APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = Balance.class))}),
-            @ApiResponse(responseCode = "404", description = "Balance not found",
+            @ApiResponse(responseCode = "404", description = "Not found",
                     content = @Content),
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content)})

@@ -38,3 +38,11 @@ custom-properties:
     - garden
   income-categories:
     - salary
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui

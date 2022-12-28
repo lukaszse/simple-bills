@@ -21,3 +21,11 @@ custom-properties:
   allowed-origin: "http://localhost:8080"
   transaction-url: "http://localhost:8081"
   planning-url: "http://localhost:8082"
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui
