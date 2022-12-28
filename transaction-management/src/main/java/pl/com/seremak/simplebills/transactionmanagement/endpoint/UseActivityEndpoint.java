@@ -1,5 +1,10 @@
 package pl.com.seremak.simplebills.transactionmanagement.endpoint;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -7,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import pl.com.seremak.simplebills.commons.dto.http.TokenUser;
 import pl.com.seremak.simplebills.commons.dto.http.UserActivityDto;
+import pl.com.seremak.simplebills.commons.model.Transaction;
 import pl.com.seremak.simplebills.commons.model.UserActivity;
 import pl.com.seremak.simplebills.commons.utils.TokenExtractionHelper;
 import pl.com.seremak.simplebills.transactionmanagement.service.UserActivityService;
@@ -28,6 +34,13 @@ public class UseActivityEndpoint {
 
     private final UserActivityService userActivityService;
 
+    @Operation(summary = "Get info about user")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User info found",
+                    content = {@Content(mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = TokenUser.class))}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content)})
     @GetMapping(value = "/info", produces = APPLICATION_JSON_VALUE)
     static Mono<ResponseEntity<TokenUser>> getUserInfo(@AuthenticationPrincipal final Principal principal) {
         final TokenUser tokenUser = TokenExtractionHelper.extractTokenUser(principal);
@@ -36,6 +49,13 @@ public class UseActivityEndpoint {
                 .map(ResponseEntity::ok);
     }
 
+    @Operation(summary = "Add user activity")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User activity added",
+                    content = {@Content(mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = UserActivity.class))}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content)})
     @PostMapping(value = "/activity", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     Mono<ResponseEntity<UserActivity>> addUserActivity(@AuthenticationPrincipal final Principal principal, @RequestBody final UserActivityDto userActivityDto) {
         final TokenUser tokenUser = TokenExtractionHelper.extractTokenUser(principal);

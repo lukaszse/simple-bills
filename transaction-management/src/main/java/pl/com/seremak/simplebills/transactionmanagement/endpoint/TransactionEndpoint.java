@@ -1,5 +1,10 @@
 package pl.com.seremak.simplebills.transactionmanagement.endpoint;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -35,6 +40,15 @@ public class TransactionEndpoint {
     private final TransactionService transactionService;
 
 
+    @Operation(summary = "Create transaction")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Transaction created",
+                    content = {@Content(mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Transaction.class))}),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content)})
     @PostMapping(produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Transaction>> createTransaction(@AuthenticationPrincipal final Principal principal,
                                                                @Valid @RequestBody final TransactionDto transactionDto) {
@@ -46,6 +60,15 @@ public class TransactionEndpoint {
                 .map(transaction -> prepareCreatedResponse(TRANSACTION_URI_PATTERN, String.valueOf(transaction.getTransactionNumber()), transaction));
     }
 
+    @Operation(summary = "Get transaction by transactionNumber")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Transaction found",
+                    content = {@Content(mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Transaction.class))}),
+            @ApiResponse(responseCode = "404", description = "Not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content)})
     @GetMapping(value = "/{transactionNumber}", produces = APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Transaction>> findTransactionByTransactionNumber(@AuthenticationPrincipal final Principal principal,
                                                                                 @PathVariable final Integer transactionNumber) {
@@ -56,6 +79,13 @@ public class TransactionEndpoint {
                 .map(ResponseEntity::ok);
     }
 
+    @Operation(summary = "Get transactions")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Transactions found",
+                    content = {@Content(mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Transaction.class))}),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content)})
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<List<Transaction>>> findAllTransactionsByCategory(@AuthenticationPrincipal final Principal principal,
                                                                                  final TransactionQueryParams params) {
@@ -66,6 +96,13 @@ public class TransactionEndpoint {
                 .map(tuple -> ResponseEntity.ok().headers(prepareXTotalCountHeader(tuple.getT2())).body(tuple.getT1()));
     }
 
+    @Operation(summary = "Delete transaction by transactionNumber")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Transaction deleted"),
+            @ApiResponse(responseCode = "404", description = "Not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content)})
     @DeleteMapping(value = "/{transactionNumber}")
     public Mono<ResponseEntity<Void>> deleteTransaction(@AuthenticationPrincipal final Principal principal,
                                                         @PathVariable final Integer transactionNumber) {
@@ -76,6 +113,17 @@ public class TransactionEndpoint {
                 .map(__ -> ResponseEntity.noContent().build());
     }
 
+    @Operation(summary = "Update transaction by transactionNumber")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Transaction updated",
+                    content = {@Content(mediaType = APPLICATION_JSON_VALUE,
+                            schema = @Schema(implementation = Transaction.class))}),
+            @ApiResponse(responseCode = "400", description = "Bad request",
+                    content = @Content),
+            @ApiResponse(responseCode = "404", description = "Not found",
+                    content = @Content),
+            @ApiResponse(responseCode = "401", description = "Unauthorized",
+                    content = @Content)})
     @PatchMapping(value = "/{transactionNumber}", produces = APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<Transaction>> updateTransaction(@AuthenticationPrincipal final Principal principal,
                                                                @Valid @RequestBody final TransactionDto transactionDto,
