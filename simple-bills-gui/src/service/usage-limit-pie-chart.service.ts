@@ -31,6 +31,19 @@ export class UsageLimitPieChartService {
       });
   }
 
+  refresh(): void {
+    this._findCategoryUsageLimit$.next();
+    this._findTotalUsageLimit$.next()
+  }
+
+  get categoryUsagePieChart$(): Observable<CategoryUsagePieChartModel[]> {
+    return this._categoryUsagePieChart$.asObservable();
+  }
+
+  get loading$(): Observable<boolean> {
+    return this._loading$.asObservable();
+  }
+
   private findCategoryUsageLimits(total?: boolean): Observable<CategoryUsageLimitModel[]> {
     const url = HttpUtils.prepareUrl(UsageLimitPieChartService.host, UsageLimitPieChartService.endpoint);
     const completeUrl = total ? `${url}?total=true` : url;
@@ -41,19 +54,6 @@ export class UsageLimitPieChartService {
         tap(console.log),
         catchError(HttpUtils.handleError),
       );
-  }
-
-  refresh() {
-    this._findCategoryUsageLimit$.next();
-    this._findTotalUsageLimit$.next()
-  }
-
-  get categoryUsagePieChart$() {
-    return this._categoryUsagePieChart$.asObservable();
-  }
-
-  get loading$() {
-    return this._loading$.asObservable();
   }
 
   private static preparePieCharData(categoryUsageLimits: CategoryUsageLimitModel[]): CategoryUsagePieChartModel[] {

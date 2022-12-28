@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { UsageLimitBarChartService } from "../../../service/usage-limit-bar-chart.service";
-import { darkRed, lightGray } from "../../../utils/chart-colors.enum";
+import { UsageLimitBarChartService } from "../../../../service/usage-limit-bar-chart.service";
+import { darkRed, lightGray } from "../../../../utils/chart-colors.enum";
 
 @Component({
   selector: 'app-limit-usage-chart',

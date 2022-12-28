@@ -1,0 +1,72 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor Użytkownik as user
+participant "Simple bills GUI\n(Frontend)" as gui
+participant "Transaction management\n(service)" as transaction
+participant "Planning \n(service)" as planning
+queue "Queue\n(RabbitMQ)" as rabbit
+
+user -> gui: żądanie wyświetlenia\nlisty transakcji
+activate gui
+
+gui -> transaction: GET /transactions\n+ query parameters
+activate transaction
+
+transaction --> gui: zwróć listę transakcji \napplication/json
+deactivate transaction
+
+gui -> user: wyświetl listę transakcji
+deactivate gui
+
+user -> gui: kliknij przycisk\n"dodaj wydatek"
+activate gui
+
+gui -> planning:GET /categories
+activate planning
+
+planning --> gui: zwróć listę kategorii
+deactivate planning
+
+gui -> user:wyświetl formularz\ndodawania wydatku
+deactivate gui
+
+user -> gui: wypełnij formularz\n i potwierdż dodanie wydatku
+activate gui
+
+gui -> transaction: POST /transactions\n+request body
+activate transaction
+
+transaction -> rabbit: wyślij wiadomość o utworzeniu transakcji\nMessage<TransactionEventDto>
+activate rabbit
+
+transaction --> gui: zwróć utworzoną\ntransakcję
+deactivate transaction
+
+rabbit -> planning: Message<TransactionEventDto>
+deactivate rabbit
+activate planning
+
+planning -> planning: uaktualnij stan środków
+planning -> planning: uaktualnij stan wykorzystania\nlimitu dla kategorii
+deactivate planning
+
+gui -> transaction: GET /transactions\n+ query parameters
+activate transaction
+
+
+transaction -> gui: zwróć listę transakcji \napplication/json
+deactivate transaction
+
+gui -> planning: GET /balance
+activate planning
+
+planning --> gui: zwróć stan środków\napplication/json
+deactivate planning
+
+gui -> user: wyświetl listę transakcji\noraz nowy stan środków
+deactivate gui
+
+@enduml

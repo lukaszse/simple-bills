@@ -25,3 +25,11 @@ custom-properties:
   allowed-origin: ${SIMPLE_BILLS_GUI_URL}
   transaction-url: ${TRANSACTION_URL}
   planning-url: ${PLANNING_URL}
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui

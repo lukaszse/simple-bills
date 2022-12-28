@@ -15,9 +15,9 @@ import { CommonModule, CurrencyPipe, DatePipe, DecimalPipe } from "@angular/comm
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { NgbdSortableHeader } from "../utils/sortable.directive";
 import { NgxChartsModule } from "@swimlane/ngx-charts";
-import { LimitUsageChartsComponent } from './content/limit-usage-chart/limit-usage-charts.component';
+import { LimitUsageChartsComponent } from './content/home/limit-usage-chart/limit-usage-charts.component';
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
-import { PieUsageChartComponent } from "./content/pie-usage-chart/pie-usage-chart.component";
+import { PieUsageChartComponent } from "./content/home/pie-usage-chart/pie-usage-chart.component";
 import { AssetsComponent } from './content/assets/assets.component';
 import { LoginComponent } from "./content/login/login.component";
 

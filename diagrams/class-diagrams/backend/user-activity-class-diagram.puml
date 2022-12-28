@@ -4,7 +4,13 @@
 class UserActivityEndpoint {
     -UserActivityService userActivityService
     +Mono<ResponseEntity<TokenUser>> getUserInfo(Principal principal)
-    +Mono<ResponseEntity<UserActivity>> addUserActivity(Principal principal, String activity)
+    +Mono<ResponseEntity<UserActivity>> addUserActivity(Principal principal, UserActivityDto userActivityDto)
+}
+
+class UserActivityDto {
+    -String activity
+    +String getActivity()
+    +void setActivity(String activity)
 }
 
 class UserActivityService {
@@ -52,18 +58,18 @@ class UserActivityConverter {
 }
 
 class TokenExtractionHelper {
-    +{static} String extractUsername(Principal principal)
-    +{static} TokenUser extractTokenUser(Principal principal)
-    +{static} String extractUsername(JwtAuthenticationToken jwtAuthenticationToken)
+    +{static}String extractUsername(Principal principal)
+    +{static}TokenUser extractTokenUser(Principal principal)
+    +{static}String extractUsername(JwtAuthenticationToken jwtAuthenticationToken)
     +{static}TokenUser extractUsernameFromJwtAuthenticationToken(JwtAuthenticationToken jwtAuthenticationToken)
     +{static}validateUsername(Principal principal, String username)
-
 }
 
 interface ReactiveCrudRepository
 
 UserActivityEndpoint o-- UserActivityService
-UserActivityEndpoint .right.> Principal
+UserActivityEndpoint ...> UserActivityDto
+UserActivityEndpoint .left..> Principal
 UserActivityService o--- MessagePublisher
 UserActivityService o-- UserActivityRepository
 UserActivityService ..> UserActivityConverter

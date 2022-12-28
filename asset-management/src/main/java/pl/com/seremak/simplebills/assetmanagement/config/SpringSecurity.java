@@ -27,6 +27,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SpringSecurity {
 
+    private static final String[] openApiPaths = {"/api-docs", "/api-docs/*", "/*/swagger-ui/*", "/swagger-ui"};
+
     @Value("${custom-properties.allowed-origin}")
     private String allowedOrigin;
 
@@ -37,6 +39,7 @@ public class SpringSecurity {
             final ServerHttpSecurity http) {
         final ServerHttpSecurity serverHttpSecurity = http
                 .authorizeExchange()
+                .pathMatchers(openApiPaths).permitAll()
                 .anyExchange().authenticated()
                 .and()
                 .oauth2ResourceServer().bearerTokenConverter(bearerTokenConverter())

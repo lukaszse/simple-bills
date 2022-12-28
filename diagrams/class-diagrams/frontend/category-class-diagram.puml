@@ -43,7 +43,7 @@ interface CategoryModel {
 
 CategoryComponent o-- CategoryService
 CategoryComponent ..> CategoryModel
-CategoryService .right.> CategoryModel
+CategoryService .up.> CategoryModel
 
 
 @enduml

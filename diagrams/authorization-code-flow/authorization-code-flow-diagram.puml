@@ -1,0 +1,30 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+participant Użytkownik as user
+participant "Simple bills GUI (frontend)" as gui
+participant "Keycloak (OAuth2)" as keycloak
+participant "Transaction management " as transactions
+
+
+user -> gui: kliknięcie w link logowania
+gui -> keycloak: żądanie Authorization Code
+keycloak -> user: Przekierowanie do strony logowania Keycloak
+user -> keycloak: Logowanie
+keycloak -> gui: Authorization Code
+gui -> keycloak: Authorization Code + Client ID + Redirect URI
+keycloak -> keycloak: Walidacja
+keycloak -> gui: ID Token i Access Token
+gui -> transactions: żądanie przesłania danych użytkownika wraz z Access Token'em
+transactions -> gui: odpowiedź
+
+'Użytkownik -> "Simple bills GUI (frontend)": Click login link
+'Bob --> Alice: Authentication Response
+'
+'Alice -> Bob: Another authentication Request
+'Alice <-- Bob: another authentication Response
+
+
+@enduml

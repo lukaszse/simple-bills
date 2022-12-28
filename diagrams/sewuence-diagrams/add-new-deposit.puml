@@ -1,0 +1,56 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+
+actor Użytkownik as user
+participant "Simple bills GUI\n(Frontend)" as gui
+participant "Transaction management\n(service)" as transaction
+participant "Planning\n(service)" as planning
+participant "Asset management\n(service)" as asset
+queue "Queue\n(RabbitMQ)" as rabbit
+
+user -> gui: dodaj depozyt
+activate gui
+
+gui -> asset: POST /deposits\n+request body
+activate asset
+
+asset -> planning:GET /balance
+activate planning
+
+planning --> asset: zwróć stan środków\napplication/json
+deactivate planning
+
+asset -> planning: GET /categories/asset
+activate planning
+
+planning --> asset: zwróć kategorię asset\napplication/json
+deactivate planning
+
+asset -> transaction: POST /transaction
+activate transaction
+
+transaction -> rabbit: wyślij wiadomość o utworzeniu transakcji\nMessage<TransactionEventDto>
+activate rabbit
+
+rabbit -> planning: Message<TransactionEventDto>
+deactivate rabbit
+activate planning
+
+planning -> planning: uaktualnij stan środków
+planning -> planning: uaktualnij stan wykorzystania\nlimitu dla kategorii
+deactivate planning
+
+transaction --> asset: zwróć utworzoną transakcję\napplication/json
+deactivate transaction
+
+asset -> asset: utwórz depozyt
+
+asset --> gui: zwróć utworzony depozyt
+deactivate asset
+
+gui -> user: wyświetl listę\nz nowym depozytem
+deactivate gui
+
+@enduml
