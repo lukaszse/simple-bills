@@ -10,6 +10,7 @@ participant "Planning \n(service)" as planning
 queue "Queue\n(RabbitMQ)" as rabbit
 
 user -> gui: żądanie wyświetlenia\nlisty transakcji
+activate gui
 
 gui -> transaction: GET /transactions\n+ query parameters
 activate transaction
@@ -18,8 +19,10 @@ transaction --> gui: zwróć listę transakcji \napplication/json
 deactivate transaction
 
 gui -> user: wyświetl listę transakcji
+deactivate gui
 
-user -> gui: dodaj transakcje
+user -> gui: kliknij przycisk\n"dodaj wydatek"
+activate gui
 
 gui -> planning:GET /categories
 activate planning
@@ -27,20 +30,22 @@ activate planning
 planning --> gui: zwróć listę kategorii
 deactivate planning
 
-gui -> user:wyświetl formularz\ndodawania przychodu
+gui -> user:wyświetl formularz\ndodawania wydatku
+deactivate gui
 
-user -> gui: dodaj przychód
+user -> gui: wypełnij formularz\n i potwierdż dodanie wydatku
+activate gui
 
 gui -> transaction: POST /transactions\n+request body
 activate transaction
 
-transaction -> rabbit: wyślij wiadomość o utworzeniu transakcji\nTransactionEventDto
+transaction -> rabbit: wyślij wiadomość o utworzeniu transakcji\nMessage<TransactionEventDto>
 activate rabbit
 
-transaction --> gui: zwróć odpowiedź\n z potwierdzeniem\n utworzenia transakcji
+transaction --> gui: zwróć utworzoną\ntransakcję
 deactivate transaction
 
-rabbit -> planning: TransactionEventDto
+rabbit -> planning: Message<TransactionEventDto>
 deactivate rabbit
 activate planning
 
@@ -62,5 +67,6 @@ planning --> gui: zwróć stan środków\napplication/json
 deactivate planning
 
 gui -> user: wyświetl listę transakcji\noraz nowy stan środków
+deactivate gui
 
 @enduml
