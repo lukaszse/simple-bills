@@ -1,11 +1,11 @@
 package pl.com.seremak.simplebills.commons.validator;
 
 import org.springframework.lang.Nullable;
+import pl.com.seremak.simplebills.commons.dto.http.standardQueryParam.BasicDatePeriod;
 import pl.com.seremak.simplebills.commons.dto.http.standardQueryParam.DatePeriod;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import java.time.LocalDate;
 
 public class DatePeriodValidator implements ConstraintValidator<ValidateDatePeriod, DatePeriod> {
 
@@ -15,12 +15,8 @@ public class DatePeriodValidator implements ConstraintValidator<ValidateDatePeri
 
     @Override
     public boolean isValid(@Nullable DatePeriod period, ConstraintValidatorContext constraintValidatorContext) {
-
-        return period == null
-                || ((period.getDateFrom() == null) && period.getDateTo() == null)
+        return period == null || (period.getDateFrom() == null && period.getDateTo() == null)
                 || ((period.getDateFrom() != null && period.getDateTo() != null)
-                && (period.getDateFrom().isBefore(period.getDateTo()) || period.getDateFrom().isEqual(period.getDateTo()))
-                && (LocalDate.now().isBefore(period.getDateFrom()) || LocalDate.now().isEqual(period.getDateFrom()))
-                && (LocalDate.now().isBefore(period.getDateTo()) || LocalDate.now().isAfter(period.getDateTo())));
+                && (period.getDateFrom().isBefore(period.getDateTo()) || period.getDateFrom().isEqual(period.getDateTo())));
     }
 }
