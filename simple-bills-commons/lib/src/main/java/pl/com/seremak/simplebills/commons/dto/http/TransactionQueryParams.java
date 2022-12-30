@@ -2,15 +2,18 @@ package pl.com.seremak.simplebills.commons.dto.http;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import pl.com.seremak.simplebills.commons.dto.http.standardQueryParam.DatePeriod;
 
 import java.time.LocalDate;
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class TransactionQueryParams {
+public class TransactionQueryParams extends DatePeriod {
 
     private String category;
 

@@ -41,6 +41,5 @@ class CategoryEventListenerSpec extends MessageListenerSpec {
             assert transaction.getCategory() == WAGES
             assert transaction.getDescription() == "Salary"
         }
-
     }
 }
