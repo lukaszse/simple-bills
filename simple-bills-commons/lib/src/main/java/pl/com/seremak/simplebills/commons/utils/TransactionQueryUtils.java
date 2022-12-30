@@ -36,7 +36,7 @@ public class TransactionQueryUtils {
 
     private static Query addBetweenDatesCriteria(final TransactionQueryParams params, final Query query) {
         final Optional<Instant> dateFrom = DateUtils.toInstantUTC(params.getDateFrom());
-        final Optional<Instant> dateTo = DateUtils.toInstantUTC(params.getDateTo()).map(presentDateTo -> presentDateTo.plus(1, ChronoUnit.DAYS));
+        final Optional<Instant> dateTo = DateUtils.toInstantUTC(params.getDateTo());
         final Criteria criteria = Criteria.where(DATE_FIELD);
         if (dateFrom.isPresent() && dateTo.isPresent()) {
             criteria.gte(dateFrom.get()).lte(dateTo.get());
