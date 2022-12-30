@@ -19,7 +19,7 @@ class DatePeriodValidatorSpec extends Specification {
         timePeriodValidator.isValid(timeperiod, constraintValidatorContext) == expectedResult
 
         where:
-        timeperiod                                                                || expectedResult
+        timeperiod                                                                   || expectedResult
         BasicDatePeriod.of(LocalDate.now().plusDays(2), LocalDate.now().plusDays(3)) || true
         BasicDatePeriod.of(LocalDate.now().plusDays(5), LocalDate.now().plusDays(3)) || false
         BasicDatePeriod.of(LocalDate.now().plusDays(3), LocalDate.now().plusDays(3)) || true
