@@ -1,7 +1,6 @@
 package pl.com.seremak.simplebills.commons.validator;
 
 import org.springframework.lang.Nullable;
-import pl.com.seremak.simplebills.commons.dto.http.standardQueryParam.BasicDatePeriod;
 import pl.com.seremak.simplebills.commons.dto.http.standardQueryParam.DatePeriod;
 
 import javax.validation.ConstraintValidator;
