@@ -98,6 +98,18 @@ enum SortDirection {
     DESC
 }
 
+interface DatePeriod {
+    LocalDate getDateFrom()
+    LocalDate getDateTo()
+}
+
+interface PageQuery {
+    Integer getPage()
+    Integer getPageNumber()
+    SortDirection getSortDirection()
+    String getSortColumn()
+}
+
 interface TransactionCrudRepository {
     Flux<Transaction> findByUserAndCategory(
     String user, String category)
@@ -148,7 +160,8 @@ class SequentialIdRepository {
     +Mono<Integer> generateId(String username)
     +Mono<Integer> insertFirstSequentialId(String username)
     +Query prepareFindUserQuery(String username)
-    +Update prepareSequentialIdIncrementUpdate(String username)
+    +Update prepareSequentialIdIncrementUpdate(
+    String username)
     +SequentialId buildFirstSequentialId(String username)
 }
 
@@ -161,8 +174,10 @@ class SequentialId{
 
 class MessagePublisher {
     -RabbitTemplate
-    +void sendUserCreationMessage(String username)
-    +void sendTransactionEventMessage(TransactionEventDto transactionEventDto)
+    +void sendUserCreationMessage(
+    String username)
+    +void sendTransactionEventMessage(
+    TransactionEventDto transactionEventDto)
 }
 
 class TransactionEventDto {
@@ -180,13 +195,12 @@ interface ReactiveCrudRepository
 TransactionEndpoint o-- TransactionService
 TransactionEndpoint ..> TransactionDto
 TransactionEndpoint ..> TransactionQueryParams
-TransactionEndpoint .right.> Principal
+TransactionEndpoint .left.> Principal
 MessageListener o-- TransactionService
 MessageListener .right.> CategoryEventDto
 TransactionService .up.> CategoryEventDto
 TransactionService .left.> TransactionDto
 TransactionService .left.> TransactionQueryParams
-TransactionQueryParams *.. SortDirection
 TransactionService o-- TransactionCrudRepository
 TransactionService o-- TransactionSearchRepository
 TransactionService o-- SequentialIdRepository
@@ -202,7 +216,9 @@ TransactionEndpoint ..> Transaction
 TransactionCrudRepository -left-|> ReactiveCrudRepository
 TransactionService ..> TransactionEventDto
 MessagePublisher .up.> TransactionEventDto
-
+TransactionQueryParams ...|> DatePeriod
+TransactionQueryParams ..|> PageQuery
+TransactionQueryParams *.. SortDirection
 
 
 @enduml
