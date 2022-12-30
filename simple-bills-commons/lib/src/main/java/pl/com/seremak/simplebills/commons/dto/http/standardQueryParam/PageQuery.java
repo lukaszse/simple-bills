@@ -8,4 +8,5 @@ public interface PageQuery {
     Integer getPageSize();
     Integer getPageNumber();
     SortDirection getSortDirection();
+    String getSortColumn();
 }
