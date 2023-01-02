@@ -7,7 +7,7 @@ plugins {
 }
 
 group = 'pl.com.seremak.simplebills'
-version = '0.1.54'
+version = '0.1.56'
 sourceCompatibility = '17'
 
 repositories {

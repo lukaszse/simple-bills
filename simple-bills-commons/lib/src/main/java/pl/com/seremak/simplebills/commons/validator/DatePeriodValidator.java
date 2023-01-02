@@ -14,8 +14,7 @@ public class DatePeriodValidator implements ConstraintValidator<ValidateDatePeri
 
     @Override
     public boolean isValid(@Nullable DatePeriod period, ConstraintValidatorContext constraintValidatorContext) {
-        return period == null || (period.getDateFrom() == null && period.getDateTo() == null)
-                || ((period.getDateFrom() != null && period.getDateTo() != null)
-                && (period.getDateFrom().isBefore(period.getDateTo()) || period.getDateFrom().isEqual(period.getDateTo())));
+        return period == null || period.getDateFrom() == null || period.getDateTo() == null ||
+        period.getDateFrom().isBefore(period.getDateTo()) || period.getDateFrom().isEqual(period.getDateTo());
     }
 }
