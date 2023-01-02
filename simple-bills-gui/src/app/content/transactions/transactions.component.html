@@ -55,7 +55,10 @@
             [(ngModel)]="transactionSearchService.searchTerm"
           />
         </div>
-        <span class="col col-form-label" *ngIf="transactionSearchService.loading$ | async">loading...</span>
+        <span class="col col-form-label text-warning fw-bold"
+              *ngIf="transactionSearchService.errorMsg as errorMsg">{{errorMsg}}</span>
+        <span class="col col-form-label"
+              *ngIf="(transactionSearchService.loading$ | async) && !transactionSearchService.errorMsg">loading...</span>
       </div>
     </form>
     <div *ngIf="transactionSearchService.pageableTransactions$ | async as pageableTransactions else noData">
@@ -138,10 +141,10 @@
           style="width: auto; height: min-content" name="pageSize"
           [(ngModel)]="transactionSearchService.pageSize">
           <option [ngValue]="5">5 of {{pageableTransactions.totalCount}}</option>
-          <option *ngIf="pageableTransactions.totalCount > 10" [ngValue]="10">10
-            of {{pageableTransactions.totalCount}}</option>
-          <option *ngIf="pageableTransactions.totalCount > 20" [ngValue]="20">20
-            of {{pageableTransactions.totalCount}}</option>
+          <option *ngIf="pageableTransactions.totalCount > 10"
+                  [ngValue]="10">10 of {{pageableTransactions.totalCount}}</option>
+          <option *ngIf="pageableTransactions.totalCount > 20"
+                  [ngValue]="20">20 of {{pageableTransactions.totalCount}}</option>
           <option *ngIf="pageableTransactions.totalCount < 50"
                   [ngValue]="pageableTransactions.totalCount">{{pageableTransactions.totalCount}}
             of {{pageableTransactions.totalCount}}</option>
