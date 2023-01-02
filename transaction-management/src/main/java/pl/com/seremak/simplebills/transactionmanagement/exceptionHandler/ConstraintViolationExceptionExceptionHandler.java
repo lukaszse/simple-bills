@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 
 import javax.validation.ConstraintViolationException;
 import java.util.Date;
@@ -14,7 +13,7 @@ import java.util.Map;
 
 @Slf4j
 @ControllerAdvice
-public class ConstraintViolationExceptionExceptionHandler extends ResponseStatusExceptionHandler {
+public class ConstraintViolationExceptionExceptionHandler  {
 
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<Map<String, Object>> handleValidationErrors(final ConstraintViolationException e) {
