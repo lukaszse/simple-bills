@@ -14,8 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.com.seremak.simplebills.commons.dto.http.TransactionDto;
 import pl.com.seremak.simplebills.commons.dto.http.TransactionQueryParams;
-import pl.com.seremak.simplebills.commons.dto.http.standardQueryParam.DatePeriod;
-import pl.com.seremak.simplebills.commons.dto.http.standardQueryParam.PageQuery;
 import pl.com.seremak.simplebills.commons.model.Transaction;
 import pl.com.seremak.simplebills.commons.utils.TokenExtractionHelper;
 import pl.com.seremak.simplebills.commons.validator.ValidateDatePeriod;
@@ -23,7 +21,6 @@ import pl.com.seremak.simplebills.transactionmanagement.service.TransactionServi
 import reactor.core.publisher.Mono;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
 import java.util.List;

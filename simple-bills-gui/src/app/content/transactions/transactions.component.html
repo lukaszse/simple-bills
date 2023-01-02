@@ -75,7 +75,7 @@
         <tbody>
         <tr *ngFor="let transaction of pageableTransactions.transactions;">
           <th scope="row">
-            <ngb-highlight [result]="transaction.transactionNumber"
+            <ngb-highlight [result]="transaction.transactionNumber.toString()"
                            [term]="transactionSearchService.searchTerm"></ngb-highlight>
           </th>
 
@@ -172,7 +172,8 @@
               <option *ngFor="let category of categories" value="{{category.name}}">{{category.name}}</option>
             </select>
           </div>
-          <div class="text-warning" *ngIf="!categoryName.valid && categoryName.touched">CategoryModel name cannot be empty
+          <div class="text-warning" *ngIf="!categoryName.valid && categoryName.touched">CategoryModel name cannot be
+            empty
           </div>
         </div>
         <label for="transaction-description-input" class="col-form-label">Description</label>
@@ -270,7 +271,8 @@
               <option *ngFor="let category of categories" value="{{category.name}}">{{category.name}}</option>
             </select>
           </div>
-          <div class="text-warning" *ngIf="!categoryName.valid && categoryName.touched">CategoryModel name cannot be empty
+          <div class="text-warning" *ngIf="!categoryName.valid && categoryName.touched">CategoryModel name cannot be
+            empty
           </div>
         </div>
         <label for="update-transaction-description-input" class="col-xs-3 col-sm-2 col-form-label">Description</label>
@@ -342,9 +344,8 @@
 </ng-template>
 
 <ng-template #noData>
-  <h5 class="text-center fw-bold">No CategoryModel Available</h5>
+  <h5 class="text-center fw-bold">No transactions available</h5>
 </ng-template>
-
 
 <ng-template #loading>
   <span class="text-dark">loading... </span>
