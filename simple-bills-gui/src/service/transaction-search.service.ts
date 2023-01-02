@@ -8,6 +8,7 @@ import { PageableTransactionsModel } from "../dto/pageable-transactions.model";
 import { SortableState, SortDirection } from "../utils/sortable.directive";
 import { HttpUtils } from "../utils/http-client.utils";
 import { environment } from "../environments/environment";
+import { isPeriodInvalid } from "../utils/simple-bills.utils";
 
 
 @Injectable({providedIn: "root"})
@@ -16,17 +17,17 @@ export class TransactionSearchService {
   private static host: string = environment.transactionManagementHost;
   private static endpoint: string = "/transactions";
   private _pageableTransactions$ = new BehaviorSubject<PageableTransactionsModel>(null);
-  private _loading$ = new BehaviorSubject<boolean>(true);
+  private _loading$ = new BehaviorSubject<boolean>(false);
   private _search$ = new Subject<void>()
 
   private _state: SortableState = {
-    sortColumn: '',
-    sortDirection: '',
-    pageNumber: 1,
     pageSize: 5,
-    searchTerm: '',
+    pageNumber: 1,
+    sortDirection: '',
+    sortColumn: '',
     dateFrom: null,
-    dateTo: null
+    dateTo: null,
+    searchTerm: ''
   };
 
   constructor(private httpClient: HttpClient, private decimalPipe: DecimalPipe, private datePipe: DatePipe) {
@@ -42,6 +43,16 @@ export class TransactionSearchService {
 
   public refresh(): void {
     this._search$.next();
+  }
+
+  private _search(): Observable<PageableTransactionsModel> {
+    const {pageSize, pageNumber, sortDirection, sortColumn, dateFrom, dateTo, searchTerm} = this._state;
+    let pageableBills$ = this.findTransactions(pageSize, pageNumber, sortDirection, sortColumn, dateFrom, dateTo).pipe()
+    pageableBills$ = TransactionSearchService.search(pageableBills$, searchTerm, this.decimalPipe, this.datePipe)
+    return pageableBills$
+      .pipe(
+        map(pageableBills => TransactionSearchService.setAmountSum(pageableBills)),
+        tap(console.log));
   }
 
   private findTransactions(pageSize: number,
@@ -61,16 +72,6 @@ export class TransactionSearchService {
         }),
         catchError(HttpUtils.handleError),
       );
-  }
-
-  private _search(): Observable<PageableTransactionsModel> {
-    const {sortColumn, sortDirection, pageSize, pageNumber, searchTerm, dateFrom, dateTo} = this._state;
-    let pageableBills$ = this.findTransactions(pageSize, pageNumber, sortDirection, sortColumn, dateFrom, dateTo).pipe()
-    pageableBills$ = TransactionSearchService.search(pageableBills$, searchTerm, this.decimalPipe, this.datePipe)
-    return pageableBills$
-      .pipe(
-        map(pageableBills => TransactionSearchService.setAmountSum(pageableBills)),
-        tap(console.log));
   }
 
   private static search(transactions: Observable<PageableTransactionsModel>,
@@ -135,6 +136,11 @@ export class TransactionSearchService {
 
   get dateTo(): Date {
     return this._state.dateTo;
+  }
+
+  get errorMsg(): string {
+    return isPeriodInvalid(this._state.dateFrom, this._state.dateTo) ?
+      "Provided dates are incorrect!" : null;
   }
 
   set page(page: number) {

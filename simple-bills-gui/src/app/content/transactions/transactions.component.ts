@@ -9,6 +9,7 @@ import { CategoryService } from "../../../service/category.service";
 import { TransactionModel, TransactionType } from "../../../dto/transaction.model";
 import { BalanceService } from "../../../service/balance.service";
 import { first, Observable } from "rxjs";
+import { DATE_FORMAT, LOCALE_EN } from "../../../utils/simple-bills.constants"
 
 
 @Component({
@@ -94,7 +95,7 @@ export class TransactionsComponent implements OnInit {
     this.transactionDto.category = null;
     this.transactionDto.description = null;
     this.transactionDto.amount = null;
-    this.transactionDto.date = formatDate(Date.now(), "yyyy-MM-dd", "en");
+    this.transactionDto.date = formatDate(Date.now(), DATE_FORMAT, LOCALE_EN);
   }
 
   private setFormFields(transaction: TransactionModel) {
@@ -104,7 +105,7 @@ export class TransactionsComponent implements OnInit {
     this.transactionDto.category = transaction.category;
     this.transactionDto.description = transaction.description;
     this.transactionDto.amount = Math.abs(transaction.amount);
-    this.transactionDto.date = formatDate(transaction.date, "yyyy-MM-dd", "en");
+    this.transactionDto.date = formatDate(transaction.date, DATE_FORMAT, LOCALE_EN);
   }
 
   private prepareTransactionToUpdate(transaction: TransactionModel): TransactionModel {

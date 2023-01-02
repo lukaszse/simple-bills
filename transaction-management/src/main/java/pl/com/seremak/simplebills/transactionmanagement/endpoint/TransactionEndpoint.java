@@ -10,11 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import pl.com.seremak.simplebills.commons.dto.http.TransactionDto;
 import pl.com.seremak.simplebills.commons.dto.http.TransactionQueryParams;
 import pl.com.seremak.simplebills.commons.model.Transaction;
 import pl.com.seremak.simplebills.commons.utils.TokenExtractionHelper;
+import pl.com.seremak.simplebills.commons.validator.ValidateDatePeriod;
 import pl.com.seremak.simplebills.transactionmanagement.service.TransactionService;
 import reactor.core.publisher.Mono;
 
@@ -33,6 +35,7 @@ import static pl.com.seremak.simplebills.commons.utils.EndpointUtils.prepareCrea
 @RestController
 @RequestMapping("/transactions")
 @RequiredArgsConstructor
+@Validated
 public class TransactionEndpoint {
 
     private static final String X_TOTAL_COUNT_HEADER = "x-total-count";
@@ -88,7 +91,7 @@ public class TransactionEndpoint {
                     content = @Content)})
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<List<Transaction>>> findAllTransactionsByCategory(@AuthenticationPrincipal final Principal principal,
-                                                                                 final TransactionQueryParams params) {
+                                                                                 @ValidateDatePeriod final TransactionQueryParams params) {
         final String username = TokenExtractionHelper.extractUsername(principal);
         log.info("Find transactions with category={} for user={}", Optional.ofNullable(params.getCategory()).orElse("All categories"), username);
         return transactionService.findTransactionsByCategory(username, params)

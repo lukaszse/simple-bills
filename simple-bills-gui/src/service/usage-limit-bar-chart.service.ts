@@ -6,7 +6,7 @@ import { HttpUtils } from "../utils/http-client.utils";
 import { Injectable } from "@angular/core";
 import { CategoryUsageLimitBarChartModel } from "../dto/category-usage-limit-bar-chart.model";
 import { CurrencyPipe } from "@angular/common";
-import { setToZeroIfNull } from "../utils/object.utils";
+import { setToZeroIfNull } from "../utils/simple-bills.utils";
 
 
 @Injectable({providedIn: "root"})
@@ -90,7 +90,7 @@ export class UsageLimitBarChartService {
   private static convertToBarChartData(categoryUsageLimit: CategoryUsageLimitModel,
                                        currencyPipe: CurrencyPipe): CategoryUsageLimitBarChartModel[] {
     const remainingLimit: number = UsageLimitBarChartService.calculateRemainingLimit(categoryUsageLimit);
-    const limit = setToZeroIfNull(categoryUsageLimit.limit)
+    const limit = setToZeroIfNull(categoryUsageLimit.limit);
     const formattedUsage: string = currencyPipe.transform(categoryUsageLimit.usage, 'USD', 'symbol', '1.2-2');
     const formattedLimit: string = currencyPipe.transform(categoryUsageLimit.limit, 'USD', 'symbol', '1.2-2');
     const nameWithUsageAndLimit: string = `${categoryUsageLimit.categoryName} (${formattedUsage}/${formattedLimit})`
