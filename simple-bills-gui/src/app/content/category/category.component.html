@@ -1,11 +1,10 @@
-<div class="container p-1 text-center">
+<div class="container p-1 pt-4 text-center">
   <button class="btn btn-lg btn-outline-secondary m-2" (click)="openCreationWindow('INCOME', categoryCreation)">
     Add income category
   </button>
   <button class="btn btn-lg btn-outline-secondary m-2" (click)="openCreationWindow('EXPENSE',categoryCreation)">
     Add expense category
   </button>
-  <br>
   <hr>
   <div class="row">
     <div class="col-2"></div>
@@ -196,7 +195,7 @@
   </div>
   <div class="modal-body">
     <form>
-      <label for="category-input" class="col-form-label">Select the category
+      <label for="category-input" class="col-form-label pb-3">Select the category
         <span class="fw-bold text-dark">{{categoryToDelete}}</span>
         to which the transaction from the deleted category will be assigned. If you don't select any category,
         transactions will be assigned to
@@ -209,10 +208,9 @@
         </select>
       </div>
     </form>
-    <br>
-    <p><strong class="text-danger">Are you sure you want to delete
+    <p class="text-danger pt-4 fw-bold">Are you sure you want to delete
       <span class="fw-bold text-dark">{{categoryToDelete}}</span>
-      category?</strong></p>
+      category?</p>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>
@@ -221,10 +219,9 @@
 </ng-template>
 
 <ng-template #incomeNotEditable>
-  <br>
-  <h6 class="text-center fw-bold">The INCOME category cannot be edited. <br> To change the INCOME category name, please
+  <h6 class="text-center fw-bold p-4">The INCOME category cannot be edited. <br> To change the INCOME category name,
+    please
     remove the existing one and create a new category.</h6>
-  <br>
 </ng-template>
 
 <ng-template #noData>

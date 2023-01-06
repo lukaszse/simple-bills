@@ -1,17 +1,17 @@
 <div class="container p-1 text-center">
   <div>
-    <br>
-    <button
-      class="btn btn-lg btn-outline-secondary m-2"
-      (click)="openTransactionCreationWindow('INCOME', createTransaction)">
-      Add income
-    </button>
-    <button
-      class="btn btn-lg btn-outline-secondary m-2"
-      (click)="openTransactionCreationWindow('EXPENSE', createTransaction)">
-      Add expense
-    </button>
-    <br><br>
+    <div class="p-4">
+      <button
+        class="btn btn-lg btn-outline-secondary m-2"
+        (click)="openTransactionCreationWindow('INCOME', createTransaction)">
+        Add income
+      </button>
+      <button
+        class="btn btn-lg btn-outline-secondary m-2"
+        (click)="openTransactionCreationWindow('EXPENSE', createTransaction)">
+        Add expense
+      </button>
+    </div>
     <h5 class="fw-bold">
       <span class="text-primary">Total balance: </span>
       <span class="col col-form-label" *ngIf="!(balanceService.loading$ | async) else loading">
