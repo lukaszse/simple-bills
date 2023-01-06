@@ -1,8 +1,7 @@
-<div class="container p-1 text-center">
+<div class="container p-1 pt-4 text-center">
   <button class="btn btn-lg btn-outline-secondary m-2" (click)="openDepositCreationWindow(depositCreation)">
-    Add deposit
+    add deposit
   </button>
-  <br>
   <hr>
   <div class="row">
     <div *ngIf="depositService.deposits$ | async as deposits else noData">
@@ -49,7 +48,7 @@
               class="btn btn-outline-secondary btn-sm"
               aria-label="Close"
               (click)="openDepositEditWindow(deposit, editDeposit)"
-            >Edit
+            >edit
             </button>
           </td>
           <td>
@@ -101,7 +100,8 @@
             #depositName="ngModel"
             required/>
         </div>
-        <div class="text-warning" *ngIf="!depositName.valid && depositName.touched">DepositModel name cannot be empty</div>
+        <div class="text-warning" *ngIf="!depositName.valid && depositName.touched">DepositModel name cannot be empty
+        </div>
         <label for="new-deposit-type-input" class="col-form-label">DepositModel type</label>
         <select
           [(ngModel)]="deposit.depositType"
@@ -113,7 +113,8 @@
           <option value="TERM">Term</option>
           <option value="PERPETUAL">Perpetual</option>
         </select>
-        <div class="text-warning" *ngIf="!depositType.valid && depositType.touched">DepositModel type cannot be empty</div>
+        <div class="text-warning" *ngIf="!depositType.valid && depositType.touched">DepositModel type cannot be empty
+        </div>
         <label for="new-deposit-bank-input" class="col-form-label">Bank name</label>
         <div class="input-group">
           <input
@@ -137,7 +138,8 @@
             #depositValue="ngModel"
             required/>
         </div>
-        <div class="text-warning" *ngIf="!depositValue.valid && depositValue.touched">DepositModel value cannot be empty and
+        <div class="text-warning" *ngIf="!depositValue.valid && depositValue.touched">DepositModel value cannot be empty
+          and
           must be positive
         </div>
         <label for="new-deposit-interest-rate-input" class="col-form-label">Annual interest rate</label>
@@ -300,10 +302,8 @@
     ></button>
   </div>
   <div class="modal-body">
-    <br>
-    <p><strong class="text-danger">Are you sure you want to delete
-      <span class="fw-bold text-dark">{{selectedDeposit}}</span>
-      deposit?</strong></p>
+    <p class="text-danger fw-bold pt-3">Are you sure you want to delete
+      <span class="fw-bold text-dark">{{selectedDeposit}}</span>deposit?</p>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel click')">Cancel</button>

@@ -2,8 +2,7 @@
   <p></p>
   <div *ngIf="loggedUsername | async as user else noLoggedIn">
     <div class="text-center">
-      <h2>Welcome {{user}}!</h2>
-      <br>
+      <h2 class="p-4">Welcome {{user}}!</h2>
       <h5 class="fw-bold">
         <span class="text-primary">Total balance: </span>
         <span class="col col-form-label" *ngIf="!(balanceService.loading$ | async) else loading">
@@ -24,8 +23,10 @@
 </div>
 
 <ng-template #noLoggedIn>
-  <div class="text-center">
-    <h2>Welcome to Simple Bills!</h2><br><br>
+  <div class="text-center pt-4">
+    <h2>Welcome to Simple Bills!</h2>
+  </div>
+  <div class="text-center pt-5">
     <h4>Please log in!</h4>
   </div>
 </ng-template>
