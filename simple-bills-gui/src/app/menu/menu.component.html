@@ -17,21 +17,22 @@
           <a class="nav-link" ngbNavLink routerLink="/assets">assets</a>
         </li>
         <li ngbDropdown class="nav-item" [ngbNavItem]="5">
-          <a href (click)="false" class="nav-link" ngbDropdownToggle>Links</a>
+          <a href (click)="false" class="nav-link" ngbDropdownToggle>links</a>
           <div ngbDropdownMenu>
-            <a ngbDropdownItem>Documentation</a>
+            <a ngbDropdownItem
+               href="https://github.com/lukaszse/praca-dyplomowa/blob/master/Praca_inzynierska_L.Seremak.pdf">thesis</a>
             <div class="dropdown-divider"></div>
-            <a ngbDropdownItem href="https://github.com/lukaszse">My Github</a>
-            <a ngbDropdownItem href="https://www.linkedin.com/in/%C5%82ukasz-seremak-8b9291a2/">My Linkedin</a>
+            <a ngbDropdownItem href="https://github.com/lukaszse">my Github</a>
+            <a ngbDropdownItem href="https://www.linkedin.com/in/%C5%82ukasz-seremak-8b9291a2/">my Linkedin</a>
           </div>
         </li>
       </ul>
       <span class="ms-auto">
           <span *ngIf="!isLogged">
-            <button class="btn btn-outline-light" (click)="login()" type="submit">Login</button>
+            <button class="btn btn-outline-light" (click)="login()" type="submit">login</button>
           </span>
           <span *ngIf="isLogged">
-            <button class="btn btn-outline-light" (click)="logout()">Logout</button>
+            <button class="btn btn-outline-light" (click)="logout()">logout</button>
           </span>
       </span>
     </div>
