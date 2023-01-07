@@ -1,0 +1,28 @@
+version: '3.7'
+
+volumes:
+  postgres_data:
+    driver: local
+
+services:
+  postgres:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: Passw0rd
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    volumes:
+    - ./cert/fullchain.pem:/etc/x509/https/fullchain.pem
+    - ./cert/privkey.pem:/etc/x509/https/privkey.pem
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - 443:8443
+    depends_on:
+      - postgres
+    command: start --https-certificate-file=/etc/x509/https/fullchain.pem --https-certificate-key-file=/etc/x509/https/privkey.pem --db-url-host postgres --db-url-database keycloak --db-username keycloak --hostname ubuntudev.llseremak.p5.tiktalik.io --db-password Passw0rd --proxy=edge
