@@ -1,0 +1,53 @@
+<div class="card border-secondary mb-3">
+  <div class="card-body">
+    <h5>{{chartDescription}}</h5>
+    <!--        start of card body-->
+    <div class="col" *ngIf="!(loading$ | async) else loading">
+      <div *ngIf="categoryUsageChart$ | async as barCharts">
+        <div class="table-responsive" *ngIf="barCharts.length !==0 else noData">
+          <table class="mx-auto w-auto">
+            <tr *ngFor="let chart of barCharts">
+              <div class="text-center" *ngIf="!(chart[0].spent <= chart[0].totalLimit)">
+                <span class="text-dark ngx-fontsize">
+                  {{chart[0].categoryName}}
+                  ({{chart[0].spent | currency}}/{{chart[0].totalLimit | currency}})</span>
+                <span class="fw-bold fst-italic text-warning">&emsp;LIMIT EXCEEDED!</span>
+              </div>
+              <div class="text-center" *ngIf="chart[0].spent <= chart[0].totalLimit">
+                <div *ngIf="chart[0].totalLimit else limitsNotSet">
+                  <ngx-charts-bar-horizontal-normalized
+                    [view]="view"
+                    [results]="chart"
+                    [gradient]="gradient"
+                    [xAxis]="showXAxis"
+                    [yAxis]="showYAxis"
+                    [legend]="showLegend"
+                    [showXAxisLabel]="showXAxisLabel"
+                    [showYAxisLabel]="showYAxisLabel"
+                    [xAxisLabel]="xAxisLabel"
+                    [yAxisLabel]="yAxisLabel"
+                    [trimYAxisTicks]="trimYAxis"
+                    [maxYAxisTickLength]="maxLength">
+                  </ngx-charts-bar-horizontal-normalized>
+                </div>
+              </div>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <!--        end of card body-->
+  </div>
+</div>
+
+<ng-template #loading>
+  <span class="text-dark">loading... </span>
+</ng-template>
+
+<ng-template #noData>
+  <h6 class="text-info text-center fw-bold pt-4">Add any category with assigned limit to see chart here</h6>
+</ng-template>
+
+<ng-template #limitsNotSet>
+  <span class="text-info fst-italic">&emsp;Limit for category not set!</span>
+</ng-template>

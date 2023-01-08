@@ -20,6 +20,9 @@ import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { PieUsageChartComponent } from "./content/home/pie-usage-chart/pie-usage-chart.component";
 import { AssetsComponent } from './content/assets/assets.component';
 import { LoginComponent } from "./content/login/login.component";
+import {
+  CategoryUsageChartComponent
+} from './content/home/limit-usage-chart/category-usage-chart/category-usage-chart.component';
 
 
 @NgModule({
@@ -35,7 +38,8 @@ import { LoginComponent } from "./content/login/login.component";
     LimitUsageChartsComponent,
     PieUsageChartComponent,
     AssetsComponent,
-    LoginComponent
+    LoginComponent,
+    CategoryUsageChartComponent
   ],
   imports: [
     BrowserModule,
