@@ -1,10 +1,10 @@
-name: simple-bills-local
+name: simple-bills-view
 services:
 
   simple-bills:
     build: 
       context: simple-bills-gui
-      dockerfile: DockerfileLocal
+      dockerfile: DockerfileLocalView
     ports:
       - 8080:80
     depends_on:
@@ -22,7 +22,7 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
     env_file:
-      - common_env_local.env
+      - common_env_local_view.env
 
   planning:
     build: planning
@@ -34,7 +34,7 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
     env_file:
-      - common_env_local.env
+      - common_env_local_view.env
 
   asset-management:
     build: asset-management
@@ -46,7 +46,7 @@ services:
     extra_hosts:
       - host.docker.internal:host-gateway
     env_file:
-      - common_env_local.env
+      - common_env_local_view.env
 
   mongodb:
     image: mongo:4.4.16
@@ -63,6 +63,27 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
       - rabbitmq_log:/var/log/rabbitmq
+
+  postgres:
+    image: postgres:latest
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: Passw0rd
+  
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    ports:
+      - 8085:8080
+      - 8443:8443
+    depends_on:
+      - postgres
+    command: start-dev --db-url-host postgres --db-url-database keycloak --db-username keycloak
 
 volumes:
   mongo_data:
