@@ -30,5 +30,4 @@ export class CategoryUsageChartComponent {
   colorScheme = {
     domain: [darkRed, lightGray],
   };
-
 }
