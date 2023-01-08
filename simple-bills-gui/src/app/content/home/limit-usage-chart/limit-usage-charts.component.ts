@@ -9,7 +9,6 @@ import { darkRed, lightGray } from "../../../../utils/chart-colors.enum";
 })
 export class LimitUsageChartsComponent implements OnInit {
 
-
   // options
   view: any[] = [450, 35];
   showXAxis: boolean = false;
