@@ -1,3 +1,4 @@
+name: simple-bills-local
 services:
 
   simple-bills:
