@@ -4,11 +4,11 @@ import { CategoryUsageLimitBarChartModel } from "../../../../../dto/category-usa
 import { darkRed, lightGray } from "../../../../../utils/chart-colors.enum";
 
 @Component({
-  selector: 'app-category-usage-chart',
-  templateUrl: './category-usage-chart.component.html',
-  styleUrls: ['./category-usage-chart.component.scss']
+  selector: 'app-bar-chart',
+  templateUrl: './bar-chart.component.html',
+  styleUrls: ['./bar-chart.component.scss']
 })
-export class CategoryUsageChartComponent {
+export class BarChartComponent {
 
   @Input() categoryUsageChart$: Observable<CategoryUsageLimitBarChartModel[][]>;
   @Input() loading$: Observable<boolean>;

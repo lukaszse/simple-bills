@@ -1,9 +1,9 @@
-<app-category-usage-chart
+<app-bar-chart
   [categoryUsageChart$]="barChartService.totalUsageLimitBarchart$"
   [loading$]="barChartService.loadingTotal$"
-  [chartDescription]="'Current month total limit usage:'"></app-category-usage-chart>
+  [chartDescription]="'Current month total limit usage:'"></app-bar-chart>
 
-<app-category-usage-chart
+<app-bar-chart
   [categoryUsageChart$]="barChartService.categoryUsageBarChart$"
   [loading$]="barChartService.loadingCategories$"
-  [chartDescription]="'Current month limit usage by categories:'"></app-category-usage-chart>
+  [chartDescription]="'Current month limit usage by categories:'"></app-bar-chart>
