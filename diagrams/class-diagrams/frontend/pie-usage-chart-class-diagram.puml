@@ -34,7 +34,7 @@ class CategoryUsagePieChartModel {
   +value: number
 }
 
-PieUsageChartComponent o-- UsageLimitPieChartService
+PieUsageChartComponent "1" o-- "1" UsageLimitPieChartService
 UsageLimitPieChartService .up.> CategoryUsagePieChartModel
 PieUsageChartComponent .right.> CategoryUsagePieChartModel
 

@@ -41,7 +41,7 @@ interface CategoryModel {
   limit: number
 }
 
-CategoryComponent o-- CategoryService
+CategoryComponent "1" o-- "1" CategoryService
 CategoryComponent ..> CategoryModel
 CategoryService .up.> CategoryModel
 

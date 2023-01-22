@@ -47,8 +47,8 @@ interface UserDto {
   familyName: string
 }
 
-HomeComponent o-- BalanceService
-HomeComponent o-- UserService
+HomeComponent "1" o-- "1" BalanceService
+HomeComponent "1" o-- "1" UserService
 HomeComponent .right.> BalanceModel
 BalanceService .up.> BalanceModel
 UserService .up.> UserDto
