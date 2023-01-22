@@ -146,20 +146,20 @@ class TransactionEventDto {
 
 DepositEndpoint .right.> Principal
 DepositEndpoint ..> DepositDto
-DepositEndpoint o-- DepositService
-MessageListener o-- DepositService
+DepositEndpoint "1" o-- "1" DepositService
+MessageListener "1" o-- "1" DepositService
 DepositService .left.>DepositDto
 DepositEndpoint ..> Deposit
 DepositService .left.> Deposit
 Deposit +.right. Deposit.DepositType
 DepositDto *.. Deposit.DepositType
-DepositService o-- DepositRepository
+DepositService "1" o-- "1" DepositRepository
 DepositRepository ..> Deposit
 DepositSearchRepository ..> Deposit
 DepositRepository --|> ReactiveCrudRepository
-DepositService o-- DepositSearchRepository
-DepositService o-- PlanningClient
-DepositService o--- TransactionManagementClient
+DepositService "1" o-- "1" DepositSearchRepository
+DepositService "1" o-- "1" PlanningClient
+DepositService "1" o--- "1" TransactionManagementClient
 DepositService .right.> TransactionEventDto
 MessageListener ..> TransactionEventDto
 DepositService .right.> TransactionDto

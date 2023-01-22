@@ -84,14 +84,14 @@ class TransactionEventDto {
 }
 
 
-MessageListener o-- TransactionPostingService
-TransactionPostingService o--> CategoryUsageLimitService
+MessageListener "1" o-- "1" TransactionPostingService
+TransactionPostingService "1" o-- "1" CategoryUsageLimitService
 TransactionPostingService ..> TransactionEventDto
-CategoryUsageLimitEndpoint o--- CategoryUsageLimitService
+CategoryUsageLimitEndpoint "1" o--- "1" CategoryUsageLimitService
 CategoryUsageLimitEndpoint ..> Principal
 CategoryUsageLimitEndpoint ...> CategoryUsageLimit
-CategoryUsageLimitService o-- CategoryUsageLimitSearchRepository
-CategoryUsageLimitService o-- CategoryUsageLimitRepository
+CategoryUsageLimitService "1" o-- "1" CategoryUsageLimitSearchRepository
+CategoryUsageLimitService "1" o-- "1" CategoryUsageLimitRepository
 CategoryUsageLimitService .left.> CategoryUsageLimit
 CategoryUsageLimitSearchRepository ...> CategoryUsageLimit
 CategoryUsageLimitRepository ..> CategoryUsageLimit

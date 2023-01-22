@@ -192,19 +192,19 @@ class TransactionEventDto {
 
 interface ReactiveCrudRepository
 
-TransactionEndpoint o-- TransactionService
+TransactionEndpoint "1" o-- "1" TransactionService
 TransactionEndpoint ..> TransactionDto
 TransactionEndpoint ..> TransactionQueryParams
 TransactionEndpoint .left.> Principal
-MessageListener o-- TransactionService
+MessageListener "1" o-- "1" TransactionService
 MessageListener .right.> CategoryEventDto
 TransactionService .up.> CategoryEventDto
 TransactionService .left.> TransactionDto
 TransactionService .left.> TransactionQueryParams
-TransactionService o-- TransactionCrudRepository
-TransactionService o-- TransactionSearchRepository
-TransactionService o-- SequentialIdRepository
-TransactionService o-- MessagePublisher
+TransactionService "1" o-- "1" TransactionCrudRepository
+TransactionService "1" o-- "1" TransactionSearchRepository
+TransactionService "1" o-- "1" SequentialIdRepository
+TransactionService "1" o-- "1" MessagePublisher
 SequentialIdRepository .up.> SequentialId
 VersionedEntity <|-- Transaction
 VersionedEntity *-- Metadata

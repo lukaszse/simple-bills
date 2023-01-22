@@ -68,14 +68,14 @@ class TransactionEventDto {
 
 interface ReactiveCrudRepository
 
-MessageListener o-- TransactionPostingService
-TransactionPostingService o-- BalanceService
+MessageListener "1" o-- "1"TransactionPostingService
+TransactionPostingService "1" o-- "1" BalanceService
 BalanceEndpoint ...> Principal
-BalanceEndpoint o--- BalanceService
+BalanceEndpoint "1" o--- "1" BalanceService
 BalanceEndpoint ..> Balance
 BalanceService .left.> Balance
 BalanceRepository ..> Balance
-BalanceService o-- BalanceRepository
+BalanceService "1" o-- "1" BalanceRepository
 BalanceRepository --|> ReactiveCrudRepository
 BalanceService ..> TransactionEventDto
 MessageListener ..> TransactionEventDto

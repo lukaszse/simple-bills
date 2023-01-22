@@ -67,11 +67,11 @@ class TokenExtractionHelper {
 
 interface ReactiveCrudRepository
 
-UserActivityEndpoint o-- UserActivityService
+UserActivityEndpoint "1" o-- "1" UserActivityService
 UserActivityEndpoint ...> UserActivityDto
 UserActivityEndpoint .left..> Principal
-UserActivityService o--- MessagePublisher
-UserActivityService o-- UserActivityRepository
+UserActivityService "1" o--- "1" MessagePublisher
+UserActivityService "1" o-- "1" UserActivityRepository
 UserActivityService ..> UserActivityConverter
 UserActivity <.up. UserActivityEndpoint
 UserActivity <.up. UserActivityService

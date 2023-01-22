@@ -153,22 +153,22 @@ CategoryEndpoint .right.> CategoryDto
 CategoryService .up.> CategoryDto
 Category --|> VersionedEntity
 VersionedEntity *-left-Metadata
-CategoryEndpoint o-- CategoryService
+CategoryEndpoint "1" o-- "1" CategoryService
 CategoryService .left.> Category
-CategoryService o--- CategoryRepository
+CategoryService "1" o--- "1" CategoryRepository
 CategoryRepository -right-|> ReactiveCrudRepository
-CategoryService o-- CategoryUsageLimitService
-CategoryService o-- CategorySearchRepository
-CategoryService o-left- MessagePublisher
+CategoryService "1" o-- "1" CategoryUsageLimitService
+CategoryService "1" o-- "1" CategorySearchRepository
+CategoryService "1" o-left- "1" MessagePublisher
 MessagePublisher .up.> CategoryEventDto
 CategoryService .left.> CategoryEventDto
 CategorySearchRepository .left.> Category
 CategoryRepository .up.> Category
 Category +-left- Category.Type
 CategoryDto ..> Category.Type
-CategoryUsageLimitService o--- CategoryUsageLimitRepository
+CategoryUsageLimitService "1" o--- "1" CategoryUsageLimitRepository
 CategoryUsageLimitRepository -left-|> ReactiveCrudRepository
-CategoryUsageLimitService o-- CategoryUsageLimitSearchRepository
+CategoryUsageLimitService "1" o-- "1" CategoryUsageLimitSearchRepository
 
 
 
