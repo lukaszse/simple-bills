@@ -1,0 +1,129 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+class TransactionsComponent {
+    +TransactionModel: TransactionModel
+    +category: CategoryModel
+    +categoriesToSelect$: Observable<CategoryModel[]>
+    +selectedTransaction: string | number
+    +headers: QueryList<NgbdSortableHeader>
+    +transactionSearchService: TransactionSearchService,
+    +categoryService: CategoryService,
+    +balanceService: BalanceService,
+    -transactionCrudService: TransactionCrudService,
+    -modalService: NgbModal
+    +ngOnInit(): void
+    +onSort({column, direction}: SortEvent)
+    +openTransactionCreationWindow(transactionType: string, content): void
+    +openTransactionEditWindow(transaction: TransactionModel, content): void
+    +openDeletionConfirmationWindow(transactionNumber: number | string, content): void
+    -resetFormFields(transactionType?: TransactionType): void
+    -setFormFields(transaction: TransactionModel): void
+    -prepareTransactionToUpdate(transaction: TransactionModel): TransactionModel
+}
+
+class TransactionSearchService {
+  -{static} host: string
+  -{static} endpoint: string
+  -_pageableTransactions$: new BehaviorSubject<PageableTransactionsModel>
+  -_loading$: BehaviorSubject<boolean>;
+  -_search$: Subject<void>
+  -httpClient: HttpClient
+  -decimalPipe: DecimalPipe
+  -datePipe: DatePipe
+  +public refresh(): void
+  -findTransactions(pageSize: number, pageNumber: number, sortDirection: string,
+  sortColumn: string, dateFrom: Date, dateTo: Date): Observable<PageableTransactionsModel>)
+  -_search(): Observable<PageableTransactionsModel>
+  -{static}setAmountSum(pageableBills: PageableTransactionsModel): PageableTransactionsModel
+  -{static}countAmountSum(transactions: TransactionModel[]): number
+  -{static}matchBills(pageableTransaction: PageableTransactionsModel, text: string, decimalPipe: PipeTransform,
+  datePipe: DatePipe): boolean
+  +get pageableTransactions$()
+  +get loading$()
+  +get page(): number
+  +get pageSize(): number
+  +get searchTerm(): string
+  +dateFrom(): Date
+  +set page(page: number)
+  +set pageSize(pageSize: number)
+  +set searchTerm(searchTerm: string)
+  +set sortColumn(sortColumn: string)
+  +set sortDirection(sortDirection: SortDirection)
+  +set dateFrom(dateFrom: Date)
+  +set dateTo(dateTo: Date)
+  -_set(patch: Partial<SortableState>)
+}
+
+class TransactionCrudService {
+  -{static} host: string
+  -{static} endpoint: string
+  -httpClient: HttpClient
+  -transactionSearchService: TransactionSearchService
+  +createTransaction(transaction: TransactionModel): Observable<string | Object>
+  +updateTransaction(transaction: TransactionModel): Observable<TransactionModel>
+  +deleteTransaction(transactionNumber: number | string): Observable<number | Object>
+}
+
+class CategoryService {
+  -{static} host: string
+  -{static} endpoint: string
+  -httpClient: HttpClient
+  +categories$: Observable<CategoryModel[]>
+  +createCategory(category: CategoryModel): Observable<string | Object>
+  +updateCategory(category: CategoryModel): Observable<string | Object>
+  +findCategories(transactionType?: TransactionType): Observable<CategoryModel[]>
+  +deleteCategory(categoryName: string, categoryToReplace: string): Observable<string | Object>
+  -filterCategories(categories: CategoryModel[], transactionType?: TransactionType): CategoryModel[]
+}
+
+class BalanceService {
+    -{static}host: string
+    -{static}endpoint: string
+    -_findBalance$: Subject<void>
+    -_balance$: BehaviorSubject<BalanceModel>
+    -_loading$: BehaviorSubject<boolean>
+    -httpClient: HttpClient
+   +findBalance(): Observable<BalanceModel>
+   +refresh(): void
+   +get balance$(): Observable<BalanceModel>
+   +get loading$(): Observable<boolean>
+}
+
+interface TransactionModel {
+  user: string
+  transactionNumber: string | number
+  type: TransactionType
+  category: string
+  description: string
+  amount: number
+  date: string
+}
+
+interface CategoryModel {
+  name: string
+  transactionType: TransactionType
+  limit: number
+}
+
+interface BalanceModel {
+  username: string
+  balance: number
+}
+
+TransactionsComponent "1" o-- "1" TransactionSearchService
+TransactionsComponent "1" o-- "1" CategoryService
+TransactionsComponent "1" o-- "1" BalanceService
+TransactionsComponent "1" o-- "1" TransactionCrudService
+TransactionCrudService "1" o-- "1" TransactionSearchService
+TransactionSearchService .left.> TransactionModel
+TransactionsComponent ..> TransactionModel
+TransactionCrudService ..> TransactionModel
+TransactionsComponent ..> CategoryModel
+CategoryService ..> CategoryModel
+BalanceService ..> BalanceModel
+
+
+
+
+@enduml
