@@ -1,0 +1,126 @@
+@startuml
+'https://plantuml.com/deployment-diagram
+
+
+node "Serwer VPS (Linux)" <<Device>> as linux {
+    artifact "docker-compose.yml" <<artifact>> as dcompKeycloak
+    component "Keycloak \nOAuth2.0/OpenID Connect" as keycloak
+}
+
+node "Komputer PC" <<Device>> as pc {
+    component "Przeglądarka Internetowa" <<component>>
+}
+
+node "Platforma Okteto (Kubernetes) \nlukaszse namespace" <<executionEnvironment>> as okteto {
+
+    artifact "docker-compose.yml" <<artifact>> as dComp
+
+    node "simple-bills" <<Pod>> as gui {
+    component "aplikacja kliencka Simple Bills" <<component>>
+    }
+
+    node "asset-management" <<Pod>> as asset {
+    component "mikrousługa Asset Management" <<component>>
+    }
+
+    node "transaction-management" <<Pod>> as transaction {
+    component "mikrousługa Transaction Management" <<component>>
+    }
+
+    node "planning" <<Pod>> as planning {
+    component "mikrousługa Planning" <<component>>
+    }
+
+    node "rabbitmq" <<Pod>> as rabbit {
+    component "RabbitMQ broker" <<component>>
+    }
+}
+
+
+database mongo [
+<b>MongoDB Saas
+===
+
+Transaction database
+----
+Asset database
+----
+Planning database
+]
+
+dComp ..> gui
+dComp ..... planning
+dComp ...> asset
+dComp ....> transaction
+dComp ...> transaction
+dComp .....> rabbit
+dcompKeycloak ..> keycloak
+pc -left- okteto : HTTPS
+linux -- okteto : HTTPS
+pc -- linux : HTTPS
+okteto ---- mongo : HTTPS
+
+
+
+'actor actor
+'actor/ "actor/"
+'agent agent
+'artifact artifact
+'boundary boundary
+'card card
+'circle circle
+'cloud cloud
+'collections collections
+'component component
+'control control
+'database database
+'entity entity
+'file file
+'folder folder
+'frame frame
+'interface interface
+'label label
+'node node
+'package package
+'queue queue
+'rectangle rectangle
+'stack stack
+'storage storage
+'usecase usecase
+'usecase/ "usecase/"
+
+
+'artifact artifact {
+'card card {
+'cloud cloud {
+'component component {
+'database database {
+'file file {
+'folder folder {
+'frame frame {
+'hexagon hexagon {
+'node node {
+'package package {
+'queue queue {
+'rectangle rectangle {
+'stack stack {
+'storage storage {
+'}
+'}
+'}
+'}
+'}
+'}
+'}
+'}
+'}
+'}
+'}
+'}
+'}
+'}
+'}
+
+
+
+@enduml
