@@ -41,11 +41,11 @@ database mongo [
 <b>MongoDB Saas
 ===
 
-Transaction database
+bada danych Transaction
 ----
-Asset database
+bada danych Asset
 ----
-Planning database
+bada danych Planning
 ]
 
 dComp ..> gui

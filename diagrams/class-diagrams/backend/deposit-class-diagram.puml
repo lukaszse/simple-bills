@@ -152,7 +152,7 @@ DepositService .left.>DepositDto
 DepositEndpoint ..> Deposit
 DepositService .left.> Deposit
 Deposit +.right. Deposit.DepositType
-DepositDto *.. Deposit.DepositType
+DepositDto "1" *.. "1" Deposit.DepositType
 DepositService "1" o-- "1" DepositRepository
 DepositRepository ..> Deposit
 DepositSearchRepository ..> Deposit
