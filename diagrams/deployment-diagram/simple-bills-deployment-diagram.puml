@@ -2,12 +2,12 @@
 'https://plantuml.com/deployment-diagram
 
 
-node "Serwer VPS (Linux)" <<Device>> as linux {
+node "Serwer VPS (Linux)" <<device>> as linux {
     artifact "docker-compose.yml" <<artifact>> as dcompKeycloak
     component "Keycloak \nOAuth2.0/OpenID Connect" as keycloak
 }
 
-node "Komputer PC" <<Device>> as pc {
+node "Komputer PC" <<device>> as pc {
     component "Przeglądarka Internetowa" <<component>>
 }
 
@@ -15,23 +15,23 @@ node "Platforma Okteto (Kubernetes) \nlukaszse namespace" <<executionEnvironment
 
     artifact "docker-compose.yml" <<artifact>> as dComp
 
-    node "simple-bills" <<Pod>> as gui {
+    node "simple-bills" <<pod>> as gui {
     component "aplikacja kliencka Simple Bills" <<component>>
     }
 
-    node "asset-management" <<Pod>> as asset {
+    node "asset-management" <<pod>> as asset {
     component "mikrousługa Asset Management" <<component>>
     }
 
-    node "transaction-management" <<Pod>> as transaction {
+    node "transaction-management" <<pod>> as transaction {
     component "mikrousługa Transaction Management" <<component>>
     }
 
-    node "planning" <<Pod>> as planning {
+    node "planning" <<pod>> as planning {
     component "mikrousługa Planning" <<component>>
     }
 
-    node "rabbitmq" <<Pod>> as rabbit {
+    node "rabbitmq" <<pod>> as rabbit {
     component "RabbitMQ broker" <<component>>
     }
 }
