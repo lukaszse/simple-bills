@@ -16,23 +16,23 @@ node "Platforma Okteto (Kubernetes) \nlukaszse namespace" <<executionEnvironment
     artifact "docker-compose.yml" <<artifact>> as dComp
 
     node "simple-bills" <<pod>> as gui {
-    component "aplikacja kliencka Simple Bills" <<component>>
+    component "Aplikacja kliencka Simple Bills" <<component>>
     }
 
     node "asset-management" <<pod>> as asset {
-    component "mikrousługa Asset Management" <<component>>
+    component "Mikrousługa Asset Management" <<component>>
     }
 
     node "transaction-management" <<pod>> as transaction {
-    component "mikrousługa Transaction Management" <<component>>
+    component "Mikrousługa Transaction Management" <<component>>
     }
 
     node "planning" <<pod>> as planning {
-    component "mikrousługa Planning" <<component>>
+    component "Mikrousługa Planning" <<component>>
     }
 
     node "rabbitmq" <<pod>> as rabbit {
-    component "RabbitMQ broker" <<component>>
+    component "Broker RabbitMQ" <<component>>
     }
 }
 
@@ -41,11 +41,11 @@ database mongo [
 <b>MongoDB Saas
 ===
 
-bada danych Transaction
+Baza danych Transaction
 ----
-bada danych Asset
+Baza danych Asset
 ----
-bada danych Planning
+Baza danych Planning
 ]
 
 dComp ..> gui
@@ -59,68 +59,6 @@ pc -left- okteto : HTTPS
 linux -- okteto : HTTPS
 pc -- linux : HTTPS
 okteto ---- mongo : HTTPS
-
-
-
-'actor actor
-'actor/ "actor/"
-'agent agent
-'artifact artifact
-'boundary boundary
-'card card
-'circle circle
-'cloud cloud
-'collections collections
-'component component
-'control control
-'database database
-'entity entity
-'file file
-'folder folder
-'frame frame
-'interface interface
-'label label
-'node node
-'package package
-'queue queue
-'rectangle rectangle
-'stack stack
-'storage storage
-'usecase usecase
-'usecase/ "usecase/"
-
-
-'artifact artifact {
-'card card {
-'cloud cloud {
-'component component {
-'database database {
-'file file {
-'folder folder {
-'frame frame {
-'hexagon hexagon {
-'node node {
-'package package {
-'queue queue {
-'rectangle rectangle {
-'stack stack {
-'storage storage {
-'}
-'}
-'}
-'}
-'}
-'}
-'}
-'}
-'}
-'}
-'}
-'}
-'}
-'}
-'}
-
 
 
 @enduml
