@@ -52,7 +52,6 @@ dComp ..> gui
 dComp ..... planning
 dComp ...> asset
 dComp ....> transaction
-dComp ...> transaction
 dComp .....> rabbit
 dcompKeycloak ..> keycloak
 pc -left- okteto : HTTPS
