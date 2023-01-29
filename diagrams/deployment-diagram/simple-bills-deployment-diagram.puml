@@ -49,10 +49,10 @@ Baza danych Planning
 ]
 
 dComp ..> gui
-dComp ..... planning
+dComp ... planning
 dComp ...> asset
-dComp ....> transaction
-dComp .....> rabbit
+dComp ..> transaction
+dComp ...> rabbit
 dcompKeycloak ..> keycloak
 pc -left- okteto : HTTPS
 linux -- okteto : HTTPS

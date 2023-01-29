@@ -7,6 +7,7 @@ volumes:
 services:
   postgres:
     image: postgres:latest
+    restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data
     environment:
@@ -15,6 +16,7 @@ services:
       POSTGRES_PASSWORD: Passw0rd
   keycloak:
     image: quay.io/keycloak/keycloak:latest
+    restart: unless-stopped
     volumes:
     - ./cert/fullchain.pem:/etc/x509/https/fullchain.pem
     - ./cert/privkey.pem:/etc/x509/https/privkey.pem
