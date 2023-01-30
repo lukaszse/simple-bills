@@ -4,6 +4,6 @@ RUN npm install -g @angular/cli@15.0.4
 COPY ./package.json .
 RUN npm install
 COPY . .
-RUN ng build
+RUN ng build --aot --output-hashing=all
 FROM nginx as runtime
 COPY --from=build /app/dist/simple-bills-gui /usr/share/nginx/html
