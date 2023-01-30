@@ -7,7 +7,7 @@
         <div class="table-responsive" *ngIf="barCharts.length !==0 else noData">
           <table class="mx-auto w-auto">
             <tr *ngFor="let chart of barCharts">
-              <div class="text-center" *ngIf="!(chart[0].spent <= chart[0].totalLimit)">
+              <div class="text-center my-1" *ngIf="!(chart[0].spent <= chart[0].totalLimit)">
                 <span class="text-dark ngx-fontsize">
                   {{chart[0].categoryName}}
                   ({{chart[0].spent | currency}}/{{chart[0].totalLimit | currency}})</span>
