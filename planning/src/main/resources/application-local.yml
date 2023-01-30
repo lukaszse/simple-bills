@@ -11,8 +11,8 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: https://ubuntudev.llseremak.p5.tiktalik.io/realms/simple-bills
-          jwk-set-uri: https://ubuntudev.llseremak.p5.tiktalik.io/realms/simple-bills/protocol/openid-connect/certs
+          issuer-uri: https://seremak.ovh/realms/simple-bills
+          jwk-set-uri: https://seremak.ovh/realms/simple-bills/protocol/openid-connect/certs
 
 server:
   port: 8082
