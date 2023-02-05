@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
+import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
 import org.springframework.security.oauth2.server.resource.web.server.ServerBearerTokenAuthenticationConverter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
@@ -17,6 +18,7 @@ import org.springframework.security.web.server.csrf.CookieServerCsrfTokenReposit
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.reactive.CorsConfigurationSource;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
+import pl.com.seremak.simplebills.commons.securityUtils.UsernameHeaderFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,8 +33,8 @@ public class SpringSecurity {
 
     @Value("${custom-properties.allowed-origin}")
     private String allowedOrigin;
-
     private final Environment environment;
+    private final UsernameHeaderFilter usernameHeaderFilter;
 
     @Bean
     public SecurityWebFilterChain securityWebFilterChain(
@@ -42,6 +44,7 @@ public class SpringSecurity {
                 .pathMatchers(openApiPaths).permitAll()
                 .anyExchange().authenticated()
                 .and()
+                .addFilterAt(usernameHeaderFilter, SecurityWebFiltersOrder.LAST)
                 .oauth2ResourceServer().bearerTokenConverter(bearerTokenConverter())
                 .jwt()
                 .and().and()
