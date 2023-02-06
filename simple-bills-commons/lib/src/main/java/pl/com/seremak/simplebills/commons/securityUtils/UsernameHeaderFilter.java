@@ -57,7 +57,7 @@ public class UsernameHeaderFilter implements WebFilter {
     }
 
     private static String extractUsernameFromBasicToken(final String basicToken) {
-        if (basicToken != null && basicToken.toLowerCase().startsWith(BASIC_PREFIX)) {
+        if (basicToken != null && basicToken.startsWith(BASIC_PREFIX)) {
             final String base64Credentials = basicToken.substring(BASIC_PREFIX.length()).trim();
             final byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
             final String credentials = new String(credDecoded, StandardCharsets.UTF_8);

@@ -10,13 +10,17 @@ import org.springframework.security.core.userdetails.MapReactiveUserDetailsServi
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder
 import org.springframework.security.web.server.SecurityWebFilterChain
+import spock.mock.DetachedMockFactory
 
 @TestConfiguration
 @ComponentScan(
         basePackages = 'pl.com.seremak.simplebills.transactionmanagement'
 )
 class IntSpecConfig {
+
+    def mockFactory = new DetachedMockFactory()
 
     @Bean
     SecurityWebFilterChain securityWebFilterChain(
@@ -52,4 +56,8 @@ class IntSpecConfig {
         return new TestRabbitPublisher(rabbitTemplate)
     }
 
+    @Bean
+    ReactiveJwtDecoder reactiveJwtDecoder() {
+        return mockFactory.Mock(ReactiveJwtDecoder)
+    }
 }
