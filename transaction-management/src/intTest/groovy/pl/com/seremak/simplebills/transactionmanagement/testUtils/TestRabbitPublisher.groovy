@@ -1,4 +1,4 @@
-package pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig
+package pl.com.seremak.simplebills.transactionmanagement.testUtils
 
 import groovy.util.logging.Slf4j
 import org.springframework.amqp.rabbit.core.RabbitTemplate

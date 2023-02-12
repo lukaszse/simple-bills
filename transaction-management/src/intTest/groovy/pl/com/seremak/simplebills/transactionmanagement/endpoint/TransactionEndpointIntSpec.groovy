@@ -1,4 +1,4 @@
-package pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint
+package pl.com.seremak.simplebills.transactionmanagement.endpoint
 
 
 import groovy.util.logging.Slf4j
@@ -15,7 +15,7 @@ import java.time.LocalDate
 
 import static pl.com.seremak.simplebills.commons.constants.MessageQueue.TRANSACTION_EVENT_ASSETS_MANAGEMENT_QUEUE
 import static pl.com.seremak.simplebills.commons.constants.MessageQueue.TRANSACTION_EVENT_PLANING_QUEUE
-import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.IntTestCommonUtils.*
+import static pl.com.seremak.simplebills.transactionmanagement.testUtils.IntTestCommonUtils.*
 
 @Slf4j
 @Stepwise

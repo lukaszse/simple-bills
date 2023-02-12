@@ -1,4 +1,4 @@
-package pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig
+package pl.com.seremak.simplebills.transactionmanagement
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.server.SecurityWebFilterChain
+import pl.com.seremak.simplebills.transactionmanagement.testUtils.TestRabbitListener
+import pl.com.seremak.simplebills.transactionmanagement.testUtils.TestRabbitPublisher
 
 @TestConfiguration
 @ComponentScan(

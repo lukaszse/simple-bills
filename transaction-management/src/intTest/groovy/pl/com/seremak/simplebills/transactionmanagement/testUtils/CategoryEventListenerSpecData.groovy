@@ -1,4 +1,4 @@
-package pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig
+package pl.com.seremak.simplebills.transactionmanagement.testUtils
 
 import pl.com.seremak.simplebills.commons.dto.queue.ActionType
 import pl.com.seremak.simplebills.commons.dto.queue.CategoryEventDto
