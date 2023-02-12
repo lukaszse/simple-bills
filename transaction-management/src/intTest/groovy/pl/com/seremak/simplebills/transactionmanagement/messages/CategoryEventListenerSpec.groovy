@@ -5,6 +5,7 @@ import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
 import pl.com.seremak.simplebills.commons.dto.http.TransactionQueryParams
 import pl.com.seremak.simplebills.transactionmanagement.service.TransactionService
+import pl.com.seremak.simplebills.transactionmanagement.testUtils.TestContainersSpec
 
 import static pl.com.seremak.simplebills.transactionmanagement.testUtils.CategoryEventListenerSpecData.WAGES
 import static pl.com.seremak.simplebills.transactionmanagement.testUtils.CategoryEventListenerSpecData.prepareCategoryEventDto
@@ -12,7 +13,7 @@ import static pl.com.seremak.simplebills.transactionmanagement.testUtils.IntTest
 import static pl.com.seremak.simplebills.transactionmanagement.testUtils.IntTestCommonUtils.populateDatabase
 
 @Slf4j
-class CategoryEventListenerSpec extends MessageListenerSpec {
+class CategoryEventListenerSpec extends TestContainersSpec {
 
     @Autowired
     TransactionService transactionService

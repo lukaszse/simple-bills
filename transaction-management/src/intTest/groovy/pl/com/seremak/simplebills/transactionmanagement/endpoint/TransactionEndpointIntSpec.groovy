@@ -3,12 +3,18 @@ package pl.com.seremak.simplebills.transactionmanagement.endpoint
 
 import groovy.util.logging.Slf4j
 import org.apache.commons.lang3.StringUtils
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.RequestEntity
 import org.springframework.web.client.HttpClientErrorException
 import pl.com.seremak.simplebills.commons.dto.http.TransactionDto
 import pl.com.seremak.simplebills.commons.model.Transaction
+import pl.com.seremak.simplebills.transactionmanagement.repository.TransactionCrudRepository
+import pl.com.seremak.simplebills.transactionmanagement.service.SequentialIdRepository
+import pl.com.seremak.simplebills.transactionmanagement.service.TransactionService
+import pl.com.seremak.simplebills.transactionmanagement.testUtils.TestContainersSpec
+import pl.com.seremak.simplebills.transactionmanagement.testUtils.TestRabbitListener
 import spock.lang.Stepwise
 
 import java.time.LocalDate
@@ -19,8 +25,16 @@ import static pl.com.seremak.simplebills.transactionmanagement.testUtils.IntTest
 
 @Slf4j
 @Stepwise
-class TransactionEndpointIntSpec extends EndpointIntSpec {
+class TransactionEndpointIntSpec extends TestContainersSpec {
 
+    @Autowired
+    TransactionService transactionService
+
+    @Autowired
+    SequentialIdRepository sequentialIdService
+
+    @Autowired
+    TransactionCrudRepository transactionCrudRepository
 
     def 'should fetch transaction'() {
 
