@@ -62,8 +62,7 @@ public class CategoryEndpoint {
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content)})
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<List<Category>>> findAllCategories(@AuthenticationPrincipal final Principal principal) {
-        final String username = TokenExtractionHelper.extractUsername(principal);
+    public Mono<ResponseEntity<List<Category>>> findAllCategories(@RequestHeader("username") final String username) {
         log.info("Finding categories for user with name={}", username);
         return categoryService.findAllCategories(username)
                 .doOnSuccess(categories -> log.info("{} categories for username={} found.", categories.size(), username))
@@ -80,9 +79,8 @@ public class CategoryEndpoint {
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content)})
     @GetMapping(value = "{categoryName}", produces = APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<Category>> findCategoryByName(@AuthenticationPrincipal final Principal principal,
+    public Mono<ResponseEntity<Category>> findCategoryByName(@RequestHeader("username") final String username,
                                                              @PathVariable final String categoryName) {
-        final String username = TokenExtractionHelper.extractUsername(principal);
         log.info("Looking for category with name={} and username={}", categoryName, username);
         return categoryService.findCategory(username, categoryName)
                 .doOnSuccess(category -> log.info("Category with name={} for username={} successfully found.", category.getName(), category.getUsername()))
@@ -101,10 +99,9 @@ public class CategoryEndpoint {
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content)})
     @PatchMapping(value = "{categoryName}", produces = APPLICATION_JSON_VALUE)
-    private Mono<ResponseEntity<Category>> updateCategory(@AuthenticationPrincipal final Principal principal,
+    private Mono<ResponseEntity<Category>> updateCategory(@RequestHeader("username") final String username,
                                                           @Valid @RequestBody final CategoryDto categoryDto,
                                                           @PathVariable final String categoryName) {
-        final String username = TokenExtractionHelper.extractUsername(principal);
         log.info("Updating Category with username={} and categoryName={}", username, categoryName);
         return categoryService.updateCategory(username, categoryName, categoryDto)
                 .doOnSuccess(updatedCategory -> log.info("Category with username={} and categoryName={} updated.", updatedCategory.getUsername(), updatedCategory.getName()))
@@ -121,10 +118,9 @@ public class CategoryEndpoint {
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content)})
     @DeleteMapping(value = "{category}")
-    private Mono<ResponseEntity<Void>> deleteCategory(@AuthenticationPrincipal final Principal principal,
+    private Mono<ResponseEntity<Void>> deleteCategory(@RequestHeader("username") final String username,
                                                       @PathVariable final String category,
                                                       @RequestParam @Nullable final String replacementCategory) {
-        final String username = TokenExtractionHelper.extractUsername(principal);
         log.info("Deleting category with name={} and username={}", category, username);
         return categoryService.deleteCategory(username, category, replacementCategory)
                 .doOnSuccess(deletedCategory -> log.info("Category with name={} and username={} deleted.", deletedCategory.getName(), deletedCategory.getUsername()))

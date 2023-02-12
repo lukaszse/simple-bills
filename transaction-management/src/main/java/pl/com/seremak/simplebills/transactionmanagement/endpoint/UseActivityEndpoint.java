@@ -57,10 +57,10 @@ public class UseActivityEndpoint {
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content)})
     @PostMapping(value = "/activity", produces = APPLICATION_JSON_VALUE, consumes = APPLICATION_JSON_VALUE)
-    Mono<ResponseEntity<UserActivity>> addUserActivity(@AuthenticationPrincipal final Principal principal, @RequestBody final UserActivityDto userActivityDto) {
-        final TokenUser tokenUser = TokenExtractionHelper.extractTokenUser(principal);
-        log.info(USER_INFO_FETCHED_MESSAGE, tokenUser.getPreferredUsername());
-        return userActivityService.addUserActivity(tokenUser.getPreferredUsername(), userActivityDto.getActivity())
+    Mono<ResponseEntity<UserActivity>> addUserActivity(@RequestHeader("username") final String username,
+                                                       @RequestBody final UserActivityDto userActivityDto) {
+        log.info(USER_INFO_FETCHED_MESSAGE, username);
+        return userActivityService.addUserActivity(username, userActivityDto.getActivity())
                 .doOnSuccess(userActivity -> log.info(USER_ACTIVITY_ADDED_MESSAGE, userActivity.getActivity(), userActivity.getUsername()))
                 .map(ResponseEntity::ok);
     }

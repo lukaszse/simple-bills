@@ -43,11 +43,10 @@ public class CategoryUsageLimitEndpoint {
                     content = @Content)})
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<List<CategoryUsageLimit>>> findAllCategoryUsageLimits(
-            @AuthenticationPrincipal final Principal principal,
+            @RequestHeader("username") final String username,
             @Nullable @RequestParam final String yearMonth,
             @RequestParam(value = "total", required = false, defaultValue = "false") final boolean total) {
 
-        final String username = TokenExtractionHelper.extractUsername(principal);
         return categoryUsageLimitService.findAllCategoryUsageLimits(username, yearMonth, total)
                 .doOnSuccess(categoryUsageLimits -> log.info("A list of {} usage of limits for all categories for username={} found.", categoryUsageLimits.size(), username))
                 .map(ResponseEntity::ok);

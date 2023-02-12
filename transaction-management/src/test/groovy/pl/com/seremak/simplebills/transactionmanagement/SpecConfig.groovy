@@ -10,7 +10,9 @@ import org.springframework.security.core.userdetails.MapReactiveUserDetailsServi
 import org.springframework.security.core.userdetails.User
 import org.springframework.security.crypto.factory.PasswordEncoderFactories
 import org.springframework.security.crypto.password.PasswordEncoder
+import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder
 import org.springframework.security.web.server.SecurityWebFilterChain
+import spock.mock.DetachedMockFactory
 
 
 @TestConfiguration
@@ -18,6 +20,8 @@ import org.springframework.security.web.server.SecurityWebFilterChain
         basePackages = 'pl.com.seremak.simplebills.transactionmanagement'
 )
 class SpecConfig {
+
+    def mockFactory = new DetachedMockFactory()
 
     @Bean
     SecurityWebFilterChain securityWebFilterChain(
@@ -41,5 +45,10 @@ class SpecConfig {
 
     private static PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder()
+    }
+
+    @Bean
+    ReactiveJwtDecoder reactiveJwtDecoder() {
+        return mockFactory.Mock(ReactiveJwtDecoder)
     }
 }

@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.com.seremak.simplebills.commons.model.Balance;
 import pl.com.seremak.simplebills.commons.model.Transaction;
 import pl.com.seremak.simplebills.commons.utils.TokenExtractionHelper;
@@ -44,8 +41,7 @@ public class BalanceEndpoint {
             @ApiResponse(responseCode = "401", description = "Unauthorized",
                     content = @Content)})
     @GetMapping(produces = APPLICATION_JSON_VALUE)
-    public Mono<ResponseEntity<Balance>> findBalance(@AuthenticationPrincipal final Principal principal) {
-        final String username = TokenExtractionHelper.extractUsername(principal);
+    public Mono<ResponseEntity<Balance>> findBalance(@RequestHeader("username") final String username) {
         return balanceService.findBalance(username)
                 .doOnSuccess(balance -> log.info("Balance for username={} found.", balance.getUsername()))
                 .map(ResponseEntity::ok);

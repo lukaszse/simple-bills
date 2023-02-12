@@ -4,7 +4,7 @@
 
 node "Serwer VPS (Linux)" <<device>> as linux {
     artifact "docker-compose.yml" <<artifact>> as dcompKeycloak
-    component "Keycloak \nOAuth2.0/OpenID Connect" as keycloak
+    component "Keycloak \nOAuth2.0/OpenID Connect" <<component>> as keycloak
 }
 
 node "Komputer PC" <<device>> as pc {
