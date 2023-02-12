@@ -1,4 +1,4 @@
-package pl.com.seremak.simplebills.transactionmanagement.intTest.endpoint
+package pl.com.seremak.simplebills.transactionmanagement.endpoint
 
 
 import groovy.util.logging.Slf4j
@@ -13,11 +13,11 @@ import org.testcontainers.containers.MongoDBContainer
 import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.IntSpecConfig
-import pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.TestRabbitListener
+import pl.com.seremak.simplebills.transactionmanagement.testUtils.TestRabbitListener
 import pl.com.seremak.simplebills.transactionmanagement.repository.TransactionCrudRepository
 import pl.com.seremak.simplebills.transactionmanagement.service.SequentialIdRepository
 import pl.com.seremak.simplebills.transactionmanagement.service.TransactionService
+import pl.com.seremak.simplebills.transactionmanagement.IntSpecConfig
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions

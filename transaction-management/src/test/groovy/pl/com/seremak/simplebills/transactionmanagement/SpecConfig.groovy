@@ -1,4 +1,4 @@
-package pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig
+package pl.com.seremak.simplebills.transactionmanagement
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,11 +14,12 @@ import org.springframework.security.oauth2.jwt.ReactiveJwtDecoder
 import org.springframework.security.web.server.SecurityWebFilterChain
 import spock.mock.DetachedMockFactory
 
+
 @TestConfiguration
 @ComponentScan(
         basePackages = 'pl.com.seremak.simplebills.transactionmanagement'
 )
-class IntSpecConfig {
+class SpecConfig {
 
     def mockFactory = new DetachedMockFactory()
 
@@ -44,16 +45,6 @@ class IntSpecConfig {
 
     private static PasswordEncoder passwordEncoder() {
         return PasswordEncoderFactories.createDelegatingPasswordEncoder()
-    }
-
-    @Bean
-    TestRabbitListener testRabbitListener() {
-        return new TestRabbitListener()
-    }
-
-    @Bean
-    TestRabbitPublisher testRabbitPublisher(@Autowired RabbitTemplate rabbitTemplate) {
-        return new TestRabbitPublisher(rabbitTemplate)
     }
 
     @Bean

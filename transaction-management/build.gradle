@@ -45,6 +45,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testImplementation 'io.projectreactor:reactor-test'
@@ -67,6 +68,35 @@ dependencyManagement {
 }
 
 test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+sourceSets {
+    intTest {
+        groovy.srcDir "$projectDir/src/intTest/groovy"
+        resources.srcDir "$projectDir/src/intTest/resources"
+        compileClasspath += main.output + test.output
+        runtimeClasspath += main.output + test.output
+    }
+}
+
+configurations {
+    intTestImplementation.extendsFrom testImplementation
+    intTestRuntime.extendsFrom testRuntime
+}
+
+task intTest(type: Test) {
+    testClassesDirs = sourceSets.intTest.output.classesDirs
+    classpath = sourceSets.intTest.runtimeClasspath
+}
+
+check.dependsOn intTest
+
+
+intTest {
     useJUnitPlatform()
     testLogging {
         events "passed", "skipped", "failed"

@@ -13,19 +13,19 @@ import pl.com.seremak.simplebills.commons.dto.queue.ActionType
 import pl.com.seremak.simplebills.commons.dto.queue.TransactionEventDto
 import pl.com.seremak.simplebills.commons.model.Transaction
 import pl.com.seremak.simplebills.transactionmanagement.config.RabbitMQConfig
-import pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.IntSpecConfig
 import pl.com.seremak.simplebills.transactionmanagement.messageQueue.MessageListener
 import pl.com.seremak.simplebills.transactionmanagement.messageQueue.MessagePublisher
 import pl.com.seremak.simplebills.transactionmanagement.repository.TransactionCrudRepository
 import pl.com.seremak.simplebills.transactionmanagement.repository.TransactionSearchRepository
 import pl.com.seremak.simplebills.transactionmanagement.repository.UserActivityRepository
+import pl.com.seremak.simplebills.transactionmanagement.SpecConfig
 import reactor.core.publisher.Mono
 import reactor.test.StepVerifier
 import spock.lang.Specification
 
 @Slf4j
 @Testcontainers
-@SpringBootTest(classes = IntSpecConfig.class)
+@SpringBootTest(classes = SpecConfig.class)
 @ActiveProfiles("test")
 class TransactionServiceSpec extends Specification {
 

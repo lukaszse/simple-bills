@@ -1,4 +1,4 @@
-package pl.com.seremak.simplebills.transactionmanagement.intTest.messages
+package pl.com.seremak.simplebills.transactionmanagement.messages
 
 import groovy.util.logging.Slf4j
 import org.springframework.beans.factory.annotation.Autowired
@@ -10,8 +10,8 @@ import org.testcontainers.containers.MongoDBContainer
 import org.testcontainers.containers.RabbitMQContainer
 import org.testcontainers.junit.jupiter.Container
 import org.testcontainers.junit.jupiter.Testcontainers
-import pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.IntSpecConfig
-import pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.TestRabbitPublisher
+import pl.com.seremak.simplebills.transactionmanagement.IntSpecConfig
+import pl.com.seremak.simplebills.transactionmanagement.testUtils.TestRabbitPublisher
 import spock.lang.Specification
 import spock.util.concurrent.PollingConditions
 
