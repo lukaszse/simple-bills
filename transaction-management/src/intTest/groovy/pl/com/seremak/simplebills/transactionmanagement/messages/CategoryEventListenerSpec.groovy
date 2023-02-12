@@ -1,4 +1,4 @@
-package pl.com.seremak.simplebills.transactionmanagement.intTest.messages
+package pl.com.seremak.simplebills.transactionmanagement.messages
 
 
 import groovy.util.logging.Slf4j
@@ -6,10 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import pl.com.seremak.simplebills.commons.dto.http.TransactionQueryParams
 import pl.com.seremak.simplebills.transactionmanagement.service.TransactionService
 
-import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.CategoryEventListenerSpecData.WAGES
-import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.CategoryEventListenerSpecData.prepareCategoryEventDto
-import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.IntTestCommonUtils.TEST_USER
-import static pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig.IntTestCommonUtils.populateDatabase
+import static pl.com.seremak.simplebills.transactionmanagement.testUtils.CategoryEventListenerSpecData.WAGES
+import static pl.com.seremak.simplebills.transactionmanagement.testUtils.CategoryEventListenerSpecData.prepareCategoryEventDto
+import static pl.com.seremak.simplebills.transactionmanagement.testUtils.IntTestCommonUtils.TEST_USER
+import static pl.com.seremak.simplebills.transactionmanagement.testUtils.IntTestCommonUtils.populateDatabase
 
 @Slf4j
 class CategoryEventListenerSpec extends MessageListenerSpec {

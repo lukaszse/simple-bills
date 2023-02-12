@@ -1,10 +1,9 @@
-package pl.com.seremak.simplebills.transactionmanagement.intTest.testUtilsAndConfig
+package pl.com.seremak.simplebills.transactionmanagement.testUtils
 
 import com.fasterxml.jackson.core.type.TypeReference
 import groovy.util.logging.Slf4j
 import pl.com.seremak.simplebills.commons.dto.http.TransactionDto
 import pl.com.seremak.simplebills.transactionmanagement.service.TransactionService
-import pl.com.seremak.simplebills.transactionmanagement.testUtils.JsonImporter
 
 import java.util.stream.Collectors
 
