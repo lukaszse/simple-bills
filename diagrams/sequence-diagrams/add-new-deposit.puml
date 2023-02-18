@@ -4,10 +4,10 @@
 autonumber
 
 actor Użytkownik as user
-participant "Simple bills GUI\n(Frontend)" as gui
-participant "Transaction management\n(service)" as transaction
+participant "Simple Bills GUI\n(Frontend)" as gui
+participant "Transaction Management\n(service)" as transaction
 participant "Planning\n(service)" as planning
-participant "Asset management\n(service)" as asset
+participant "Asset Management\n(service)" as asset
 queue "Queue\n(RabbitMQ)" as rabbit
 
 user -> gui: dodaj depozyt
