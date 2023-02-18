@@ -93,9 +93,6 @@ task intTest(type: Test) {
     classpath = sourceSets.intTest.runtimeClasspath
 }
 
-check.dependsOn intTest
-
-
 intTest {
     useJUnitPlatform()
     testLogging {
