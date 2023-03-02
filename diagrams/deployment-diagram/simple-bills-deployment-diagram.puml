@@ -38,7 +38,7 @@ node "Platforma Okteto (Kubernetes) \nlukaszse namespace" <<executionEnvironment
 
 
 database mongo [
-<b>MongoDB Saas
+<b>MongoDB SaaS
 ===
 
 Baza danych Transaction
