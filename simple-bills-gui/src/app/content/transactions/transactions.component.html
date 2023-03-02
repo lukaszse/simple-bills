@@ -70,7 +70,7 @@
           <th scope="col" sortable="date" (sort)="onSort($event)">Date</th>
           <th scope="col" sortable="amount" (sort)="onSort($event)">Amount</th>
           <th scope="col" sortable="description" (sort)="onSort($event)">Description</th>
-          <th scope="col" sortable="category" (sort)="onSort($event)">CategoryModel</th>
+          <th scope="col" sortable="category" (sort)="onSort($event)">Category</th>
           <th scope="col"></th>
           <th scope="col"></th>
         </tr>
@@ -175,7 +175,7 @@
               <option *ngFor="let category of categories" value="{{category.name}}">{{category.name}}</option>
             </select>
           </div>
-          <div class="text-warning" *ngIf="!categoryName.valid && categoryName.touched">CategoryModel name cannot be
+          <div class="text-warning" *ngIf="!categoryName.valid && categoryName.touched">Category name cannot be
             empty
           </div>
         </div>
@@ -261,7 +261,7 @@
             disabled
             [(ngModel)]="transactionDto.type">
         </div>
-        <label for="update-transaction-category-input" class="col-xs-3 col-sm-2 col-form-label">CategoryModel</label>
+        <label for="update-transaction-category-input" class="col-xs-3 col-sm-2 col-form-label">Category</label>
         <div *ngIf="categoriesToSelect$ | async as categories else noData">
           <div class="input-group">
             <select
@@ -274,7 +274,7 @@
               <option *ngFor="let category of categories" value="{{category.name}}">{{category.name}}</option>
             </select>
           </div>
-          <div class="text-warning" *ngIf="!categoryName.valid && categoryName.touched">CategoryModel name cannot be
+          <div class="text-warning" *ngIf="!categoryName.valid && categoryName.touched">Category name cannot be
             empty
           </div>
         </div>
