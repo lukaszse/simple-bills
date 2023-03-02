@@ -162,7 +162,7 @@
   <div class="modal-body text-dark">
     <form #transactionForm="ngForm">
       <div class="mb-3">
-        <label for="transaction-category-input" class="col-form-label">CategoryModel</label>
+        <label for="transaction-category-input" class="col-form-label">Category</label>
         <div *ngIf="categoriesToSelect$ | async as categories else noData">
           <div class="input-group">
             <select

@@ -4,8 +4,8 @@
 autonumber
 
 actor Użytkownik as user
-participant "Simple bills GUI\n(Frontend)" as gui
-participant "Transaction management\n(service)" as transaction
+participant "Simple Bills GUI\n(Frontend)" as gui
+participant "Transaction Management\n(service)" as transaction
 participant "Planning \n(service)" as planning
 queue "Queue\n(RabbitMQ)" as rabbit
 
