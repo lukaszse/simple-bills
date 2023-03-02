@@ -14,9 +14,9 @@
           <thead>
           <tr>
             <th>#</th>
-            <th>TransactionModel type</th>
-            <th>CategoryModel name</th>
-            <th>CategoryModel limit</th>
+            <th>Transaction type</th>
+            <th>Category name</th>
+            <th>Category limit</th>
             <th></th>
             <th></th>
           </tr>
@@ -72,14 +72,14 @@
 -->
 <ng-template #categoryCreation let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-category-creation">CategoryModel creation</h4>
+    <h4 class="modal-title" id="modal-category-creation">Category creation</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body text-dark">
     <form #categoryCreationForm="ngForm">
       <h2 class="col-form-label">Add new category:</h2>
       <div class="mb-3">
-        <label for="new-category-transaction-type-input" class="col-form-label">TransactionModel type</label>
+        <label for="new-category-transaction-type-input" class="col-form-label">Transaction type</label>
         <div class="input-group">
           <input
             type="text"
@@ -89,7 +89,7 @@
             disabled
             [(ngModel)]="category.transactionType">
         </div>
-        <label for="new-category-name-input" class="col-form-label">CategoryModel name</label>
+        <label for="new-category-name-input" class="col-form-label">Category name</label>
         <div class="input-group">
           <input
             id="new-category-name-input"
@@ -100,10 +100,10 @@
             #categoryName="ngModel"
             [(ngModel)]="category.name"/>
         </div>
-        <div class="text-warning" *ngIf="!categoryName.valid && categoryName.touched">CategoryModel name cannot be empty
+        <div class="text-warning" *ngIf="!categoryName.valid && categoryName.touched">Category name cannot be empty
         </div>
         <div *ngIf="expenseTransactionType">
-          <label for="new-category-limit-input" class="col-form-label">CategoryModel limit</label>
+          <label for="new-category-limit-input" class="col-form-label">Category limit</label>
           <div class="input-group">
             <input
               id="new-category-limit-input"
@@ -113,7 +113,7 @@
               #categoryLimit="ngModel"
               [(ngModel)]="category.limit"/>
           </div>
-          <div class="text-warning" *ngIf="!categoryLimit.valid && categoryLimit.touched">CategoryModel limit must be
+          <div class="text-warning" *ngIf="!categoryLimit.valid && categoryLimit.touched">Category limit must be
             positive
           </div>
         </div>
@@ -135,7 +135,7 @@
 -->
 <ng-template #editCategory let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-category-update">CategoryModel update</h4>
+    <h4 class="modal-title" id="modal-category-update">Category update</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div *ngIf="expenseTransactionType else incomeNotEditable">
@@ -153,7 +153,7 @@
               [(ngModel)]="category.name">
           </div>
           <div *ngIf="expenseTransactionType">
-            <label for="category-update-limit-input" class="col-form-label">CategoryModel limit</label>
+            <label for="category-update-limit-input" class="col-form-label">Category limit</label>
             <div class="input-group">
               <input
                 id="category-update-limit-input"
@@ -164,7 +164,7 @@
                 [(ngModel)]="category.limit"
               />
             </div>
-            <div class="text-warning" *ngIf="!categoryEditLimit.valid && categoryEditLimit.touched">CategoryModel limit
+            <div class="text-warning" *ngIf="!categoryEditLimit.valid && categoryEditLimit.touched">Category limit
               must be positive
             </div>
           </div>
@@ -189,7 +189,7 @@
 -->
 <ng-template #deletionConfirmationWindow let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-category-deletion">CategoryModel deletion</h4>
+    <h4 class="modal-title" id="modal-category-deletion">Category deletion</h4>
     <button type="button" class="btn-close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')"
     ></button>
   </div>
@@ -225,5 +225,5 @@
 </ng-template>
 
 <ng-template #noData>
-  <h3 class="text-center fw-bold">No CategoryModel Available</h3>
+  <h3 class="text-center fw-bold">No Category Available</h3>
 </ng-template>

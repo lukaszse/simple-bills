@@ -9,9 +9,9 @@
         <thead>
         <tr>
           <th>#</th>
-          <th>DepositModel type</th>
-          <th>DepositModel name</th>
-          <th>DepositModel value</th>
+          <th>Deposit type</th>
+          <th>Deposit name</th>
+          <th>Deposit value</th>
           <th>Bank name</th>
           <th>Duration [months]</th>
           <th>Annual interest rate</th>
@@ -82,14 +82,14 @@
 -->
 <ng-template #depositCreation let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-deposit-creation">DepositModel creation</h4>
+    <h4 class="modal-title" id="modal-deposit-creation">Deposit creation</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body text-dark">
     <form #createDepositForm="ngForm">
       <h2 class="col-form-label">Add new deposit:</h2>
       <div class="mb-3">
-        <label for="new-deposit-name-input" class="col-form-label">DepositModel name</label>
+        <label for="new-deposit-name-input" class="col-form-label">Deposit name</label>
         <div class="input-group">
           <input
             type="text"
@@ -100,9 +100,9 @@
             #depositName="ngModel"
             required/>
         </div>
-        <div class="text-warning" *ngIf="!depositName.valid && depositName.touched">DepositModel name cannot be empty
+        <div class="text-warning" *ngIf="!depositName.valid && depositName.touched">Deposit name cannot be empty
         </div>
-        <label for="new-deposit-type-input" class="col-form-label">DepositModel type</label>
+        <label for="new-deposit-type-input" class="col-form-label">Deposit type</label>
         <select
           [(ngModel)]="deposit.depositType"
           name="new-deposit-type-input"
@@ -113,7 +113,7 @@
           <option value="TERM">Term</option>
           <option value="PERPETUAL">Perpetual</option>
         </select>
-        <div class="text-warning" *ngIf="!depositType.valid && depositType.touched">DepositModel type cannot be empty
+        <div class="text-warning" *ngIf="!depositType.valid && depositType.touched">Deposit type cannot be empty
         </div>
         <label for="new-deposit-bank-input" class="col-form-label">Bank name</label>
         <div class="input-group">
@@ -127,7 +127,7 @@
             required/>
         </div>
         <div class="text-warning" *ngIf="!bankName.valid && bankName.touched">Bank name cannot be empty</div>
-        <label for="new-deposit-value-input" class="col-form-label">DepositModel value</label>
+        <label for="new-deposit-value-input" class="col-form-label">Deposit value</label>
         <div class="input-group">
           <input
             id="new-deposit-value-input"
@@ -138,7 +138,7 @@
             #depositValue="ngModel"
             required/>
         </div>
-        <div class="text-warning" *ngIf="!depositValue.valid && depositValue.touched">DepositModel value cannot be empty
+        <div class="text-warning" *ngIf="!depositValue.valid && depositValue.touched">Deposit value cannot be empty
           and
           must be positive
         </div>
@@ -169,7 +169,7 @@
               required/>
           </div>
           <div class="text-warning" *ngIf="!depositDuration.valid && depositDuration.touched">
-            DepositModel duration must be positive
+            Deposit duration must be positive
           </div>
         </div>
       </div>
@@ -190,14 +190,14 @@
 -->
 <ng-template #editDeposit let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-deposit-update">DepositModel update</h4>
+    <h4 class="modal-title" id="modal-deposit-update">Deposit update</h4>
     <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body text-dark">
     <form #updateDepositForm="ngForm">
       <h2 class="col-form-label">Add new deposit:</h2>
       <div class="mb-3">
-        <label for="update-deposit-name-input" class="col-form-label">DepositModel name</label>
+        <label for="update-deposit-name-input" class="col-form-label">Deposit name</label>
         <div class="input-group">
           <input
             type="text"
@@ -207,7 +207,7 @@
             disabled
             [(ngModel)]="deposit.name">
         </div>
-        <label for="update-deposit-type-input" class="col-form-label">DepositModel type</label>
+        <label for="update-deposit-type-input" class="col-form-label">Deposit type</label>
         <select
           [(ngModel)]="deposit.depositType"
           name="update-deposit-type-select"
@@ -218,7 +218,7 @@
           <option value="PERPETUAL">Perpetual</option>
         </select>
         <div class="text-warning" *ngIf="!depositType.valid && depositType.touched">
-          DepositModel type cannot be empty
+          Deposit type cannot be empty
         </div>
         <label for="update-deposit-bank-input" class="col-form-label">Bank name</label>
         <div class="input-group">
@@ -234,7 +234,7 @@
         <div class="text-warning" *ngIf="!bankName.valid && bankName.touched">
           Bank name cannot be empty
         </div>
-        <label for="update-deposit-value-input" class="col-form-label">DepositModel value</label>
+        <label for="update-deposit-value-input" class="col-form-label">Deposit value</label>
         <div class="input-group">
           <input
             id="update-deposit-value-input"
@@ -246,7 +246,7 @@
             required/>
         </div>
         <div class="text-warning" *ngIf="!depositValue.valid && depositValue.touched">
-          DepositModel value cannot be empty and must be positive
+          Deposit value cannot be empty and must be positive
         </div>
         <div *ngIf="deposit.depositType.toString() === 'TERM'">
           <label for="update-deposit-duration-input" class="col-form-label">Duration</label>
@@ -297,7 +297,7 @@
 -->
 <ng-template #deletionConfirmationWindow let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-deposit-deletion">DepositModel deletion</h4>
+    <h4 class="modal-title" id="modal-deposit-deletion">Deposit deletion</h4>
     <button type="button" class="btn-close" aria-describedby="modal-title" (click)="modal.dismiss('Cross click')"
     ></button>
   </div>
